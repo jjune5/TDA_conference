@@ -1,0 +1,32 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# Compiled / generated extensions
+*.so
+sg2dgm/PersistenceImager.c
+sg2dgm/build/
+
+# PyG datasets + persistence-image caches (regeneratable; large)
+data/
+
+# Cache splice backups
+*.bak
+*.spliced.npy
+*.uncapped.bak
+*.short.bak
+
+# SLURM logs
+slurm_logs/
+
+# Packaged envs
+curvGN.tar.gz
+*.tar.gz
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
