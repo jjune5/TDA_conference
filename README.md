@@ -19,6 +19,7 @@
 ## 실행
 
 ```bash
+conda env create -f environment.yml
 conda activate tlcgnn
 python pipelines.py --datasets PubMed Photo Computers --trials 50 --tag rerun
 ```
