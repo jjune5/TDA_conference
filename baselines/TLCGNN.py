@@ -45,7 +45,7 @@ class Net(torch.nn.Module):
                       data.train_pos + data.train_neg + data.val_pos + data.val_neg :]
             PI = self.PI[data.train_pos + data.train_neg + data.val_pos + data.val_neg:]
         #linear to gather edge features
-        emb = emb.renorm_(2,0,1)
+        emb = emb.renorm(2, 0, 1)
 
 
         #pair wise PI
@@ -84,20 +84,18 @@ def call(data,name,num_features,num_classes,data_cnt):
     data.total_edges = total_edges
     data.total_edges_y = torch.cat((torch.ones(len(train_edges)), torch.zeros(len(train_edges_false)), torch.ones(len(val_edges)), torch.zeros(len(val_edges_false)),torch.ones(len(test_edges)), torch.zeros(len(test_edges_false)))).long()
 
-    # delete val_pos and test_pos
-    edge_list = np.array(data.edge_index).T.tolist()
-    for edges in val_edges:
-        edges = edges.tolist()
-        if edges in edge_list:
-            # if not in edge_list, mean it is a self loop
-            edge_list.remove(edges)
-            edge_list.remove([edges[1], edges[0]])
-    for edges in test_edges:
-        edges = edges.tolist()
-        if edges in edge_list:
-            edge_list.remove(edges)
-            edge_list.remove([edges[1], edges[0]])
-    data.edge_index = torch.Tensor(edge_list).long().transpose(0, 1)
+    # delete val_pos and test_pos (set-based, O(E) instead of O(E^2))
+    _ei = np.array(data.edge_index)
+    _mask_remove = set()
+    for edges in val_edges.tolist():
+        _mask_remove.add((edges[0], edges[1]))
+        _mask_remove.add((edges[1], edges[0]))
+    for edges in test_edges.tolist():
+        _mask_remove.add((edges[0], edges[1]))
+        _mask_remove.add((edges[1], edges[0]))
+    _keep = np.array([(int(u), int(v)) not in _mask_remove
+                      for u, v in zip(_ei[0], _ei[1])])
+    data.edge_index = torch.from_numpy(_ei[:, _keep]).long()
 
     hop = 2 if name in ["PubMed"] else 1
     if name in ['PPI']:
