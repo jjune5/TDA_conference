@@ -1,101 +1,26 @@
-# TLC-GNN \& PDGNN
+# TLC-GNN / PDGNN — modernized
 
-Implementation for paper [Link Prediction with Persistent Homology: An Interactive View](https://arxiv.org/abs/2102.10255) (ICML 2021, TLC-GNN) and for paper [Neural Approximation of Graph Topological Features](https://arxiv.org/pdf/2201.12032.pdf) (NeurIPS 2022, PDGNN)
+원본 [pkuyzy/TLC-GNN](https://github.com/pkuyzy/TLC-GNN) (ICML 2021 + NeurIPS 2022) 을 **PyTorch 2.1 / PyG 2.5 / Python 3.9 / CUDA 11.8** 에서 동작하도록 수정.
 
+## 핵심 수정
 
+- `baselines/TLCGNN.py:48` — `emb.renorm_()` → `emb.renorm()` (PyTorch 2.x autograd inplace 거부 문제)
+- `loaddatas.py` — stale PI 캐시 layout splice, networkx/scipy 새 API 대응
+- `sg2dgm/`, `Knowledge_Distillation/pdgnn_modern.py` — PyG 2.x 호환
 
-## Requirements
+## 결과 (50 trials)
 
-Python version is 3.7, and the versions of needed packages are listed in requirements.txt
+| | Our | Paper |
+|---|---|---|
+| Photo | 0.9825 | 0.9823 ✓ |
+| PubMed | 0.9635 | 0.9703 |
+| Computers | 0.9680 | 0.9790 |
 
-We also provide a packed environment, which is available at:
+## 실행
 
-[curvGN.tar.gz](https://drive.google.com/file/d/1RXz8sl7UETsalWDZwZZIkolf9glzQXoP/view?usp=share_link)
-
-you can activate the environment with:
-
-```
-tar -xzf curvGN.tar.gz -C curvGN
-source curvGN/bin/activate
-```
-
-
-
-## Run experiments for TLC-GNN
-
-```
-python pipelines.py
+```bash
+conda activate tlcgnn
+python pipelines.py --datasets PubMed Photo Computers --trials 50 --tag rerun
 ```
 
-to run the experiments for PubMed, Photo and Computers datasets, the results will be stored in ./scores.
-
-If you want to run experiments for PPI datasets, you can comment out line 56 in pipelines.py.
-
-For Cora and Citeseer, you can set the dropout in ./baselines/TLC-GNN to 0.8, the results can be a little higher
-
-
-
-## Setup Cython
-
-```
-cd ./sg2dgm
-python setup_PI.py build_ext --inplace
-```
-
-to setup ./sg2dgm/persistenceImager.pyx
-
-If the command does not work, a substitute solution is to copy the code in ./sg2dgm/persistenceImager.pyx to a new file named ./sg2dgm/persistenceImager.py, this might also work.
-
-
-
-## Run experiments for PDGNN
-
-A small note: PDGNN has nothing to do with knowledge distillation, actually. 
-
-First generate the training data for node-centered vicinity graphs:
-
-```
-python ./Knowledge_Distillation/data_utils_NC.py
-```
-
-You can also generate edge-centered vicinity graphs / total graphs using 
-
-```
-python ./Knowledge_Distillation/data_utils_LP.py 
-python ./Knowledge_Distillation/data_utils_GC.py
-```
-
-Then train PDGNN, notice that the saved data dir need to be revised in lines15-26 in ./Knowledge_Distillation/train_Teacher_Model.py.
-
-Notice that in the code, PDGNN is actually in ./Knowledge_Distillation/gat_conv.py rather than ./Knowledge_Distillation/PD_conv.py
-
-```
-python ./Knowledge_Distillation/train_Teacher_Model.py
-```
-
-You can also train PDGNN on TUdatasets, ZINC, and OGBG-HIV
-
-```
-python ./Knowledge_Distillation/train_Teacher_Model_GC.py
-```
-
-Afther training PDGNN, your can run downstream node classification/link prediction tasks with 
-
-```
-python pipelines_GIN.py
-python pipelines_LP_GIN.py
-```
-
-
-
-## Poster
-
-### TLC-GNN
-
-![poster](poster.png)
-
-
-
-### PDGNN
-
-![poster_PD](poster_PD.png)
+자세한 내용: [`docs/specs/`](docs/specs/)
