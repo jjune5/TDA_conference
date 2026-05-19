@@ -38,11 +38,15 @@ def get_edges_split(data, val_prop = 0.2, test_prop = 0.2, seed = 1234):
 def get_adj_split(adj, val_prop=0.05, test_prop=0.1, seed=1234):
     np.random.seed(seed)  # get tp edges
     x, y = sp.triu(adj).nonzero()
-    pos_edges = np.array(list(zip(x, y)))
+    pos_edges = np.stack([x, y], axis=1)
     np.random.shuffle(pos_edges)
-    # get tn edges
-    x, y = sp.triu(sp.csr_matrix(1. - adj.toarray())).nonzero()
-    neg_edges = np.array(list(zip(x, y)))
+    # get tn edges, memory-efficient bool computation
+    N = adj.shape[0]
+    adj_bool = adj.astype(bool).toarray()
+    upper = np.triu(np.ones((N, N), dtype=bool), k=1)
+    neg_mask = (~adj_bool) & upper
+    nx_idx, ny_idx = np.where(neg_mask)
+    neg_edges = np.stack([nx_idx, ny_idx], axis=1)
     np.random.shuffle(neg_edges)
 
     m_pos = len(pos_edges)
@@ -50,7 +54,10 @@ def get_adj_split(adj, val_prop=0.05, test_prop=0.1, seed=1234):
     n_test = int(m_pos * test_prop)
     val_edges, test_edges, train_edges = pos_edges[:n_val], pos_edges[n_val:n_test + n_val], pos_edges[n_test + n_val:]
     val_edges_false, test_edges_false = neg_edges[:n_val], neg_edges[n_val:n_test + n_val]
-    train_edges_false = np.concatenate([neg_edges, val_edges, test_edges], axis=0)
+    # subsample train negatives to a manageable count (5x #train_pos), to keep
+    # persistence-image computation feasible. Each negative still gets a PI.
+    train_neg_cap = min(len(neg_edges), max(len(train_edges) * 5, 1024))
+    train_edges_false = neg_edges[n_test + n_val: n_test + n_val + train_neg_cap]
     return train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false
 
 def compute_persistence_image(data, train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false, data_name, hop = 1):
@@ -60,8 +67,36 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
         data_name = "Computers"
 
     filename = './data/TLCGNN/' + data_name + '.npy'
+    expected_total = (len(train_edges) + len(train_edges_false)
+                      + len(val_edges) + len(val_edges_false)
+                      + len(test_edges) + len(test_edges_false))
     if os.path.exists(filename):
-        return np.load(filename)
+        cached = np.load(filename)
+        if cached.shape[0] == expected_total:
+            return cached
+        # Stale cache layout: written before the train_neg cap was added.
+        # Layout was [train_pos | ALL_train_neg | val_pos | val_neg | test_pos | test_neg].
+        # Splice to [train_pos | first cap-many train_neg | val_pos | val_neg | test_pos | test_neg]
+        # so the model's offsets line up. Splits are deterministic (seed=1234) so the first
+        # cap-many train_neg rows here are exactly the ones the current loader emits.
+        n_train_pos = len(train_edges)
+        val_test_total = (len(val_edges) + len(val_edges_false)
+                          + len(test_edges) + len(test_edges_false))
+        n_cap = len(train_edges_false)
+        n_orig_train_neg = cached.shape[0] - n_train_pos - val_test_total
+        if n_orig_train_neg >= n_cap and cached.shape[0] > expected_total:
+            head = cached[:n_train_pos + n_cap]
+            tail = cached[n_train_pos + n_orig_train_neg:]
+            spliced = np.concatenate([head, tail], axis=0)
+            assert spliced.shape[0] == expected_total, (
+                f"splice mismatch for {data_name}: got {spliced.shape[0]} want {expected_total}")
+            # Persist the spliced cache so subsequent runs hit the fast path.
+            np.save(filename + '.spliced.npy', spliced)
+            os.rename(filename, filename + '.uncapped.bak')
+            os.rename(filename + '.spliced.npy', filename)
+            return spliced
+        # cache smaller than expected: must recompute
+        os.rename(filename, filename + '.short.bak')
     total_edges = np.concatenate(
         (train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false))
     data.train_pos, data.train_neg = len(train_edges), len(train_edges_false)
@@ -69,23 +104,25 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     data.test_pos, data.test_neg = len(test_edges), len(test_edges_false)
     data.total_edges = total_edges
 
-    # delete val_pos and test_pos
-    edge_list = np.array(data.edge_index).T.tolist()
-    for edges in val_edges:
-        edges = edges.tolist()
-        if edges in edge_list:
-            edge_list.remove(edges)
-            edge_list.remove([edges[1], edges[0]])
-    for edges in test_edges:
-        edges = edges.tolist()
-        if edges in edge_list:
-            edge_list.remove(edges)
-            edge_list.remove([edges[1], edges[0]])
-    data.edge_index = torch.Tensor(edge_list).long().transpose(0, 1)
+    # delete val_pos and test_pos (set-based, O(E) instead of O(E^2))
+    _ei = np.array(data.edge_index)
+    _mask_remove = set()
+    for edges in val_edges.tolist():
+        _mask_remove.add((edges[0], edges[1]))
+        _mask_remove.add((edges[1], edges[0]))
+    for edges in test_edges.tolist():
+        _mask_remove.add((edges[0], edges[1]))
+        _mask_remove.add((edges[1], edges[0]))
+    _keep = np.array([(int(u), int(v)) not in _mask_remove
+                      for u, v in zip(_ei[0], _ei[1])])
+    data.edge_index = torch.from_numpy(_ei[:, _keep]).long()
     data.edge_index, _ = remove_self_loops(data.edge_index)
 
     # generate graph for computing persistence diagram
     g = nx.Graph()
+    # Add all original nodes first so that isolated nodes (whose only edges were
+    # val/test) remain in the graph and in graph2pi.dict_node.
+    g.add_nodes_from(range(data.num_nodes))
     ricci_edge_index_ = np.array(remove_self_loops((data.edge_index.cpu()))[0])
     ricci_edge_index = [(ricci_edge_index_[0, i], ricci_edge_index_[1, i]) for i in
                         range(np.shape(ricci_edge_index_)[1])]
@@ -97,7 +134,8 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
 
     # compute sg2dgm and save in a dict
     pi = sg2dgm.graph2pi(g, ricci_curv=ricci_cur)
-    pi.get_pimg_for_all_edges(total_edges, cores=16, hop=hop, norm=True, extended_flag=True,
+    _cores = int(os.environ.get('TLCGNN_CORES', 32))
+    pi.get_pimg_for_all_edges(total_edges, cores=_cores, hop=hop, norm=True, extended_flag=True,
                                   resolution=5, descriptor='sum')
     np.save(filename,pi.pi_sg)
     return pi.pi_sg

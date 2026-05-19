@@ -4,7 +4,8 @@ import dionysus as d
 import time
 import sg2dgm.PersistenceImager as pimg
 from sg2dgm.dgformat import *
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing.dummy import Pool as ThreadPool  # noqa
+from concurrent.futures import ProcessPoolExecutor
 import sys
 from sg2dgm.accelerated_PD import perturb_filter_function, Union_find, Accelerate_PD
 
@@ -199,9 +200,9 @@ class graph2dgm():
         if len(dgm) == 0:
             return d.Diagram([(0, 0)])
         for p in dgm:
-            if p.birth == np.float('-inf'):
+            if p.birth == float('-inf'):
                 p.birth = 0
-            if p.death == np.float('inf'):
+            if p.death == float('inf'):
                 p.death = 0
         if debug_flag:
             print('Before flip:'),
@@ -360,13 +361,23 @@ class graph2pi():
         return self.get_pimg_for_one_edge(*args)
 
     def get_pimg_for_all_edges(self, total_edges, cores, hop=2, norm=True, extended_flag = False, resolution=5, descriptor = 'min'):
-        self.pi_sg = np.zeros((len(total_edges), resolution * resolution))
-        self.cnt_compute = 0
+        # Process-based parallelization (escapes the GIL). Each worker holds the
+        # relabeled graph + ricci_curv as globals (set via initializer).
+        from sg2dgm.parallel_pi import compute_pi_parallel as _cpp
+        # Map total_edges (original labels) through dict_node to relabeled ids;
+        # any endpoint missing from dict_node (isolated nodes after val/test
+        # removal) is marked with sentinel -1, which the worker returns 0 PI for.
+        def _lookup(x):
+            return self.dict_node.get(int(x), -1)
+        edges_rel = np.array([(_lookup(e[0]), _lookup(e[1])) for e in total_edges],
+                              dtype=np.int64)
+        rcl = [(u, v, c) for (u, v), c in self.ricci_curv.items() if u <= v]
+        self.pi_sg = _cpp(self.graph, rcl,
+                          {n: n for n in self.graph.nodes()},
+                          edges_rel, hop=hop, norm=norm,
+                          extended_flag=extended_flag, resolution=resolution,
+                          descriptor=descriptor, n_workers=cores)
         self.t1 = time.time()
-        params = [(edge[0], edge[1], hop, norm, extended_flag, resolution, descriptor, cnt) for cnt, edge in enumerate(total_edges)]
-        pool = ThreadPool(cores)
-        pool.map(self.multi_wrapper_all_edges, params)
-        pool.close()
-        pool.join()
+        self.cnt_compute = len(total_edges)
 
 

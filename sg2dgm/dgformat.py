@@ -60,11 +60,11 @@ def assert_dgm_below(dgm):
 def flip_dgm(dgm):
     # flip dgm from below to above, not vise versa
     for p in dgm:
-        if np.float(p.birth) < np.float(p.death):
+        if float(p.birth) < float(p.death):
             assert_dgm_above(dgm)
             return dgm
-        assert np.float(p.birth) >= np.float(p.death)
-    data = [(np.float(p.death), np.float(p.birth)) for p in dgm]
+        assert float(p.birth) >= float(p.death)
+    data = [(float(p.death), float(p.birth)) for p in dgm]
     return d.Diagram(data)
 
 

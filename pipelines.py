@@ -1,4 +1,7 @@
 import os
+import sys
+import copy
+import argparse
 import torch
 import loaddatas as lds
 import torch.nn.functional as F
@@ -53,8 +56,19 @@ def setup_seed(seed):
     torch.backends.cudnn.deterministic = True
 
 
-#d_names = ['PPI']; times=range(20)
-d_names = ["Photo", "PubMed", "Computers"]; times=range(50)
+_parser = argparse.ArgumentParser()
+_parser.add_argument('--datasets', nargs='+', default=["Photo", "PubMed", "Computers"],
+                     help='datasets to run, choose from Photo, PubMed, Computers, Cora, Citeseer, PPI')
+_parser.add_argument('--trials', type=int, default=50, help='number of trials per dataset')
+_parser.add_argument('--dropout', type=float, default=0.5, help='dropout for the model (0.8 for Cora/Citeseer)')
+_parser.add_argument('--tag', type=str, default='', help='suffix tag for score filenames')
+_args = _parser.parse_args()
+
+d_names = _args.datasets
+if 'PPI' in d_names and len(d_names) == 1:
+    times = range(min(_args.trials, 20))
+else:
+    times = range(_args.trials)
 
 
 wait_total= 200
@@ -75,20 +89,19 @@ pipeline_acc_diff_sum={'TLCGNN':0}
 pipeline_roc_diff={'TLCGNN':[i for i in times]}
 pipeline_roc_diff_sum={'TLCGNN':0}
 
-if not os.path.exists("./scores"):
-    os.mkdir("./scores")
+os.makedirs("./scores", exist_ok=True)
 
 for d_name in d_names:
-    f2 = open('scores/pipe_benchmark_' + d_name + '_LP_scores.txt', 'w+')
+    f2 = open('scores/pipe_benchmark_' + d_name + '_LP_scores' + _args.tag + '.txt', 'w+')
     f2.write('{0:7} {1:7}\n'.format(d_name, 'TLCGNN'))
     f2.flush()
     dataset = lds.loaddatas(d_name)
     for data_cnt in times:
         for Conv_method in pipelines:
             if d_name in ['Rand_nnodes_github1000', 'PPI']:
-                data = dataset[data_cnt]
+                data = copy.deepcopy(dataset[data_cnt])
             else:
-                data = dataset[0]
+                data = copy.deepcopy(dataset[0])
             if d_name in ['Rand_nnodes_github1000']:
                 data.x = data.x[:, :10]
             #data.x = torch.ones(data.x.size())
