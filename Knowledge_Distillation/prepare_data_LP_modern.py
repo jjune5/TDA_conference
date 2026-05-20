@@ -5,6 +5,10 @@ For each (u, v) edge in the source graph, extracts the intersection of
 hop-k neighborhoods, computes the same Ollivier-Ricci-based 'sum' filtration
 as loaddatas.compute_persistence_image, then records (filt_values,
 edge_index, ground-truth (birth, death) coords).
+
+Note: PD composition here uses Knowledge_Distillation/accelerated_PD.py
+(the module the PDGNN paper uses), which may differ from
+sg2dgm/accelerated_PD.py. This divergence is intentional.
 """
 
 from __future__ import annotations
@@ -19,8 +23,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import loaddatas as lds
-from sg2dgm import riccidist2dgm as sg2dgm
-from sg2dgm import PersistenceImager as pimg_mod
+from Knowledge_Distillation.accelerated_PD import (
+    perturb_filter_function, Union_find, Accelerate_PD)
 
 
 def _edge_vicinity(g: nx.Graph, u: int, v: int, hop: int) -> nx.Graph:
@@ -71,15 +75,18 @@ def build_lp_vicinity_dataset(name: str, hop: int | None = None,
     the K extended-persistence pairs computed via dionysus on this vicinity.
     Stored as the per-edge label for PDGNN supervised training."""
     os.makedirs(cache_dir, exist_ok=True)
-    cache = os.path.join(cache_dir, f'{name}_LP_train.pkl')
-    if os.path.exists(cache):
-        with open(cache, 'rb') as f:
-            return pickle.load(f), cache
 
     ds = lds.loaddatas(name)
     data = ds[0]
     if hop is None:
         hop = 2 if name in ('PubMed',) else 1
+
+    hop_tag = str(hop)
+    edges_tag = "all" if max_edges is None else str(max_edges)
+    cache = os.path.join(cache_dir, f'{name}_LP_hop{hop_tag}_n{edges_tag}_train.pkl')
+    if os.path.exists(cache):
+        with open(cache, 'rb') as f:
+            return pickle.load(f), cache
 
     # Build full graph + Ricci curvature lookup
     g = nx.Graph()
@@ -99,31 +106,24 @@ def build_lp_vicinity_dataset(name: str, hop: int | None = None,
         edges = [edges[i] for i in rng.choice(len(edges), max_edges, replace=False)]
 
     samples = {}
-    imager = pimg_mod.PersistenceImager(resolution=5)
-    g2pi = sg2dgm.graph2pi(g, ricci_curv=ricci_list)  # holds PD compute method
     for idx, (u, v) in enumerate(tqdm(edges, desc=f'{name}/LP')):
         sub = _edge_vicinity(g, u, v, hop)
         if sub.number_of_edges() == 0:
             continue
+        if sub.number_of_nodes() < 3:
+            continue
         filt_vals = _ollivier_ricci_filt(sub, u, v, ricci_lookup)
-        # ground-truth PD via dionysus (same path TLC-GNN uses)
-        try:
-            dgms = g2pi.compute_extended_pd_for_edge(sub, u, v, filt_vals)
-        except AttributeError:
-            # If sg2dgm doesn't expose a single-edge method, fall back to
-            # the local accelerated_PD path:
-            from Knowledge_Distillation.accelerated_PD import (
-                perturb_filter_function, Union_find, Accelerate_PD)
-            sub_re = nx.convert_node_labels_to_integers(sub)
-            sf = perturb_filter_function(sub_re, filt_vals)
-            PD_up, ess0, PD_down, Pos, Neg = Union_find(sf)
-            PD_one = Accelerate_PD(Pos, Neg, sf)
-            dgms = np.concatenate([
-                np.asarray(PD_up, dtype=np.float64).reshape(-1, 2) if len(PD_up) else np.empty((0,2)),
-                np.asarray(ess0, dtype=np.float64).reshape(-1, 2) if len(ess0) else np.empty((0,2)),
-                np.asarray(PD_down, dtype=np.float64).reshape(-1, 2) if len(PD_down) else np.empty((0,2)),
-                np.asarray(PD_one, dtype=np.float64).reshape(-1, 2) if len(PD_one) else np.empty((0,2)),
-            ], axis=0)
+        # ground-truth PD via the local accelerated_PD path (PDGNN paper's module)
+        sub_re = nx.convert_node_labels_to_integers(sub)
+        sf = perturb_filter_function(sub_re, filt_vals)
+        PD_up, ess0, PD_down, Pos, Neg = Union_find(sf)
+        PD_one = Accelerate_PD(Pos, Neg, sf)
+        dgms = np.concatenate([
+            np.asarray(PD_up, dtype=np.float64).reshape(-1, 2) if len(PD_up) else np.empty((0,2)),
+            np.asarray(ess0, dtype=np.float64).reshape(-1, 2) if len(ess0) else np.empty((0,2)),
+            np.asarray(PD_down, dtype=np.float64).reshape(-1, 2) if len(PD_down) else np.empty((0,2)),
+            np.asarray(PD_one, dtype=np.float64).reshape(-1, 2) if len(PD_one) else np.empty((0,2)),
+        ], axis=0)
         ei_sub = np.array(list(sub.edges()), dtype=np.int64).T  # (2, E)
         if ei_sub.size:
             ei_sub = np.concatenate([ei_sub, ei_sub[[1, 0]]], axis=1)
