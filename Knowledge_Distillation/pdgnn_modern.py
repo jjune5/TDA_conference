@@ -20,11 +20,11 @@ Architecture (paper §4.2):
 """
 
 from __future__ import annotations
+from typing import Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import MessagePassing
-from torch_geometric.utils import add_self_loops, remove_self_loops, softmax
 from torch_scatter import scatter_min, scatter_add
 
 
@@ -36,12 +36,13 @@ class PDGNNLayer(MessagePassing):
         super().__init__(aggr=None, flow='source_to_target')
         self.lin_self = nn.Linear(in_dim, out_dim, bias=False)
         self.lin_msg = nn.Linear(2 * in_dim, out_dim, bias=False)
-        self.lin_combine = nn.Linear(2 * out_dim + in_dim, out_dim, bias=True)
+        # combined = [sum_agg (out_dim) || min_agg (out_dim) || lin_self(x) (out_dim)] = 3*out_dim
+        self.lin_combine = nn.Linear(3 * out_dim, out_dim, bias=True)
         self.act_msg = nn.PReLU(out_dim)
         self.act_out = nn.PReLU(out_dim)
 
     def forward(self, x: torch.Tensor, edge_index: torch.Tensor,
-                edge_weight: torch.Tensor | None = None) -> torch.Tensor:
+                edge_weight: Optional[torch.Tensor] = None) -> torch.Tensor:
         # propagate calls message() per edge then aggregate() per node.
         if edge_weight is None:
             edge_weight = torch.ones(edge_index.size(1), device=x.device)
@@ -60,7 +61,7 @@ class PDGNNLayer(MessagePassing):
         return edge_weight.view(-1, 1) * msg
 
     def aggregate(self, inputs: torch.Tensor, index: torch.Tensor,
-                  dim_size: int | None = None) -> torch.Tensor:
+                  dim_size: Optional[int] = None) -> torch.Tensor:
         # SUM ⊕ MIN concatenation
         sum_agg = scatter_add(inputs, index, dim=0, dim_size=dim_size)
         min_agg, _ = scatter_min(inputs, index, dim=0, dim_size=dim_size)
@@ -88,8 +89,8 @@ class PDGNN(nn.Module):
         )
 
     def forward(self, filt_value: torch.Tensor, edge_index: torch.Tensor,
-                edge_weight: torch.Tensor | None = None,
-                pred_edges: torch.Tensor | None = None) -> torch.Tensor:
+                edge_weight: Optional[torch.Tensor] = None,
+                pred_edges: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
         Args:
             filt_value: (N, 1) filter values per node.
