@@ -62,7 +62,11 @@ _parser.add_argument('--datasets', nargs='+', default=["Photo", "PubMed", "Compu
 _parser.add_argument('--trials', type=int, default=50, help='number of trials per dataset')
 _parser.add_argument('--dropout', type=float, default=0.5, help='dropout for the model (0.8 for Cora/Citeseer)')
 _parser.add_argument('--tag', type=str, default='', help='suffix tag for score filenames')
+_parser.add_argument('--no_pi', action='store_true', help='ablation: disable persistence-image features (zeros instead)')
+_parser.add_argument('--pi_source', choices=['dionysus', 'pdgnn'], default='dionysus',
+                     help='source of PI cache (dionysus=TLC-GNN exact, pdgnn=neural approx)')
 _args = _parser.parse_args()
+os.environ['TLCGNN_PI_SOURCE'] = _args.pi_source
 
 d_names = _args.datasets
 if 'PPI' in d_names and len(d_names) == 1:
@@ -108,10 +112,10 @@ for d_name in d_names:
             index = [i for i in range(len(data.y))]
             if d_name != "PPI":
                 model, data = locals()[Conv_method].call(data, dataset.name, data.x.size(1), dataset.num_classes,
-                                                     data_cnt)
+                                                     data_cnt, use_pi=not _args.no_pi)
             else:
                 model, data = locals()[Conv_method].call(data, 'PPI', data.x.size(1), dataset.num_classes,
-                                                         data_cnt)
+                                                         data_cnt, use_pi=not _args.no_pi)
             model.apply(weights_init)
             optimizer = torch.optim.Adam(model.parameters(), lr=0.005, weight_decay=0)
             best_val_acc = test_acc_same = test_acc_diff = test_acc = 0.0

@@ -21,7 +21,41 @@ def loaddatas(d_name):
         dataset = torch_geometric.datasets.Planetoid('./data/' + d_name, d_name)
     elif d_name in ["Computers", "Photo"]:
         dataset = torch_geometric.datasets.Amazon('./data/'+d_name,d_name)
+    elif d_name in ['Chameleon', 'Squirrel']:
+        dataset = torch_geometric.datasets.WikipediaNetwork(
+            './data/' + d_name, d_name.lower())
+    elif d_name in ['Texas', 'Cornell', 'Wisconsin']:
+        dataset = torch_geometric.datasets.WebKB('./data/' + d_name, d_name)
+    elif d_name == 'ChChMiner':
+        dataset = _load_chch_miner()
     return dataset
+
+
+def _load_chch_miner():
+    """ChCh-Miner (DrugBank chem-chem interaction). 1514 drugs / 48514 edges.
+    Source: http://snap.stanford.edu/biodata/datasets/10001/
+    No node features → one-hot identity."""
+    raw = './data/ChChMiner/raw.tsv'
+    pairs = np.loadtxt(raw, dtype=str)
+    drugs = sorted(set(pairs.flatten().tolist()))
+    idx = {d: i for i, d in enumerate(drugs)}
+    src = np.array([idx[a] for a in pairs[:, 0]])
+    dst = np.array([idx[b] for b in pairs[:, 1]])
+    # symmetric for undirected
+    edge_index = torch.tensor(
+        np.stack([np.concatenate([src, dst]), np.concatenate([dst, src])]),
+        dtype=torch.long)
+    n = len(drugs)
+    x = torch.eye(n)  # one-hot drug ID
+    y = torch.zeros(n, dtype=torch.long)
+    data = Data(x=x, edge_index=edge_index, y=y)
+
+    class _FakeDataset:
+        def __init__(self, data, name):
+            self._data = [data]; self.name = name; self.num_classes = 2
+        def __getitem__(self, i): return self._data[i]
+        def __len__(self): return 1
+    return _FakeDataset(data, 'ChChMiner')
 
 def get_edges_split(data, val_prop = 0.2, test_prop = 0.2, seed = 1234):
     g = nx.Graph()
@@ -66,7 +100,12 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     if data_name == "computers":
         data_name = "Computers"
 
-    filename = './data/TLCGNN/' + data_name + '.npy'
+    # Pluggable PI source: dionysus (exact, TLC-GNN) or pdgnn (neural approx).
+    pi_source = os.environ.get('TLCGNN_PI_SOURCE', 'dionysus')
+    if pi_source == 'pdgnn':
+        filename = './data/PDGNN/' + data_name + '.npy'
+    else:
+        filename = './data/TLCGNN/' + data_name + '.npy'
     expected_total = (len(train_edges) + len(train_edges_false)
                       + len(val_edges) + len(val_edges_false)
                       + len(test_edges) + len(test_edges_false))

@@ -7,11 +7,12 @@ from torch_geometric.nn import GCNConv, ChebConv  # noqa
 from loaddatas import get_edges_split, compute_persistence_image
 
 class Net(torch.nn.Module):
-    def __init__(self,data,num_features,num_classes,PI,dimension=5):
+    def __init__(self,data,num_features,num_classes,PI,dimension=5,use_pi=True):
         super(Net, self).__init__()
         self.conv1 = GCNConv(num_features, 100, cached=True)
         self.conv2 = GCNConv(100, 16, cached=True)
         self.PI = PI
+        self.use_pi = use_pi
         self.leakyrelu = torch.nn.LeakyReLU(0.2, True)
         self.linear = torch.nn.Linear(dimension * dimension, 1, bias=True)
         self.linear_1 = torch.nn.Linear(dimension * dimension + 16, dimension * dimension, bias=True)
@@ -48,9 +49,13 @@ class Net(torch.nn.Module):
         emb = emb.renorm(2, 0, 1)
 
 
-        #pair wise PI
-        new_x = torch.Tensor(
-            PI.reshape((len(total_edges), -1))).cuda()
+        #pair wise PI (ablation: zero out when use_pi=False)
+        if self.use_pi:
+            new_x = torch.Tensor(
+                PI.reshape((len(total_edges), -1))).cuda()
+        else:
+            # same shape but zeros — keeps architecture identical, isolates PI contribution
+            new_x = torch.zeros(len(total_edges), self.linear.in_features, device=emb.device)
 
         emb_in = emb[total_edges[:, 0]]
         emb_out = emb[total_edges[:, 1]]
@@ -68,7 +73,7 @@ def num(strings):
     except ValueError:
         return float(strings)
 
-def call(data,name,num_features,num_classes,data_cnt):
+def call(data,name,num_features,num_classes,data_cnt,use_pi=True):
     # to generate data and models
     if name in ['PPI']:
         val_prop = 0.2
@@ -98,13 +103,17 @@ def call(data,name,num_features,num_classes,data_cnt):
     data.edge_index = torch.from_numpy(_ei[:, _keep]).long()
 
     hop = 2 if name in ["PubMed"] else 1
-    if name in ['PPI']:
-        f1 = compute_persistence_image(data, train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false, name + "_" + str(data_cnt), hop = hop)
+    if use_pi:
+        if name in ['PPI']:
+            f1 = compute_persistence_image(data, train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false, name + "_" + str(data_cnt), hop = hop)
+        else:
+            f1 = compute_persistence_image(data, train_edges, train_edges_false, val_edges, val_edges_false, test_edges,
+                                           test_edges_false, name, hop = hop)
     else:
-        f1 = compute_persistence_image(data, train_edges, train_edges_false, val_edges, val_edges_false, test_edges,
-                                       test_edges_false, name, hop = hop)
+        # Ablation: skip PI compute entirely. Dummy zeros (model zeroes them out via use_pi flag too).
+        f1 = np.zeros((len(total_edges), 25), dtype=np.float64)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     data.total_edges_y.to(device)
-    model, data = Net(data,num_features,num_classes, PI = f1).to(device), data.to(device)
+    model, data = Net(data,num_features,num_classes, PI = f1, use_pi=use_pi).to(device), data.to(device)
     return model, data
 
