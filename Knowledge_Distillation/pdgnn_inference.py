@@ -57,12 +57,28 @@ def run_inference(name: str, ckpt_path: str = './data/PDGNN/checkpoints/pdgnn_lp
     if hop is None:
         hop = 2 if name == 'PubMed' else 1
 
-    # Full graph + Ricci
+    # Remove val/test positive edges from graph — matches TLC-GNN's compute_persistence_image
+    # (loaddatas.py builds graph after these are deleted from data.edge_index in TLCGNN.call).
+    # Without this, PDGNN gets to "see" val/test edges, biasing comparison.
+    _mask_remove = set()
+    for e in va.tolist():
+        _mask_remove.add((e[0], e[1])); _mask_remove.add((e[1], e[0]))
+    for e in te.tolist():
+        _mask_remove.add((e[0], e[1])); _mask_remove.add((e[1], e[0]))
+    ei_full = np.array(data.edge_index)
+    keep = np.array([(int(u), int(v)) not in _mask_remove
+                     for u, v in zip(ei_full[0], ei_full[1])])
+    ei = ei_full[:, keep]
+
+    # Build graph + Ricci on the val/test-positive-removed edge set
     g = nx.Graph()
     g.add_nodes_from(range(data.num_nodes))
-    ei = np.array(data.edge_index)
     g.add_edges_from((int(ei[0, i]), int(ei[1, i])) for i in range(ei.shape[1]))
-    ricci_list = lds.compute_ricci_curvature(data)
+    # ricci curvature: compute on a Data clone with the leakage-free edge_index
+    import copy
+    data_for_ricci = copy.copy(data)
+    data_for_ricci.edge_index = torch.from_numpy(ei).long()
+    ricci_list = lds.compute_ricci_curvature(data_for_ricci)
     ricci_lookup = {(int(a), int(b)): float(c) for a, b, c in ricci_list}
     for a, b in g.edges():
         w = ricci_lookup.get((a, b), ricci_lookup.get((b, a), 0.0)) + 1
