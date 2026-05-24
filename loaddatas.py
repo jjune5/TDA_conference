@@ -28,6 +28,8 @@ def loaddatas(d_name):
         dataset = torch_geometric.datasets.WebKB('./data/' + d_name, d_name)
     elif d_name == 'ChChMiner':
         dataset = _load_chch_miner()
+    elif d_name.startswith('SBM_'):
+        dataset = _load_sbm(d_name)
     return dataset
 
 
@@ -56,6 +58,26 @@ def _load_chch_miner():
         def __getitem__(self, i): return self._data[i]
         def __len__(self): return 1
     return _FakeDataset(data, 'ChChMiner')
+
+def _load_sbm(d_name: str):
+    """Parse SBM_<n>_<p_in>_<p_out> and return Data wrapper.
+
+    Example: 'SBM_500_5_0.1_0.05' = 500 nodes, 5 blocks, p_in=0.1, p_out=0.05.
+    """
+    parts = d_name.split('_')
+    if len(parts) != 5:
+        raise ValueError(f"SBM dataset must be SBM_<N>_<K>_<p_in>_<p_out>, got {d_name}")
+    N, K, p_in, p_out = int(parts[1]), int(parts[2]), float(parts[3]), float(parts[4])
+    from Knowledge_Distillation.sbm_data import generate_sbm, sbm_to_pyg
+    g = generate_sbm(n_per_block=N // K, n_blocks=K, p_in=p_in, p_out=p_out, seed=1234)
+    data = sbm_to_pyg(g, n_blocks=K, feat_dim=16, seed=1234)
+
+    class _FakeDataset:
+        def __init__(self, data, name):
+            self._data = [data]; self.name = name; self.num_classes = K
+        def __getitem__(self, i): return self._data[i]
+        def __len__(self): return 1
+    return _FakeDataset(data, d_name)
 
 def get_edges_split(data, val_prop = 0.2, test_prop = 0.2, seed = 1234):
     g = nx.Graph()
