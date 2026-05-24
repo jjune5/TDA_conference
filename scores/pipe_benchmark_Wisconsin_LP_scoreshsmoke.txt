@@ -1,0 +1,6 @@
+Wisconsin TLCGNN 
+0, 0.9067, 0.8814
+std  0.000000
+mean 0.906723
+std  0.000000
+mean 0.881380

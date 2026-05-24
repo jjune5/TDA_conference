@@ -1,0 +1,6 @@
+Chameleon TLCGNN 
+0, 0.9116, 0.9421
+std  0.000000
+mean 0.911618
+std  0.000000
+mean 0.942145

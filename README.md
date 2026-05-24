@@ -8,20 +8,48 @@
 - `loaddatas.py` — stale PI 캐시 layout splice, networkx/scipy 새 API 대응
 - `sg2dgm/`, `Knowledge_Distillation/pdgnn_modern.py` — PyG 2.x 호환
 
-## 결과 (50 trials)
+## 결과 (50 trials, AUC ± std) — 3-way ablation across 9 datasets
 
-| | Our | Paper |
-|---|---|---|
-| Photo | 0.9825 | 0.9823 ✓ |
-| PubMed | 0.9635 | 0.9703 |
-| Computers | 0.9680 | 0.9790 |
+| Dataset | 도메인 | TLC-GNN (exact PI) | PDGNN (neural PI) | No PI |
+|---|---|---|---|---|
+| Photo | Homo Amazon | 0.9825 ±0.001 | **0.9860** ±0.001 | — |
+| PubMed | Homo citation | 0.9635 ±0.003 | **0.9669** ±0.002 | — |
+| Computers | Homo Amazon | 0.9680 ±0.002 | **0.9830** ±0.001 | — |
+| Chameleon | Hetero wiki | 0.9432 ±0.007 | 0.9447 ±0.006 | **0.9686** ±0.006 |
+| Squirrel | Hetero wiki | 0.9120 ±0.015 (n=20) | (TBD) | **0.9854** ±0.001 |
+| Texas | Hetero web | 0.5709 ±0.111 | 0.5396 ±0.128 | **0.5939** ±0.133 |
+| Cornell | Hetero web | 0.5850 ±0.113 | 0.5737 ±0.115 | **0.6502** ±0.143 |
+| Wisconsin | Hetero web | 0.8640 ±0.062 | 0.8449 ±0.076 | 0.8653 ±0.061 |
+| ChChMiner | Drug DDI | 0.9026 ±0.007 | 0.9625 ±0.005 | **0.9650** ±0.006 |
+
+**3개 핵심 발견** (자세한 분석은 [results doc](docs/specs/2026-05-22-pdgnn-reproduction-results.md)):
+
+1. **Homophilic 큰 그래프**에서 PDGNN의 neural approximation이 dionysus exact PI를 능가 (+0.3 ~ +1.5%p). Smoothing 효과로 일반화↑.
+2. **모든 heterophilic 그래프**에서 PI (exact or approx)가 모델을 해침. Squirrel에서 −7.3%p로 가장 크게.
+3. **Drug (ChChMiner)**: exact PI가 −6%p로 해롭지만 PDGNN 근사는 no-PI와 거의 동등 — 노이즈를 평탄화함.
+
+→ **paper(ICML 2021)의 "topology helps LP" claim은 homophilic 가정에 의존**. Heterophilic/drug에선 무너짐.
 
 ## 실행
 
 ```bash
 conda env create -f environment.yml
 conda activate tlcgnn
+# TLC-GNN exact
 python pipelines.py --datasets PubMed Photo Computers --trials 50 --tag rerun
+# Ablation (no PI)
+python pipelines.py --datasets Chameleon --trials 50 --tag heteroNoPI --no_pi
+# PDGNN approx PI (requires trained checkpoint at data/PDGNN/checkpoints/pdgnn_lp.pt)
+python pipelines.py --datasets PubMed --trials 50 --tag pdgnn --pi_source pdgnn
 ```
 
-자세한 내용: [`docs/specs/`](docs/specs/)
+PDGNN end-to-end 재현 (data prep → train → inference → eval):
+```bash
+python -m Knowledge_Distillation.prepare_data_LP_modern --name PubMed --max_edges 10000
+python -m Knowledge_Distillation.train_pdgnn_lp --data data/PDGNN/PubMed_LP_hop2_n10000_train.pkl
+for D in Photo PubMed Computers Texas Cornell Wisconsin Chameleon ChChMiner; do
+  python -m Knowledge_Distillation.pdgnn_inference --name $D
+done
+```
+
+자세한 내용: [`docs/specs/`](docs/specs/) (재현 plan + 결과 doc)
