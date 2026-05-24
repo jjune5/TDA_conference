@@ -179,7 +179,10 @@ GitHub: **github.com/jjune5/TDA_conference**
 2. PDGNN AUC
 3. **PI hurt magnitude** = no-PI − TLC-GNN
 
-→ density × heterophily가 클수록 PI 해로움 정량적 패턴.
+**관찰** (63/75 configs 완료):
+- Max PI hurt: density=0.20, heterophily=0.10 (homophilic + mid density)
+- SBM 합성 환경에선 **실제 데이터 (Chameleon/Squirrel) 패턴과 반대**
+- → feature signal × topology 상호작용이 핵심 (single-axis로 설명 불가)
 
 ---
 
@@ -199,16 +202,30 @@ GatingNet 입력: clustering coeff, embedding distance.
 
 ---
 
-# Adaptive Gating 결과 (TBD)
+# Adaptive Gating 결과 — Honest Negative
 
 | | TLC-GNN | Gated | No-PI | Mean gate |
 |---|---|---|---|---|
-| Photo (homo) | 0.9825 | TBD | — | TBD |
-| Chameleon (hetero) | 0.943 | TBD | 0.969 | TBD |
-| Texas (hetero) | 0.571 | TBD | 0.594 | TBD |
-| ChChMiner (drug) | 0.903 | TBD | 0.965 | TBD |
+| Photo (homo) | 0.9825 | 0.9827 | — | **1.000** |
+| Chameleon (hetero) | 0.943 | 0.949 | 0.969 | **1.000** |
+| Texas (hetero) | 0.571 | 0.547 | 0.594 | **1.000** |
+| ChChMiner (drug) | 0.903 | 0.903 | 0.965 | **1.000** |
 
-(실험 완료 후 채움)
+**모든 도메인에서 gate → 1.0 saturate**. Heterophily 자동 인식 실패.
+
+---
+
+# 왜 안 됐나 (분석)
+
+1. **BCE loss는 "gate off" incentive 없음** — 후속 MLP가 PI weight를 0으로 학습 가능
+2. **3-D gate features 부족** — clustering + emb distance만으론 homo/hetero 구분 어려움
+3. **Sigmoid saturation** — gradient vanishing
+
+### Future work
+- Sparsity regularizer (λ × mean(gate))
+- Graph-level gate features
+- Discrete gating (Gumbel-softmax)
+- Learnable temperature
 
 ---
 
