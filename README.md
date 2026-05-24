@@ -30,6 +30,29 @@
 
 → **paper(ICML 2021)의 "topology helps LP" claim은 homophilic 가정에 의존**. Heterophilic/drug에선 무너짐.
 
+## 확장 실험 — TDA 학회 발표용
+
+### (B) SBM density × heterophily sweep — 25 configs, 합성 그래프
+
+`docs/figures/sbm_heatmap.png` 3-panel heatmap. Density(p_in+p_out) × Heterophily(p_out/density)에서 PI hurt magnitude 측정. 63/75 configs 완료.
+
+→ **SBM 환경에선** PI hurt가 homophilic + mid density 영역에서 큼 (실제 데이터와 다름) — feature signal과 topology의 상호작용 시사.
+
+### (C) Adaptive PI Gating — Honest Negative Result
+
+`baselines/TLCGNN_gated.py`. 4 datasets (Photo/Chameleon/Texas/ChChMiner) 50 trials:
+
+| Dataset | TLC-GNN | **Gated** | No-PI | Mean gate |
+|---|---|---|---|---|
+| Photo | 0.9825 | **0.9827** | — | **1.000** |
+| Chameleon | 0.9432 | **0.9490** | 0.9686 | **1.000** |
+| Texas | 0.5709 | **0.5467** | 0.5939 | **1.000** |
+| ChChMiner | 0.9026 | **0.9033** | 0.9650 | **1.000** |
+
+**Gate가 saturate해서 사실상 TLC-GNN exact와 동일.** 단순 sigmoid + 3-D edge features로는 heterophily 자동 인식 안 됨. Future work: sparsity regularizer, graph-level features, discrete gating.
+
+자세한 분석: [`docs/specs/2026-06-21-tda-conference-results.md`](docs/specs/2026-06-21-tda-conference-results.md), [발표 슬라이드](slides/tda-conference.md), [demo notebook](notebooks/demo.ipynb).
+
 ## 실행
 
 ```bash
