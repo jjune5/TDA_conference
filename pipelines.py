@@ -7,6 +7,7 @@ import loaddatas as lds
 import torch.nn.functional as F
 import numpy as np
 from baselines import TLCGNN as TLCGNN
+from baselines import TLCGNN_gated as TLCGNN_gated
 from sklearn.metrics import roc_auc_score,average_precision_score
 from torch.nn.init import xavier_normal_ as xavier
 
@@ -65,6 +66,8 @@ _parser.add_argument('--tag', type=str, default='', help='suffix tag for score f
 _parser.add_argument('--no_pi', action='store_true', help='ablation: disable persistence-image features (zeros instead)')
 _parser.add_argument('--pi_source', choices=['dionysus', 'pdgnn'], default='dionysus',
                      help='source of PI cache (dionysus=TLC-GNN exact, pdgnn=neural approx)')
+_parser.add_argument('--use_gating', action='store_true',
+                     help='use adaptive PI gating (baselines.TLCGNN_gated.Net)')
 _args = _parser.parse_args()
 os.environ['TLCGNN_PI_SOURCE'] = _args.pi_source
 
@@ -79,25 +82,29 @@ wait_total= 200
 total_epochs = 2000
 
 
-pipelines=['TLCGNN']
-pipeline_acc={'TLCGNN':[i for i in times]}
-pipeline_acc_sum={'TLCGNN':0}
-pipeline_roc={'TLCGNN':[i for i in times]}
-pipeline_roc_sum={'TLCGNN':0}
-pipeline_acc_same={'TLCGNN':[i for i in times]}
-pipeline_acc_same_sum={'TLCGNN':0}
-pipeline_roc_same={'TLCGNN':[i for i in times]}
-pipeline_roc_same_sum={'TLCGNN':0}
-pipeline_acc_diff={'TLCGNN':[i for i in times]}
-pipeline_acc_diff_sum={'TLCGNN':0}
-pipeline_roc_diff={'TLCGNN':[i for i in times]}
-pipeline_roc_diff_sum={'TLCGNN':0}
+if _args.use_gating:
+    pipelines=['TLCGNN_gated']
+else:
+    pipelines=['TLCGNN']
+_pkey = pipelines[0]
+pipeline_acc={_pkey:[i for i in times]}
+pipeline_acc_sum={_pkey:0}
+pipeline_roc={_pkey:[i for i in times]}
+pipeline_roc_sum={_pkey:0}
+pipeline_acc_same={_pkey:[i for i in times]}
+pipeline_acc_same_sum={_pkey:0}
+pipeline_roc_same={_pkey:[i for i in times]}
+pipeline_roc_same_sum={_pkey:0}
+pipeline_acc_diff={_pkey:[i for i in times]}
+pipeline_acc_diff_sum={_pkey:0}
+pipeline_roc_diff={_pkey:[i for i in times]}
+pipeline_roc_diff_sum={_pkey:0}
 
 os.makedirs("./scores", exist_ok=True)
 
 for d_name in d_names:
     f2 = open('scores/pipe_benchmark_' + d_name + '_LP_scores' + _args.tag + '.txt', 'w+')
-    f2.write('{0:7} {1:7}\n'.format(d_name, 'TLCGNN'))
+    f2.write('{0:7} {1:7}\n'.format(d_name, _pkey))
     f2.flush()
     dataset = lds.loaddatas(d_name)
     for data_cnt in times:
