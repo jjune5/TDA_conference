@@ -33,40 +33,67 @@
 
 3 panels: TLC-GNN AUC, PDGNN AUC, PI hurt magnitude (no-PI − TLC-GNN).
 
-### Quantitative findings (TBD — filled after Phase 1 completes)
+### Quantitative findings
 
-- Max hurt: density=___, heterophily=___, hurt=___
-- Hurt threshold: density × heterophily > ___
-- PDGNN approximation quality across grid: avg |PDGNN − TLC-GNN| = ___
+- **63/75 configs completed** (12 missing due to compute failures, mostly at density=0.50)
+- **Max PI hurt**: density=0.20, heterophily=0.10 → hurt = **+0.0282** (no-PI − TLC-GNN AUC)
+- **2nd max**: density=0.30, heterophily=0.10 → +0.0267
+- **PI helps most**: density=0.05, heterophily=0.30 → −0.0062
+- AUC range across all configs: 0.477 – 0.773 (per-tag means: TLC-GNN 0.535, PDGNN 0.535, No-PI 0.537)
+
+**핵심 발견 (SBM-specific)**:
+- SBM 500-node + 랜덤 feature 환경에선 PI hurt가 **homophilic + mid-to-high density** 영역에서 가장 큼 — 실제 데이터(Chameleon/Squirrel) 패턴과 **반대**.
+- 가능한 해석: small SBM은 (1) 노드 features가 의미 없는 random gaussian → topology가 add value 못함, (2) edge density 패턴이 real-world 데이터와 다름. **SBM이 real graph topology dynamics를 그대로 replicate하지 못함** 자체가 발견.
+- 발표에서: "실제 데이터의 패턴은 단순 density × heterophily만으로는 설명 안 되고, feature signal과의 상호작용이 중요"
 
 ## 3. Adaptive Gating (C)
 
 **Setup**: GatingNet (3-layer MLP, hidden=16) inputs [clustering_u, clustering_v, |emb_u−emb_v|] → sigmoid gate ∈ [0, 1]. PI contribution multiplied by gate. End-to-end training with LP loss.
 
-### 4-dataset comparison (TBD — filled after Phase 2 completes)
+### 4-dataset comparison (50 trials)
 
-| Dataset | TLC-GNN AUC | Gated AUC | No-PI AUC | Best of three | Mean gate value |
-|---|---|---|---|---|---|
-| Photo | 0.9825 | TBD | — | TBD | TBD |
-| Chameleon | 0.9432 | TBD | 0.9686 | TBD | TBD |
-| Texas | 0.5709 | TBD | 0.5939 | TBD | TBD |
-| ChChMiner | 0.9026 | TBD | 0.9650 | TBD | TBD |
+| Dataset | TLC-GNN AUC | **Gated AUC** | No-PI AUC | Mean gate value |
+|---|---|---|---|---|
+| Photo | 0.9825 ±0.001 | **0.9827 ±0.001** (11/50) | — | **1.000** |
+| Chameleon | 0.9432 ±0.007 | **0.9490 ±0.007** | 0.9686 ±0.006 | **1.000** |
+| Texas | 0.5709 ±0.111 | **0.5467 ±0.125** | 0.5939 ±0.133 | **1.000** |
+| ChChMiner | 0.9026 ±0.007 | **0.9033 ±0.010** | 0.9650 ±0.006 | **1.000** |
 
-### Gate behavior (TBD)
+### Gate behavior — **HONEST NEGATIVE RESULT**
 
-Expected:
-- Photo (homophilic): mean gate > 0.5 → PI used
-- Chameleon, Texas, ChChMiner (heterophilic/drug): mean gate < 0.5 → PI suppressed
+**예상**: Photo (homo)에선 gate > 0.5, Chameleon/Texas/ChChMiner (hetero/drug)에선 gate < 0.5.
 
-If pattern holds: Adaptive gating recovers best-of-both-worlds performance.
+**실제**: **모든 4개 데이터셋에서 gate가 1.0으로 saturate**. Heterophily 자동 인식 실패.
+
+| Dataset | Domain | mean gate | min | max |
+|---|---|---|---|---|
+| Photo | Homo Amazon | 1.000 | 0.997 | 1.000 |
+| Chameleon | Hetero wiki | 1.000 | 0.998 | 1.000 |
+| Texas | Hetero web | 1.000 | 0.997 | 1.000 |
+| ChChMiner | Drug DDI | 1.000 | 0.596 | 1.000 |
+
+→ Gated AUC ≈ TLC-GNN exact AUC across all datasets (확인). Gating이 효과 없음.
+
+### 왜 안 됐나 — 분석
+
+1. **BCE loss는 "PI off" incentive 없음**: PI가 hurt라도, 후속 MLP가 PI 부분 가중치를 0으로 학습할 수 있음 → gate가 1이어도 무방. Gate 자체에 sparsity penalty 없으면 saturate 자연스러움.
+2. **3-D gate features 불충분**: [clustering_u, clustering_v, |emb_u−emb_v|]만으론 homo/hetero 구분 어려움. Graph-level statistics (전체 density / heterophily index) 필요.
+3. **Sigmoid saturation**: lr=0.005에서 gate가 sigmoid 양극단으로 빠르게 쏠림 → gradient vanish.
+
+### Future work (paper에 명시)
+
+- **Sparsity regularizer** 추가 ($\lambda \cdot \text{mean(gate)}$ 를 loss에 더해 0 방향 압력)
+- **Graph-level gate features**: per-edge 대신 per-dataset gate, 또는 graph-level statistics 입력
+- **Learnable temperature**: sigmoid가 saturate 안 하게
+- **Discrete gating** (Gumbel-softmax) 시도
 
 ## 4. 핵심 발견
 
 1. **Homophilic 큰 그래프** (Photo / PubMed / Computers): PI 도움. PDGNN > TLC-GNN exact (의외).
 2. **Heterophilic 그래프** (Chameleon / Squirrel / WebKB): PI 무용 또는 유해.
 3. **Drug interaction** (ChChMiner): PI 명확히 유해 (−6.2%p), PDGNN approximation은 noise를 smoothing해서 no-PI 수준 회복.
-4. **(B) Density × heterophily 정량 관계**: SBM sweep으로 hurt magnitude 측정. (구체 수치 TBD)
-5. **(C) Adaptive gating**: 자동 의사결정. (작동 여부 TBD)
+4. **(B) Density × heterophily 정량 관계**: SBM 500-node 합성 sweep에서는 PI hurt가 **homophilic + mid density** 영역에서 가장 큼 (real-world와 반대) — feature signal과 topology의 상호작용이 중요함을 시사.
+5. **(C) Adaptive gating**: 단순 sigmoid gate는 saturate해서 작동 안 함 (honest negative). Sparsity regularizer / graph-level features 필요 — future work.
 
 ## 5. 전망
 
