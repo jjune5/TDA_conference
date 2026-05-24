@@ -1,0 +1,6 @@
+Cora    TLCGNN_gated
+0, 0.9093, 0.9112
+std  0.000000
+mean 0.909268
+std  0.000000
+mean 0.911237
