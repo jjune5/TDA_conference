@@ -1,0 +1,1 @@
+accel_vs_gudhi_MUTAG30 mean_PI_MSE 0.000093 accel_nz 30 gudhi_nz 30
