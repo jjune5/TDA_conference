@@ -32,6 +32,8 @@ def read_auc_mean(path):
 def main():
     # dataset → (tlcgnn_tag, nopi_tag)
     cfg = {
+        'Cora':      ('homo', 'homoNoPI'),
+        'Citeseer':  ('homo', 'homoNoPI'),
         'Chameleon': ('hetero', 'heteroNoPI'),
         'Squirrel':  ('hetero', 'heteroNoPI'),
         'Texas':     ('hetero', 'heteroNoPI'),
