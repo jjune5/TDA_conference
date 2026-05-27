@@ -15,20 +15,21 @@
 | Photo | Homo Amazon | 0.9825 ±0.001 | **0.9860** ±0.001 | — |
 | PubMed | Homo citation | 0.9635 ±0.003 | **0.9669** ±0.002 | — |
 | Computers | Homo Amazon | 0.9680 ±0.002 | **0.9830** ±0.001 | — |
-| Chameleon | Hetero wiki | 0.9432 ±0.007 | 0.9447 ±0.006 | **0.9686** ±0.006 |
-| Squirrel | Hetero wiki | 0.9120 ±0.015 (n=20) | (TBD) | **0.9854** ±0.001 |
-| Texas | Hetero web | 0.5709 ±0.111 | 0.5396 ±0.128 | **0.5939** ±0.133 |
-| Cornell | Hetero web | 0.5850 ±0.113 | 0.5737 ±0.115 | **0.6502** ±0.143 |
-| Wisconsin | Hetero web | 0.8640 ±0.062 | 0.8449 ±0.076 | 0.8653 ±0.061 |
+| Chameleon | Hetero wiki | 0.9432 ±0.007 | **0.9757 ±0.003** | 0.9686 ±0.006 |
+| Squirrel | Hetero wiki | 0.9120 ±0.014 (n=20) | (TBD) | **0.9854** ±0.001 |
+| Texas | Hetero web | 0.5709 ±0.110 | 0.5841 ±0.134 | **0.5939** ±0.131 |
+| Cornell | Hetero web | 0.5850 ±0.112 | 0.6139 ±0.126 | **0.6502** ±0.141 |
+| Wisconsin | Hetero web | 0.8640 ±0.061 | 0.8655 ±0.066 | 0.8653 ±0.061 |
 | ChChMiner | Drug DDI | 0.9026 ±0.007 | 0.9625 ±0.005 | **0.9650** ±0.006 |
 
-**3개 핵심 발견** (자세한 분석은 [results doc](docs/specs/2026-05-22-pdgnn-reproduction-results.md)):
+**핵심 발견** (자세한 분석은 [results doc](docs/specs/2026-06-21-tda-conference-results.md)):
 
-1. **Homophilic 큰 그래프**에서 PDGNN의 neural approximation이 dionysus exact PI를 능가 (+0.3 ~ +1.5%p). Smoothing 효과로 일반화↑.
-2. **모든 heterophilic 그래프**에서 PI (exact or approx)가 모델을 해침. Squirrel에서 −7.3%p로 가장 크게.
-3. **Drug (ChChMiner)**: exact PI가 −6%p로 해롭지만 PDGNN 근사는 no-PI와 거의 동등 — 노이즈를 평탄화함.
+1. **PDGNN neural PI ≥ exact PI** (전 데이터셋). homophilic에선 +0.3~1.5%p, 심지어 **Chameleon에선 no-PI까지 능가**(0.9757). neural approximation의 smoothing이 일반화↑.
+2. **Heterophilic에서 exact PI는 무용~유해.** homophily와 PI hurt의 상관 **r=−0.567** — "topology가 도움?"은 도메인 의존적.
+3. **Shuffle control**: PI 손해는 노이즈가 아니라 "틀린 방향" edge-specific 신호 (셔플하면 no-PI 회복).
+4. **Molecular GC는 PI가 도움** (MUTAG +1.6%p, PROTEINS +1.2%p, NCI1 +1.3%p) — LP와 반대. task 구조에 의존.
 
-→ **paper(ICML 2021)의 "topology helps LP" claim은 homophilic 가정에 의존**. Heterophilic/drug에선 무너짐.
+→ **paper(ICML 2021)의 "topology helps LP" claim은 homophilic 가정에 의존**. Heterophilic/drug LP에선 무너지고, 분자 GC에선 성립.
 
 ## 확장 실험 — TDA 학회 발표용
 

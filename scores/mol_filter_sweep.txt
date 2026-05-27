@@ -1,0 +1,6 @@
+MUTAG filter degree acc 0.7775 std 0.0828
+MUTAG filter clustering acc 0.7558 std 0.0659
+MUTAG filter closeness acc 0.7719 std 0.0768
+PROTEINS filter degree acc 0.7350 std 0.0335
+PROTEINS filter clustering acc 0.7332 std 0.0332
+PROTEINS filter closeness acc 0.7296 std 0.0268

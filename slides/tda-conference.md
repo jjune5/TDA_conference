@@ -136,11 +136,11 @@ GitHub: **github.com/jjune5/TDA_conference**
 | **Photo** | 0.9825 | **0.9860** | — |
 | **PubMed** | 0.9635 | **0.9669** | — |
 | **Computers** | 0.9680 | **0.9830** | — |
-| **Chameleon** | 0.943 | 0.945 | **0.969** |
-| **Texas** | 0.571 | 0.540 | **0.594** |
+| **Chameleon** | 0.943 | **0.976** | 0.969 |
+| **Texas** | 0.571 | 0.584 | **0.594** |
 | **ChChMiner** | 0.903 | 0.963 | **0.965** |
 
-3 가지 도메인이 다른 패턴 보임.
+3 가지 도메인이 다른 패턴 보임. (Chameleon: neural PI가 no-PI까지 능가)
 
 ---
 
@@ -154,15 +154,31 @@ GitHub: **github.com/jjune5/TDA_conference**
 
 ---
 
+# 발견 1 정량화: Heterophily가 예측
+
+![bg right:48% 95%](../docs/figures/heterophily_correlation.png)
+
+각 그래프의 **homophily**(같은 라벨 잇는 엣지 비율) vs **PI hurt**(no-PI − TLC-GNN):
+
+**Pearson r = −0.567**
+
+→ homophilic할수록 PI hurt 작음 (PI 도움).
+→ heterophilic할수록 PI가 해로움.
+
+Cora/Citeseer(homo) ~0 hurt, Squirrel/Cornell(hetero) 큰 hurt.
+
+---
+
 # 발견 2: PDGNN의 의외성
 
 | | TLC-GNN exact | PDGNN approx | Δ |
 |---|---|---|---|
 | Photo | 0.9825 | 0.9860 | **+0.35%p** |
-| PubMed | 0.9635 | 0.9669 | **+0.34%p** |
 | Computers | 0.9680 | 0.9830 | **+1.50%p** |
+| **Chameleon** (hetero) | 0.9432 | **0.9757** | **+3.25%p** |
 
 **Neural approximation이 dionysus exact PD보다 더 좋다.**
+Chameleon에선 neural PI가 **no-PI(0.969)까지 능가** — exact는 해로운데 neural은 도움.
 
 해석: smoothing 효과로 high-frequency noise 제거 → 더 robust한 feature.
 
@@ -183,6 +199,39 @@ GitHub: **github.com/jjune5/TDA_conference**
 - Max PI hurt: density=0.20, heterophily=0.10 (homophilic + mid density)
 - SBM 합성 환경에선 **실제 데이터 (Chameleon/Squirrel) 패턴과 반대**
 - → feature signal × topology 상호작용이 핵심 (single-axis로 설명 불가)
+
+---
+
+# 발견 4: 분자 분류에선 PI가 **도움**
+
+GIN + whole-graph PI, 10-fold CV (LP와 반대 결과):
+
+| | with PI | no PI | Δ |
+|---|---|---|---|
+| **MUTAG** | **0.820** | 0.804 | +1.6%p |
+| **PROTEINS** | **0.741** | 0.730 | +1.2%p |
+| **NCI1** | **0.797** | 0.784 | +1.3%p |
+
+분자의 **고리(ring) 구조 = H1 topology**가 분류에 의미 있는 신호.
+
+→ "topology가 도움?"은 **task 구조**에도 의존 (LP의 edge-locality vs GC의 graph-level 구조).
+
+---
+
+# 발견 5: PI는 신호인가 노이즈인가? (shuffle 실험)
+
+PI를 엣지에 **무작위로 재배정**하면? (edge↔PI 대응 파괴)
+
+| Chameleon | AUC |
+|---|---|
+| real PI | 0.943 (해로움) |
+| **shuffle PI** | **0.970** (no-PI로 회복) |
+| no PI | 0.969 |
+
+**손해의 원인 = 노이즈 차원 추가가 아니라 "틀린 방향" edge-specific 신호.**
+셔플이 (해로운) 대응을 끊으니 모델이 무시 → no-PI 회복.
+
+→ PI는 진짜 신호. 단 heterophilic에선 link 존재와 **반대**를 가리킴.
 
 ---
 
@@ -221,11 +270,12 @@ GatingNet 입력: clustering coeff, embedding distance.
 2. **3-D gate features 부족** — clustering + emb distance만으론 homo/hetero 구분 어려움
 3. **Sigmoid saturation** — gradient vanishing
 
-### Future work
-- Sparsity regularizer (λ × mean(gate))
-- Graph-level gate features
-- Discrete gating (Gumbel-softmax)
-- Learnable temperature
+### 해결 시도: Sparsity regularizer (λ × mean gate)
+
+Loss에 `λ·mean(gate)`를 더해 gate를 0으로 압박 → **λ=0.5에서 saturation 깨지고 도메인 구분 회복** (Chameleon 0.970, ChChMiner 0.962).
+
+### 남은 Future work
+- Graph-level gate features · Discrete gating (Gumbel) · Learnable temperature
 
 ---
 

@@ -1,0 +1,13 @@
+MUTAG frac 0.1 pi PI acc MEAN 0.7053 std STD 0.0562
+MUTAG frac 0.1 pi noPI acc MEAN 0.7158 std STD 0.0537
+MUTAG frac 0.3 pi PI acc MEAN 0.7263 std STD 0.0357
+MUTAG frac 0.3 pi noPI acc MEAN 0.7368 std STD 0.0499
+MUTAG frac 0.5 pi PI acc MEAN 0.8053 std STD 0.0394
+MUTAG frac 0.5 pi noPI acc MEAN 0.7526 std STD 0.0698
+MUTAG frac 1.0 pi PI acc MEAN 0.8947 std STD 0.0372
+MUTAG frac 1.0 pi noPI acc MEAN 0.9053 std STD 0.0211
+# gap = mean(PI) - mean(noPI) per fraction
+# MUTAG frac 0.1 gap -0.0105
+# MUTAG frac 0.3 gap -0.0105
+# MUTAG frac 0.5 gap +0.0526
+# MUTAG frac 1.0 gap -0.0105

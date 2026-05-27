@@ -1,0 +1,6 @@
+Chameleon TLCGNN_gated_reg
+0, 0.9400, 0.9631
+std  0.000000
+mean 0.939952
+std  0.000000
+mean 0.963107
