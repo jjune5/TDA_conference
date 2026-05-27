@@ -7,11 +7,13 @@ The penalty (mean gate over the last decode call) is stored in
 .last_gate_penalty; the training loop adds GATE_REG_LAMBDA * penalty to the loss.
 """
 from __future__ import annotations
+import os
 import numpy as np
 import torch
 from baselines.TLCGNN_gated import gated_decode, Net as GatedNet
 
-GATE_REG_LAMBDA = 0.1
+# Sparsity strength; overridable via env for the λ-sweep experiment.
+GATE_REG_LAMBDA = float(os.environ.get('TLCGNN_GATE_LAMBDA', '0.1'))
 
 
 class Net(GatedNet):

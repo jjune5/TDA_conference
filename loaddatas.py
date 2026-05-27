@@ -130,7 +130,11 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
 
     # Pluggable PI source: dionysus (exact, TLC-GNN) or pdgnn (neural approx).
     pi_source = os.environ.get('TLCGNN_PI_SOURCE', 'dionysus')
-    if pi_source == 'pdgnn':
+    # TLCGNN_PI_DIR overrides the cache directory (e.g. shuffled-PI control exp).
+    _pi_dir = os.environ.get('TLCGNN_PI_DIR', '')
+    if _pi_dir:
+        filename = _pi_dir.rstrip('/') + '/' + data_name + '.npy'
+    elif pi_source == 'pdgnn':
         filename = './data/PDGNN/' + data_name + '.npy'
     else:
         filename = './data/TLCGNN/' + data_name + '.npy'
