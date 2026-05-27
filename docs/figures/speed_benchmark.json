@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Cora",
+    "n_edges": 110,
+    "n_dionysus": 110,
+    "n_dionysus_failed": 0,
+    "n_pdgnn": 110,
+    "dionysus_total": 0.20898747444152832,
+    "dionysus_per_edge": 0.001899886131286621,
+    "pdgnn_total": 0.29274678230285645,
+    "pdgnn_per_edge": 0.002661334384571422,
+    "speedup": 0.7138847873836704
+  },
+  {
+    "name": "Chameleon",
+    "n_edges": 196,
+    "n_dionysus": 26,
+    "n_dionysus_failed": 170,
+    "n_pdgnn": 196,
+    "dionysus_total": 4.083110094070435,
+    "dionysus_per_edge": 0.15704269592578596,
+    "pdgnn_total": 7.452155351638794,
+    "pdgnn_per_edge": 0.038021200773667316,
+    "speedup": 4.130398112901012
+  },
+  {
+    "name": "ChChMiner",
+    "n_edges": 192,
+    "n_dionysus": 192,
+    "n_dionysus_failed": 0,
+    "n_pdgnn": 192,
+    "dionysus_total": 3.4737751483917236,
+    "dionysus_per_edge": 0.018092578897873562,
+    "pdgnn_total": 0.5252468585968018,
+    "pdgnn_per_edge": 0.0027356607218583426,
+    "speedup": 6.6136048060752275
+  }
+]
