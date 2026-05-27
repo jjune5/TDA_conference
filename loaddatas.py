@@ -132,8 +132,19 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     pi_source = os.environ.get('TLCGNN_PI_SOURCE', 'dionysus')
     # TLCGNN_PI_DIR overrides the cache directory (e.g. shuffled-PI control exp).
     _pi_dir = os.environ.get('TLCGNN_PI_DIR', '')
+    # ── GDC hook ─────────────────────────────────────────────────────────────
+    # TLCGNN_GDC=1 activates GDC pre-diffusion before PI computation.
+    # When set, PI is computed on the GDC-diffused graph (heat kernel t=5,
+    # topk k=16) rather than on the original training graph.  The GCN
+    # encoder still sees the original edge_index — only the topology used
+    # for Ollivier-Ricci + Persistence Image changes.
+    # Default (TLCGNN_GDC unset): exactly original behavior, no change.
+    _use_gdc = os.environ.get('TLCGNN_GDC', '').strip() not in ('', '0')
+    # GDC cache goes to data/GDC_TLCGNN/ to avoid overwriting vanilla PI cache.
     if _pi_dir:
         filename = _pi_dir.rstrip('/') + '/' + data_name + '.npy'
+    elif _use_gdc:
+        filename = './data/GDC_TLCGNN/' + data_name + '.npy'
     elif pi_source == 'pdgnn':
         filename = './data/PDGNN/' + data_name + '.npy'
     else:
@@ -189,23 +200,40 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     data.edge_index = torch.from_numpy(_ei[:, _keep]).long()
     data.edge_index, _ = remove_self_loops(data.edge_index)
 
+    # ── Choose which edge_index to use for PI topology ────────────────────
+    if _use_gdc:
+        from gdc_pi import diffuse_graph
+        print("[GDC hook] diffusing graph before PI computation")
+        pi_edge_index, pi_num_nodes = diffuse_graph(data)
+    else:
+        pi_edge_index = data.edge_index
+        pi_num_nodes = data.num_nodes
+
     # generate graph for computing persistence diagram
     g = nx.Graph()
     # Add all original nodes first so that isolated nodes (whose only edges were
     # val/test) remain in the graph and in graph2pi.dict_node.
-    g.add_nodes_from(range(data.num_nodes))
-    ricci_edge_index_ = np.array(remove_self_loops((data.edge_index.cpu()))[0])
+    g.add_nodes_from(range(pi_num_nodes))
+    ricci_edge_index_ = np.array(remove_self_loops((pi_edge_index.cpu()))[0])
     ricci_edge_index = [(ricci_edge_index_[0, i], ricci_edge_index_[1, i]) for i in
                         range(np.shape(ricci_edge_index_)[1])]
     g.add_edges_from(ricci_edge_index)
     print(len(g.edges()))
 
-    # ricci_cur = compute_ricci_flow(data, d_name)
-    ricci_cur = compute_ricci_curvature(data)
+    # For Ricci curvature, use a temporary data-like object with the pi_edge_index
+    # when GDC is active, so curvature is computed on the diffused topology.
+    if _use_gdc:
+        import copy
+        _ricci_data = copy.copy(data)
+        _ricci_data.edge_index = pi_edge_index
+        ricci_cur = compute_ricci_curvature(_ricci_data)
+    else:
+        ricci_cur = compute_ricci_curvature(data)
 
     # compute sg2dgm and save in a dict
     pi = sg2dgm.graph2pi(g, ricci_curv=ricci_cur)
     _cores = int(os.environ.get('TLCGNN_CORES', 32))
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     pi.get_pimg_for_all_edges(total_edges, cores=_cores, hop=hop, norm=True, extended_flag=True,
                                   resolution=5, descriptor='sum')
     np.save(filename,pi.pi_sg)
@@ -237,6 +265,5 @@ def num(strings):
         return int(strings)
     except ValueError:
         return float(strings)
-
 
 
