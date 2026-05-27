@@ -48,7 +48,9 @@ def graph_to_pi(g: nx.Graph) -> np.ndarray:
     try:
         PD_up, ess0, PD_down, Pos, Neg = Union_find(sf)
         PD_one = Accelerate_PD(Pos, Neg, sf)
-    except (ValueError, IndexError):
+    except (ValueError, IndexError, KeyError):
+        # KeyError: accelerated_PD hits a node missing from its Parent dict on
+        # some graph topologies (seen on PROTEINS). Treat as degenerate → zeros.
         return np.zeros(25, dtype=np.float64)
     pd = []
     for arr in [PD_up, ess0, PD_down, PD_one]:
