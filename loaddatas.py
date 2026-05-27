@@ -110,9 +110,15 @@ def get_adj_split(adj, val_prop=0.05, test_prop=0.1, seed=1234):
     n_test = int(m_pos * test_prop)
     val_edges, test_edges, train_edges = pos_edges[:n_val], pos_edges[n_val:n_test + n_val], pos_edges[n_test + n_val:]
     val_edges_false, test_edges_false = neg_edges[:n_val], neg_edges[n_val:n_test + n_val]
-    # subsample train negatives to a manageable count (5x #train_pos), to keep
-    # persistence-image computation feasible. Each negative still gets a PI.
-    train_neg_cap = min(len(neg_edges), max(len(train_edges) * 5, 1024))
+    # subsample train negatives to a manageable count (default 5x #train_pos), to
+    # keep persistence-image computation feasible. Each negative still gets a PI.
+    # TLCGNN_NEG_CAP env var overrides the 5x multiplier ('all' = no cap) for the
+    # cap-sweep diagnosis (does the cap explain our gap vs paper?).
+    _cap_mult = os.environ.get('TLCGNN_NEG_CAP', '5')
+    if _cap_mult == 'all':
+        train_neg_cap = len(neg_edges)
+    else:
+        train_neg_cap = min(len(neg_edges), max(int(len(train_edges) * float(_cap_mult)), 1024))
     train_edges_false = neg_edges[n_test + n_val: n_test + n_val + train_neg_cap]
     return train_edges, train_edges_false, val_edges, val_edges_false, test_edges, test_edges_false
 
