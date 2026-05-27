@@ -1,0 +1,1 @@
+PROTEINS noPI acc 0.7295 std 0.0377
