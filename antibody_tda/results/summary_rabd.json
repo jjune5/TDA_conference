@@ -1,0 +1,202 @@
+{
+  "dataset": "rabd",
+  "setting": "codesign_single_H3 (only CDR-H3 regenerated; rest of complex native)",
+  "k_anchor": 3,
+  "n_targets": 60,
+  "n_candidates": 2400,
+  "n_candidates_with_DockQ": 2309,
+  "h1_coverage_frac": 1.0,
+  "mean_n_ca": 18.983333333333334,
+  "DockQ_range": [
+    0.693,
+    0.975
+  ],
+  "DockQ_std_pooled": 0.048330779791309945,
+  "C1_topo_dist_vs_DockQ": {
+    "td_h1_wasserstein": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": -0.02425445660169595,
+        "std": 0.17778154647964645,
+        "median": -0.027096564815297895,
+        "frac_negative": 0.6333333333333333
+      },
+      "per_target_spearman": {
+        "n": 60,
+        "mean": -0.028966747653193757,
+        "std": 0.17428692137744778,
+        "median": -0.01731024001333617,
+        "frac_negative": 0.55
+      },
+      "pooled_pearson": -0.5795631341227465,
+      "pooled_spearman": -0.6170629059552255,
+      "within_target_centered_pearson": 0.008240424254528134
+    },
+    "td_h1_bottleneck": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": -0.011846272745874619,
+        "std": 0.15362562101784522,
+        "median": -0.025590488783419615,
+        "frac_negative": 0.5833333333333334
+      },
+      "per_target_spearman": {
+        "n": 60,
+        "mean": -0.025486545751750408,
+        "std": 0.178164854434489,
+        "median": -0.02051518923130167,
+        "frac_negative": 0.5333333333333333
+      },
+      "pooled_pearson": -0.5323764084488037,
+      "pooled_spearman": -0.5542646958446059,
+      "within_target_centered_pearson": 0.009993627363231037
+    },
+    "td_h0_wasserstein": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": 0.013090740208411956,
+        "std": 0.16623581102688234,
+        "median": 0.024242219288257982,
+        "frac_negative": 0.45
+      },
+      "per_target_spearman": {
+        "n": 60,
+        "mean": -0.01420652275830655,
+        "std": 0.15636877234915644,
+        "median": -0.012729941854174323,
+        "frac_negative": 0.55
+      },
+      "pooled_pearson": -0.5675118779820015,
+      "pooled_spearman": -0.5361001276427328,
+      "within_target_centered_pearson": 0.0022651224956031766
+    },
+    "td_combined_wasserstein": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": -0.013896113647995869,
+        "std": 0.18459306650174317,
+        "median": 0.0008984840704508436,
+        "frac_negative": 0.48333333333333334
+      },
+      "per_target_spearman": {
+        "n": 60,
+        "mean": -0.04604562262270265,
+        "std": 0.17663235748247824,
+        "median": -0.010720017427936589,
+        "frac_negative": 0.5333333333333333
+      },
+      "pooled_pearson": -0.639887728075568,
+      "pooled_spearman": -0.6486452256185027,
+      "within_target_centered_pearson": 0.006622312911044558
+    },
+    "loop_likeness_total": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": -0.045597203350531516,
+        "std": 0.18534479837733514,
+        "median": -0.041817741009619394,
+        "frac_negative": 0.6666666666666666
+      },
+      "per_target_spearman": {
+        "n": 60,
+        "mean": -0.03869593134924935,
+        "std": 0.1828473495776448,
+        "median": -0.06993356099446511,
+        "frac_negative": 0.6166666666666667
+      },
+      "pooled_pearson": -0.5549464635002614,
+      "pooled_spearman": -0.4753800187319883,
+      "within_target_centered_pearson": -0.026523259623056652
+    }
+  },
+  "C2_selection": {
+    "random": {
+      "uses_native": false,
+      "mean_DockQ": 0.8922828333333334,
+      "std_DockQ": 0.04488280911966431,
+      "mean_RMSD_CDRH3": 2.054597639864614,
+      "n_targets": 60
+    },
+    "mean_of_all": {
+      "uses_native": false,
+      "mean_DockQ": 0.8922561248985861,
+      "std_DockQ": 0.0446422223120768,
+      "mean_RMSD_CDRH3": 2.054190428413529,
+      "n_targets": 60
+    },
+    "oracle_best_DockQ_ceiling": {
+      "uses_native": true,
+      "mean_DockQ": 0.9108166666666668,
+      "std_DockQ": 0.030344956564293993,
+      "mean_RMSD_CDRH3_of_minRMSD_pick": 1.8167648053354712,
+      "n_targets": 60
+    },
+    "min_topo_h1_wasserstein": {
+      "uses_native": true,
+      "mean_DockQ": 0.8897499999999999,
+      "std_DockQ": 0.048137520016441795,
+      "mean_RMSD_CDRH3": 2.0752654599148332,
+      "n_targets": 60
+    },
+    "min_topo_h1_bottleneck": {
+      "uses_native": true,
+      "mean_DockQ": 0.8926166666666666,
+      "std_DockQ": 0.04891356037837452,
+      "mean_RMSD_CDRH3": 2.064558131736246,
+      "n_targets": 60
+    },
+    "min_topo_combined_wass": {
+      "uses_native": true,
+      "mean_DockQ": 0.8909666666666666,
+      "std_DockQ": 0.04908868391889204,
+      "mean_RMSD_CDRH3": 2.0450178117886746,
+      "n_targets": 60
+    },
+    "max_loop_likeness": {
+      "uses_native": false,
+      "mean_DockQ": 0.89005,
+      "std_DockQ": 0.049999141659299175,
+      "mean_RMSD_CDRH3": 2.053555093464995,
+      "n_targets": 60
+    },
+    "best_pmetric": {
+      "uses_native": false,
+      "mean_DockQ": 0.8916000000000001,
+      "std_DockQ": 0.048111744927824024,
+      "mean_RMSD_CDRH3": 2.051420883307344,
+      "n_targets": 60
+    }
+  },
+  "C3_redundancy": {
+    "td_h1_wass_vs_RMSD_CDRH3": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": 0.02484900127783288,
+        "std": 0.1987342651249415,
+        "median": 0.016773639805106544,
+        "frac_negative": 0.48333333333333334
+      },
+      "pooled_pearson": 0.6687070168092675,
+      "pooled_spearman": 0.6760359767423572
+    },
+    "loop_likeness_vs_RMSD_CDRH3": {
+      "per_target_pearson": {
+        "n": 60,
+        "mean": -0.05444858681931648,
+        "std": 0.2432817608367337,
+        "median": -0.04122358406856437,
+        "frac_negative": 0.6
+      },
+      "pooled_pearson": 0.5848251199775161
+    },
+    "td_h1_wass_vs_loop_likeness": {
+      "pooled_pearson": 0.5189167663613266
+    },
+    "td_h1_wass_vs_pmetric_note": "pmetric is identically 0 in eval CSV (not computed); correlation undefined."
+  },
+  "join_logic": "Per-sample. Each CSV row maps to NNNN.pdb by the eval's exact ordering: targets sorted(rglob metadata.json); within target, sorted(glob '[0-9]{4}.pdb') = 0000..00NN; CSV written in that order via pool.imap (order-preserving). Verified: per-target DockQ_mean matches per_target_metrics.csv.",
+  "pmetric_note": "pmetric hardcoded 0.0 in eval_baseline.py -> 'best pmetric' strategy is degenerate (picks first sample).",
+  "honest_limits": "PH-on-CA = coarse shape-only, rigid-motion-invariant; ignores backbone orientation/side chains. codesign_single_H3 regenerates only H3 -> restricted high DockQ range may attenuate correlations.",
+  "robustness_note": "K_anchor in {3,5} yields the same per-target ~0 correlation and the same selection tie with random (H1 coverage 100% in both); verified on RabD. Conclusion is not an artifact of anchor count.",
+  "interpretation_note": "Pooled topo-vs-DockQ corr is moderately negative but is a BETWEEN-target effect (Simpson's paradox): the within-target centered correlation and per-target correlations are ~0. Selection is a within-target decision -> no usable signal."
+}

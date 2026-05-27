@@ -1,0 +1,52 @@
+==============================================================================
+Thread C / Rung 0  GO-NO-GO  —  dataset=rabd
+setting: codesign_single_H3 (only CDR-H3 regenerated; rest of complex native)
+==============================================================================
+targets=60  candidates=2400  DockQ_finite=2309  K_anchor=3
+H1 coverage=100.0%  mean_n_ca=19.0  DockQ range=[0.693, 0.975]  pooled std=0.0483
+
+--- VERDICT: NO-GO ---
+  Per-target Spearman(td_h1_wasserstein, DockQ): mean=-0.029 (median=-0.017, frac_negative=0.55, n=60)
+  Random selection mean DockQ:            0.8923
+  Native-FREE (max loop-likeness) DockQ:  0.8901  (delta vs random = -0.0022)
+  Native-oracle (min topo-dist) DockQ:    0.8897  (delta vs random = -0.0025)
+  Oracle best-DockQ ceiling:              0.9108  (headroom = +0.0185)
+  RECOMMENDATION: Topology of generated CDR-H3 CA loops carries little DockQ signal in this setting (restricted high-DockQ range; PH-on-CA too coarse). Do NOT build Rung 1 on this premise as-is.
+
+C1  topo_dist_to_native vs DockQ  (expect NEGATIVE)
+  td_h1_wasserstein        per-tgt Pearson mean=-0.024 (frac_neg=0.63) | Spearman mean=-0.029 | within-tgt r=+0.008 | pooled r=-0.580 rho=-0.617
+  td_h1_bottleneck         per-tgt Pearson mean=-0.012 (frac_neg=0.58) | Spearman mean=-0.025 | within-tgt r=+0.010 | pooled r=-0.532 rho=-0.554
+  td_h0_wasserstein        per-tgt Pearson mean=+0.013 (frac_neg=0.45) | Spearman mean=-0.014 | within-tgt r=+0.002 | pooled r=-0.568 rho=-0.536
+  td_combined_wasserstein  per-tgt Pearson mean=-0.014 (frac_neg=0.48) | Spearman mean=-0.046 | within-tgt r=+0.007 | pooled r=-0.640 rho=-0.649
+  loop_likeness_total      per-tgt Pearson mean=-0.046 (frac_neg=0.67) | Spearman mean=-0.039 | within-tgt r=-0.027 | pooled r=-0.555 rho=-0.475
+
+C2  SELECTION — mean DockQ / mean RMSD(CA)CDRH3 of picked candidate
+  strategy                         native?   meanDockQ    +-std  meanRMSD    n
+  oracle_best_DockQ_ceiling        True         0.9108   0.0303     1.817   60
+  min_topo_h1_wasserstein          True         0.8897   0.0481     2.075   60
+  min_topo_h1_bottleneck           True         0.8926   0.0489     2.065   60
+  min_topo_combined_wass           True         0.8910   0.0491     2.045   60
+  max_loop_likeness                False        0.8901   0.0500     2.054   60
+  mean_of_all                      False        0.8923   0.0446     2.054   60
+  random                           False        0.8923   0.0449     2.055   60
+  best_pmetric                     False        0.8916   0.0481     2.051   60
+
+C3  redundancy (is topology orthogonal to RMSD?)
+  td_h1_wass vs RMSD_CDRH3: pooled r=+0.669 rho=+0.676 (per-tgt Pearson mean=+0.025)
+  loop_likeness vs RMSD_CDRH3: pooled r=+0.585
+  td_h1_wass vs loop_likeness: pooled r=+0.519
+
+INTERPRETATION (why pooled corr looks strong but selection fails):
+  The pooled topo_dist-vs-DockQ correlation is moderately NEGATIVE, but the
+  per-target (within-target) correlation is ~0 with frac_negative ~0.5 (coin
+  flip). The pooled number is a BETWEEN-TARGET artifact (Simpson's paradox):
+  harder targets have both larger topo-dist-to-native and lower DockQ, creating
+  a cross-target trend. Candidate SELECTION is a WITHIN-target decision (pick 1
+  of N for the SAME target), where the signal vanishes -> selection ~= random.
+  Robustness: K_anchor in {3,5} gives the same per-target ~0 corr and same
+  selection tie with random (H1 coverage 100% either way).
+
+JOIN LOGIC: Per-sample. Each CSV row maps to NNNN.pdb by the eval's exact ordering: targets sorted(rglob metadata.json); within target, sorted(glob '[0-9]{4}.pdb') = 0000..00NN; CSV written in that order via pool.imap (order-preserving). Verified: per-target DockQ_mean matches per_target_metrics.csv.
+PMETRIC: pmetric hardcoded 0.0 in eval_baseline.py -> 'best pmetric' strategy is degenerate (picks first sample).
+LIMITS: PH-on-CA = coarse shape-only, rigid-motion-invariant; ignores backbone orientation/side chains. codesign_single_H3 regenerates only H3 -> restricted high DockQ range may attenuate correlations.
+==============================================================================
