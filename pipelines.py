@@ -8,6 +8,7 @@ import torch.nn.functional as F
 import numpy as np
 from baselines import TLCGNN as TLCGNN
 from baselines import TLCGNN_gated as TLCGNN_gated
+from baselines import TLCGNN_gated_reg as TLCGNN_gated_reg
 from sklearn.metrics import roc_auc_score,average_precision_score
 from torch.nn.init import xavier_normal_ as xavier
 
@@ -17,6 +18,10 @@ def train():
     emb = model.encode(data)
     x, y = model.decode(data, emb)
     loss = F.binary_cross_entropy(x,y)
+    _gp = getattr(model, 'last_gate_penalty', None)
+    if _gp is not None and torch.is_tensor(_gp) and _gp.requires_grad:
+        from baselines.TLCGNN_gated_reg import GATE_REG_LAMBDA
+        loss = loss + GATE_REG_LAMBDA * _gp
     loss.backward()
     optimizer.step()
     return x
@@ -68,6 +73,8 @@ _parser.add_argument('--pi_source', choices=['dionysus', 'pdgnn'], default='dion
                      help='source of PI cache (dionysus=TLC-GNN exact, pdgnn=neural approx)')
 _parser.add_argument('--use_gating', action='store_true',
                      help='use adaptive PI gating (baselines.TLCGNN_gated.Net)')
+_parser.add_argument('--gate_reg', action='store_true',
+                     help='sparsity-regularized gating (baselines.TLCGNN_gated_reg)')
 _args = _parser.parse_args()
 os.environ['TLCGNN_PI_SOURCE'] = _args.pi_source
 
@@ -82,7 +89,9 @@ wait_total= 200
 total_epochs = 2000
 
 
-if _args.use_gating:
+if _args.gate_reg:
+    pipelines=['TLCGNN_gated_reg']
+elif _args.use_gating:
     pipelines=['TLCGNN_gated']
 else:
     pipelines=['TLCGNN']
