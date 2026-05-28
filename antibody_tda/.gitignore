@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+regate/candidate_table_time_split.csv
+regate/scatter_interface_time_split.png
+regate/diagnostics_time_split.json
+regate/__pycache__/
+__pycache__/

@@ -1,0 +1,66 @@
+================================================================================
+Thread C / Rung 0' RE-GATE  GO-NO-GO  —  dataset=rabd
+setting: codesign_multi_cdr (all 6 CDRs regenerated; rest of complex native)
+signal:  antibody-antigen INTERFACE contact-graph Vietoris-Rips PH (CA, cutoff=10.0 A)
+================================================================================
+targets=60 candidates=2400 DockQ_finite=2382 loop_control=2400
+interface size mean=63.7 CAs  H1 coverage=100.0%
+DockQ range=[0.465, 0.852] pooled_std=0.0564 WITHIN-target std(DockQ)=0.0270 WITHIN-target std(RMSD-H3)=0.2935
+
+--- VERDICT: NO-GO ---
+  Interface td_h1_ws vs DockQ  per-target Spearman: mean=-0.026 (median=-0.027, frac_neg=0.55, p=0.172, n=60)
+  Interface td_h1_ws vs RMSD-H3 per-target Spearman: mean=+0.102 (frac_pos=0.70, p=0.000552)
+  Random selection mean DockQ:               0.7325
+  Native-FREE (max if-loop-likeness) DockQ:  0.7378 (delta=+0.0053)
+  Native-oracle (min if-topo-dist) DockQ:    0.7212 (delta=-0.0113)
+  Oracle best-DockQ ceiling:                 0.7769 (headroom=+0.0444)
+  RECOMMENDATION: Interface-PH (even this richer signal, even in the higher-variance multi_cdr setting) shows ~0 WITHIN-target relationship with DockQ/RMSD-H3 and interface selection does not beat random. Topology does not help antibody binding here. -> Close topology-guided antibody generation.
+
+C1  INTERFACE-PH vs DockQ   [TRUST per-target; expect NEGATIVE]
+  if_td_h1_ws          per-tgt Pearson=-0.022(fneg=0.50,p=0.28) Spearman=-0.026(p=0.17) | within-ctr r=-0.007 | pooled r=-0.150 rho=-0.165
+  if_td_h1_bn          per-tgt Pearson=-0.007(fneg=0.48,p=0.76) Spearman=-0.004(p=0.86) | within-ctr r=-0.007 | pooled r=-0.118 rho=-0.111
+  if_td_h0_ws          per-tgt Pearson=-0.022(fneg=0.55,p=0.26) Spearman=-0.026(p=0.22) | within-ctr r=-0.031 | pooled r=-0.073 rho=-0.088
+  if_td_combined_ws    per-tgt Pearson=-0.025(fneg=0.58,p=0.17) Spearman=-0.035(p=0.069) | within-ctr r=-0.031 | pooled r=-0.100 rho=-0.122
+  if_loop_total        per-tgt Pearson=+0.010(fneg=0.52,p=0.62) Spearman=-0.008(p=0.68) | within-ctr r=-0.006 | pooled r=+0.129 rho=+0.180
+
+C1  INTERFACE-PH vs RMSD-CDRH3   [TRUST per-target; expect POSITIVE]
+  if_td_h1_ws          per-tgt Pearson=+0.109(fneg=0.33,p=0.00043) Spearman=+0.102(p=0.00055) | within-ctr r=+0.111 | pooled r=+0.234 rho=+0.254
+  if_td_h1_bn          per-tgt Pearson=+0.081(fneg=0.35,p=0.0068) Spearman=+0.064(p=0.03) | within-ctr r=+0.069 | pooled r=+0.230 rho=+0.195
+  if_td_h0_ws          per-tgt Pearson=+0.034(fneg=0.42,p=0.3) Spearman=+0.044(p=0.13) | within-ctr r=+0.065 | pooled r=+0.373 rho=+0.402
+  if_td_combined_ws    per-tgt Pearson=+0.056(fneg=0.37,p=0.072) Spearman=+0.066(p=0.023) | within-ctr r=+0.085 | pooled r=+0.375 rho=+0.421
+  if_loop_total        per-tgt Pearson=-0.053(fneg=0.63,p=0.11) Spearman=-0.045(p=0.17) | within-ctr r=-0.052 | pooled r=-0.158 rho=-0.210
+
+C2  SELECTION — mean DockQ / mean RMSD(CA)CDRH3 of picked candidate
+  strategy                     native?   meanDockQ    +-std  meanRMSD    n
+  oracle_best_DockQ_ceiling    True         0.7769   0.0339     2.363   60
+  min_if_td_h1_ws              True         0.7212   0.0658     2.969   60
+  min_if_td_h1_bn              True         0.7324   0.0578     2.950   60
+  min_if_td_combined_ws        True         0.7294   0.0553     2.943   60
+  max_if_loop_likeness         False        0.7378   0.0535     3.019   60
+  min_loop_td_h1_ws            True         0.7302   0.0557     3.005   60
+  max_loop_likeness            False        0.7347   0.0512     2.999   60
+  mean_of_all                  False        0.7320   0.0476     2.988   60
+  random                       False        0.7325   0.0469     2.986   60
+  best_pmetric                 False        0.7330   0.0557     3.049   60
+  (min_loop_*/max_loop_* = Rung-0 LOOP signal CONTROL on same data)
+
+C3  CONTROL: LOOP-PH signal (Rung-0) on the SAME multi_cdr candidates
+  loop vs DockQ:
+    loop_td_h1_ws        per-tgt Pearson=+0.007(fneg=0.46,p=0.81) Spearman=-0.015(p=0.62) | within-ctr r=-0.014 | pooled r=-0.468 rho=-0.463
+    loop_td_h1_bn        per-tgt Pearson=+0.006(fneg=0.44,p=0.81) Spearman=-0.008(p=0.78) | within-ctr r=+0.010 | pooled r=-0.455 rho=-0.385
+    loop_likeness_total  per-tgt Pearson=+0.001(fneg=0.46,p=0.98) Spearman=-0.006(p=0.83) | within-ctr r=-0.032 | pooled r=-0.462 rho=-0.365
+  loop vs RMSD-CDRH3:
+    loop_td_h1_ws        per-tgt Pearson=+0.062(fneg=0.36,p=0.14) Spearman=+0.052(p=0.27) | within-ctr r=+0.101 | pooled r=+0.537 rho=+0.549
+    loop_td_h1_bn        per-tgt Pearson=+0.074(fneg=0.35,p=0.059) Spearman=+0.069(p=0.12) | within-ctr r=+0.075 | pooled r=+0.506 rho=+0.521
+    loop_likeness_total  per-tgt Pearson=-0.013(fneg=0.52,p=0.76) Spearman=-0.035(p=0.45) | within-ctr r=+0.026 | pooled r=+0.572 rho=+0.504
+
+INTERFACE vs LOOP head-to-head (|per-target Spearman mean| of td_h1_ws):
+  DockQ : interface=0.026  loop=0.015
+  RMSD-H3: interface=0.102  loop=0.052
+
+JOIN LOGIC: Per-sample, by INDEX. Within each target the generated samples are sorted(glob 'MultipleCDRs/[0-9]{4}.pdb') = 0000..0039 (the REF1.pdb reference copy is EXCLUDED by the 4-digit glob); these map 1:1 to the target's CSV rows in order. VERIFIED: per-target DockQ block-mean == per_target_metrics DockQ_mean (correct rows) AND RMSD-CDRH3 content corr ~1.0 on clean targets (correct order, smoke test).
+CHAIN ID: heavy/light/antigen from RabD/SAbDab JSON (preferred) keyed by pdb; fallback = parse FlowDesign identifier '<pdb>_<H>_<L>_<Ag...>'. Smoke test: JSON and identifier agree.
+PMETRIC: pmetric hardcoded 0.0 in eval_baseline.py -> 'best pmetric' degenerate.
+LIMITS: Interface PH is CA-only: coarse, rigid-motion-invariant SHAPE of the contact patch; ignores side chains, backbone orientation, atomic packing, and chemistry. DockQ has some NaN entries (dropped per candidate).
+CUTOFF ROBUSTNESS (rabd): per-tgt Spearman(if_td_h1_ws,DockQ)=+0.030/-0.026/+0.002 at 8/10/12A (all ~0) -> DockQ NO-GO not a cutoff artifact. vs RMSD-H3=+0.041/+0.102/+0.088 (weak signal persists). Interface size mean ~35/62/93 CAs at 8/10/12A.
+================================================================================

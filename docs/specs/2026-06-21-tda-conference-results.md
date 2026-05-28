@@ -259,8 +259,15 @@ DiffAb/FlowDesign/IgGM이 생성한 항체 CDR-H3 loop의 persistent homology가
 - **결론**: single-H3 inpainting에서 **PH-on-Cα는 너무 coarse** (orientation/side-chain 버림) → topology-guided 생성(Rung1 guidance/Rung2 training) **짓지 않음.** 재시도하려면 within-target DockQ 분산이 큰 설정(full-complex/multi-CDR/docking-pose) + Cα보다 풍부한 descriptor 필요.
 - **방법론 교훈**: pooled correlation의 **Simpson's paradox 함정** — 생성모델 평가에서 per-target(조건부) 분석 필수.
 
+**재게이트 (Rung 0′) — interface-PH × multi-CDR**: loop 신호가 죽어서, 더 풍부한 신호(**항체-항원 interface contact-graph PH**) + 고분산 설정(**multi-CDR**, within-target RMSD 분산 ~2.5×)으로 재검증 (rabd 60 + time_split 742 타깃, ~32k candidates):
+- **interface-PH vs DockQ: 여전히 within-target ≈ 0** (per-target Spearman rabd −0.026 / time_split −0.030; Simpson's paradox 재현 — pooled은 음수처럼 보임). 풍부한 신호·고분산에도 **binding 신호 없음**.
+- **interface-PH vs RMSD-CDRH3: 약하지만 실재** (per-target Spearman +0.10(rabd) ~ +0.17(time_split), p<1e-70, within-centered +0.11~+0.17; **loop 신호의 ~4×**). → topology가 **binding이 아니라 구조 정확도(RMSD)**를 약하게 추적.
+- 선택 실험: interface-PH 선택이 **DockQ에서 random 못 이김** (native-free Δ+0.005, native-oracle Δ−0.011).
+- **최종 결론**: topology는 항체 **binding 품질** 신호 없음 — **두 게이트 모두 NO-GO**(loop@single-H3, interface@multi-CDR) → **topology-guided 항체 *binding* 생성 종료.** 단 **구조 fidelity(RMSD)** 용도엔 약한 interface-PH prior 가능(미약, 향후 여지).
+- **메타**: Simpson's paradox가 두 게이트 모두의 함정 — generative 평가에서 per-target 분석 필수.
+
 ### 11d. 챕터 종합
 
 - **Physical diffusion (A,B)**: topology의 렌즈(HKS 대등)·denoiser(GDC가 hetero PI를 무해화)로 **작동**. **B가 가장 강한 새 결과** + shuffle 메커니즘과 일관.
-- **Generative diffusion (C)**: 항체 loop엔 coarse-PH가 부족 — 정직한 null + Simpson's paradox 교훈.
-- **큰 그림**: "topology가 언제 유용한가"의 답에 diffusion 축 추가 — diffusion은 topology를 **정제**하는 덴 좋지만(B), 짧은 3D loop의 **생성 품질**을 잡기엔 coarse(C).
+- **Generative diffusion (C)**: 항체 **binding 품질**엔 PH(loop·interface 둘 다)가 신호 없음 — **두 게이트 모두 NO-GO**. 단 interface-PH는 **구조 RMSD를 약하게 추적**(loop의 ~4×). 정직한 null + Simpson's paradox 교훈.
+- **큰 그림**: "topology가 언제 유용한가"의 답에 diffusion 축 추가 — diffusion은 topology를 **정제**하는 덴 좋지만(B), 항체 loop의 **binding 품질**을 잡기엔 PH가 부족(C; 구조 RMSD엔 약한 신호만).
