@@ -2,3 +2,150 @@
   adj = nx.adjacency_matrix(g)
 /mnt/data/users/junyoungpark/code/TLC-GNN/gnn_backbone_exp.py:79: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
   adj = nx.adjacency_matrix(g)
+Device: cuda
+Encoders: ['GCN', 'GAT', 'SAGE'], Datasets: ['Cora', 'Chameleon'], Trials: 50
+
+============================================================
+Loading Cora...
+  Total edges in split: 28508
+  train_pos=4488, train_neg=22440, val_pos=263, val_neg=263, test_pos=527, test_neg=527
+  PI cache loaded: (28508, 25)
+
+  [GCN / Cora / PI]
+    trial 10/50: mean AUC so far = 0.9213  [30s elapsed]
+    trial 20/50: mean AUC so far = 0.9194  [56s elapsed]
+    trial 30/50: mean AUC so far = 0.9210  [82s elapsed]
+    trial 40/50: mean AUC so far = 0.9211  [108s elapsed]
+    trial 50/50: mean AUC so far = 0.9208  [135s elapsed]
+  --> GCN/Cora/PI: mean=0.9208, std=0.0051, median=0.9206
+
+  [GCN / Cora / noPi]
+    trial 10/50: mean AUC so far = 0.9201  [21s elapsed]
+    trial 20/50: mean AUC so far = 0.9192  [44s elapsed]
+    trial 30/50: mean AUC so far = 0.9207  [64s elapsed]
+    trial 40/50: mean AUC so far = 0.9206  [87s elapsed]
+    trial 50/50: mean AUC so far = 0.9207  [108s elapsed]
+  --> GCN/Cora/noPi: mean=0.9207, std=0.0049, median=0.9209
+
+  [GAT / Cora / PI]
+    trial 10/50: mean AUC so far = 0.9272  [54s elapsed]
+    trial 20/50: mean AUC so far = 0.9256  [102s elapsed]
+    trial 30/50: mean AUC so far = 0.9257  [150s elapsed]
+    trial 40/50: mean AUC so far = 0.9257  [204s elapsed]
+    trial 50/50: mean AUC so far = 0.9254  [267s elapsed]
+  --> GAT/Cora/PI: mean=0.9254, std=0.0036, median=0.9253
+
+  [GAT / Cora / noPi]
+    trial 10/50: mean AUC so far = 0.9230  [66s elapsed]
+    trial 20/50: mean AUC so far = 0.9222  [125s elapsed]
+    trial 30/50: mean AUC so far = 0.9217  [178s elapsed]
+    trial 40/50: mean AUC so far = 0.9215  [227s elapsed]
+    trial 50/50: mean AUC so far = 0.9211  [276s elapsed]
+  --> GAT/Cora/noPi: mean=0.9211, std=0.0042, median=0.9214
+
+  [SAGE / Cora / PI]
+    trial 10/50: mean AUC so far = 0.8902  [90s elapsed]
+    trial 20/50: mean AUC so far = 0.8890  [158s elapsed]
+    trial 30/50: mean AUC so far = 0.8903  [242s elapsed]
+    trial 40/50: mean AUC so far = 0.8892  [300s elapsed]
+    trial 50/50: mean AUC so far = 0.8896  [374s elapsed]
+  --> SAGE/Cora/PI: mean=0.8896, std=0.0081, median=0.8907
+
+  [SAGE / Cora / noPi]
+    trial 10/50: mean AUC so far = 0.8910  [49s elapsed]
+    trial 20/50: mean AUC so far = 0.8905  [113s elapsed]
+    trial 30/50: mean AUC so far = 0.8919  [172s elapsed]
+    trial 40/50: mean AUC so far = 0.8909  [224s elapsed]
+    trial 50/50: mean AUC so far = 0.8906  [277s elapsed]
+  --> SAGE/Cora/noPi: mean=0.8906, std=0.0064, median=0.8900
+
+============================================================
+Loading Chameleon...
+  Total edges in split: 169674
+  train_pos=26708, train_neg=133540, val_pos=1571, val_neg=1571, test_pos=3142, test_neg=3142
+  PI cache loaded: (169674, 25)
+
+  [GCN / Chameleon / PI]
+    trial 10/50: mean AUC so far = 0.9481  [197s elapsed]
+    trial 20/50: mean AUC so far = 0.9456  [402s elapsed]
+    trial 30/50: mean AUC so far = 0.9457  [808s elapsed]
+    trial 40/50: mean AUC so far = 0.9451  [1452s elapsed]
+    trial 50/50: mean AUC so far = 0.9450  [1735s elapsed]
+  --> GCN/Chameleon/PI: mean=0.9450, std=0.0057, median=0.9470
+
+  [GCN / Chameleon / noPi]
+    trial 10/50: mean AUC so far = 0.9680  [457s elapsed]
+    trial 20/50: mean AUC so far = 0.9675  [715s elapsed]
+    trial 30/50: mean AUC so far = 0.9678  [924s elapsed]
+    trial 40/50: mean AUC so far = 0.9677  [1183s elapsed]
+    trial 50/50: mean AUC so far = 0.9682  [1513s elapsed]
+  --> GCN/Chameleon/noPi: mean=0.9682, std=0.0048, median=0.9680
+
+  [GAT / Chameleon / PI]
+    trial 10/50: mean AUC so far = 0.9410  [170s elapsed]
+    trial 20/50: mean AUC so far = 0.9400  [303s elapsed]
+    trial 30/50: mean AUC so far = 0.9400  [410s elapsed]
+    trial 40/50: mean AUC so far = 0.9392  [496s elapsed]
+    trial 50/50: mean AUC so far = 0.9391  [567s elapsed]
+  --> GAT/Chameleon/PI: mean=0.9391, std=0.0054, median=0.9399
+
+  [GAT / Chameleon / noPi]
+    trial 10/50: mean AUC so far = 0.9607  [142s elapsed]
+    trial 20/50: mean AUC so far = 0.9567  [275s elapsed]
+    trial 30/50: mean AUC so far = 0.9577  [402s elapsed]
+    trial 40/50: mean AUC so far = 0.9573  [536s elapsed]
+    trial 50/50: mean AUC so far = 0.9576  [669s elapsed]
+  --> GAT/Chameleon/noPi: mean=0.9576, std=0.0069, median=0.9587
+
+  [SAGE / Chameleon / PI]
+    trial 10/50: mean AUC so far = 0.9286  [70s elapsed]
+    trial 20/50: mean AUC so far = 0.9278  [135s elapsed]
+    trial 30/50: mean AUC so far = 0.9292  [198s elapsed]
+    trial 40/50: mean AUC so far = 0.9295  [306s elapsed]
+    trial 50/50: mean AUC so far = 0.9288  [493s elapsed]
+  --> SAGE/Chameleon/PI: mean=0.9288, std=0.0116, median=0.9307
+
+  [SAGE / Chameleon / noPi]
+    trial 10/50: mean AUC so far = 0.9835  [417s elapsed]
+    trial 20/50: mean AUC so far = 0.9810  [768s elapsed]
+    trial 30/50: mean AUC so far = 0.9803  [1052s elapsed]
+    trial 40/50: mean AUC so far = 0.9804  [1399s elapsed]
+    trial 50/50: mean AUC so far = 0.9805  [1841s elapsed]
+  --> SAGE/Chameleon/noPi: mean=0.9805, std=0.0061, median=0.9823
+
+Raw scores saved to results/gnn_backbone/raw_scores.json
+
+========================================================================
+AUC TABLE  (mean ± std, n=50)
+========================================================================
+Encoder   Cora-PI        Cora-noPi      Chameleon-PI        Chameleon-noPi    
+------------------------------------------------------------------------------
+GCN       0.9208±0.0051  0.9207±0.0049  0.9450±0.0057  0.9682±0.0048
+GAT       0.9254±0.0036  0.9211±0.0042  0.9391±0.0054  0.9576±0.0069
+SAGE      0.8896±0.0081  0.8906±0.0064  0.9288±0.0116  0.9805±0.0061
+
+========================================================================
+PI GAIN TABLE  (PI_AUC - noPi_AUC, mean ± propagated std)
+========================================================================
+Encoder   Gap-Cora        Gap-Chameleon 
+----------------------------------------
+GCN       +0.0001±0.0070  -0.0232±0.0075
+GAT       +0.0043±0.0056  -0.0185±0.0088
+SAGE      -0.0010±0.0103  -0.0517±0.0131
+
+AUC table saved to results/gnn_backbone/auc_table.csv
+Gap table saved to results/gnn_backbone/gap_table.csv
+
+========================================================================
+VERDICT
+========================================================================
+  Cora: gap direction = positive (PI helps)  |  across encoders: INCONSISTENT (encoder-dependent)
+    GCN: gap=+0.0001
+    GAT: gap=+0.0043
+    SAGE: gap=-0.0010
+  Chameleon: gap direction = negative (PI hurts)  |  across encoders: CONSISTENT
+    GCN: gap=-0.0232
+    GAT: gap=-0.0185
+    SAGE: gap=-0.0517
+
+Done.
