@@ -22,14 +22,17 @@
 | Wisconsin | Hetero web | 0.8640 ±0.061 | 0.8655 ±0.066 | 0.8653 ±0.061 |
 | ChChMiner | Drug DDI | 0.9026 ±0.007 | 0.9625 ±0.005 | **0.9650** ±0.006 |
 
-**핵심 발견** (자세한 분석은 [results doc](docs/specs/2026-06-21-tda-conference-results.md)):
+**핵심 발견** (자세한 분석 + 5겹 증거는 [results doc §14](docs/specs/2026-06-21-tda-conference-results.md)):
 
-1. **PDGNN neural PI ≥ exact PI** (전 데이터셋). homophilic에선 +0.3~1.5%p, 심지어 **Chameleon에선 no-PI까지 능가**(0.9757). neural approximation의 smoothing이 일반화↑.
-2. **Heterophilic에서 exact PI는 무용~유해.** homophily와 PI hurt의 상관 **r=−0.567** — "topology가 도움?"은 도메인 의존적.
-3. **Shuffle control**: PI 손해는 노이즈가 아니라 "틀린 방향" edge-specific 신호 (셔플하면 no-PI 회복).
-4. **Molecular GC는 PI가 도움** (MUTAG +1.6%p, PROTEINS +1.2%p, NCI1 +1.3%p) — LP와 반대. task 구조에 의존.
+★ **센터피스**: TLC-GNN의 **exact PI는 LP에서 train-graph "엣지 멤버십" artifact**다 — train 엣지는 그래프에 있어 PI≫0이지만 test 엣지는 누수방지로 제거돼 **PI=0 → test 판별력 0**. 그 LP 기여는 genuine topology가 아니라 spurious 멤버십 신호. **PDGNN은 PD를 neural 예측해 artifact를 회피하고 leakage-free genuine 신호를 복원** — 이것이 "PDGNN > exact"의 진짜 이유. (직접 캐시 분석 + leakage-free 대비 + **100% leave-one-out collapse**(엣지 제거→PI 정확히 0, 300/300) 등 5겹 증거.)
 
-→ **paper(ICML 2021)의 "topology helps LP" claim은 homophilic 가정에 의존**. Heterophilic/drug LP에선 무너지고, 분자 GC에선 성립.
+이 센터피스가 다음을 통합 설명:
+1. **PDGNN ≥ exact** (전 데이터셋; Chameleon선 no-PI까지 능가 0.9757) — **smoothing 아님**(blur 실험 P1), genuine 신호 복원.
+2. **Heterophilic exact PI 유해** — spurious 멤버십 과적합. homophily↔PI hurt 상관 **r=−0.567**.
+3. **Shuffle control**: 엣지↔PI 대응 끊으면 no-PI 회복 (spurious 과적합 차단).
+4. **Molecular GC는 PI가 도움** (MUTAG +1.6%p, PROTEINS +1.2%p, NCI1 +1.3%p, H1=고리) — LP와 반대 (GC엔 membership artifact 없음).
+
+→ paper(ICML 2021)의 "topology helps LP"는 homophilic 가정 의존 + **그 LP 신호 자체가 부분적으로 artifact**. 본 연구의 기여 = **재현을 넘어 그 기전을 해부.**
 
 ## 확장 실험 — TDA 학회 발표용
 

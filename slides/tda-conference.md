@@ -180,7 +180,37 @@ Cora/Citeseer(homo) ~0 hurt, Squirrel/Cornell(hetero) 큰 hurt.
 **Neural approximation이 dionysus exact PD보다 더 좋다.**
 Chameleon에선 neural PI가 **no-PI(0.969)까지 능가** — exact는 해로운데 neural은 도움.
 
-해석: smoothing 효과로 high-frequency noise 제거 → 더 robust한 feature.
+**왜?** smoothing 때문일까? → blur 실험 결과 **아니다** (다음 슬라이드).
+
+---
+
+# ★ 센터피스: exact PI는 사실 "엣지 멤버십" artifact
+
+**왜 PDGNN이 exact보다 좋은가?** exact PI를 해부:
+
+| (PI 크기) | train_pos | **test_pos** | test_neg |
+|---|---|---|---|
+| exact PI | 8.0 | **0.0** | 0.0 |
+| PDGNN (Photo) | 6.6 | **6.9** | 0.05 |
+
+- **exact PI**: 엣지가 그래프에 *있어야* PI≫0. test 엣지는 누수방지로 제거됨 → **test_pos·test_neg 둘 다 PI=0 → test 판별력 0.** 학습 때의 "PI>0→엣지"는 spurious 멤버십 신호.
+- **PDGNN**: 엣지 없이도 구조로 "진짜 엣지 자리"를 예측 → **genuine test 신호 복원** (leakage-free).
+
+**결정적 control**: train 엣지를 빼고 PI 재계산 → **300/300 정확히 0으로 붕괴.** 신호는 surrounding 구조가 아니라 **엣지-멤버십**.
+
+---
+
+# 센터피스가 모든 걸 설명
+
+이 하나로 4개가 풀림:
+- **PDGNN > exact** (발견 2): exact는 test서 0 → PDGNN만 genuine 신호
+- **hetero-hurt** (발견 1): 모델이 spurious 멤버십을 과적합 → test서 붕괴
+- **shuffle 회복** (발견 5): 엣지↔PI 대응을 끊으니 spurious 과적합 차단
+- **homo 소이득**: exact PI는 test 신호 0이라 학습 dynamics로만 미세 영향
+
+> **스토리 격상**: "topology가 LP에 도움?" → **"PI의 LP 신호는 어떻게 작동하나 — exact의 spurious 멤버십 vs PDGNN의 genuine 복원"**
+
+(blur·9-데이터셋·leave-one-out 5겹 증거로 확정. P1: smoothing 아님 / D1: edge별 학습.)
 
 ---
 
@@ -333,10 +363,12 @@ DiffAb/FlowDesign 생성 CDR-H3 loop의 PH ↔ binding(DockQ)?
 
 # 정리
 
-1. PI가 link prediction에 **무조건 도움 ≠ 사실**
-2. **도메인** (density × heterophily) 의존
-3. **PDGNN approximation**은 의외로 더 robust
-4. **Adaptive gating**: 자동 적응 방법 제안
+1. PI가 LP에 **무조건 도움 ≠ 사실** — homophily 의존 (r=−0.567)
+2. ★ **핵심 발견**: TLC-GNN의 exact PI는 LP에서 **train-graph 멤버십 artifact** (test서 0, 판별력 없음). **PDGNN이 genuine 신호를 복원** — 이게 "PDGNN > exact"의 진짜 이유. (캐시 분석·leakage-free 대비·100% leave-one-out collapse 등 5겹 증거)
+3. **분자 GC**는 PI 도움 (H1=고리) — task 구조 의존
+4. topology robustness는 **구조 노이즈**에 모데스트하게 (feature 노이즈엔 X); adaptive gating은 sparsity로 부분 작동 (honest negative)
+
+→ **재현을 넘어, "PI의 LP 신호가 *어떻게* 작동하는지"를 해부한 게 본 연구의 기여.**
 
 ---
 
