@@ -1,0 +1,55 @@
+Experiment S1 — Solidify N1: topology robustness to graph structural noise
+======================================================================
+datasets=['Chameleon', 'Cornell', 'Texas']  ps=[0.0, 5.0, 10.0, 20.0]  variants=['PI', 'no-PI', 'GDC-PI']
+
+AUC vs Noise Level (mean ± std [n trials | n_seeds]):
+----------------------------------------------------------------------
+
+Chameleon:
+  PI      : p=0%: 0.9712±0.0044[n=30|s=3]  p=5%: 0.9790±0.0041[n=30|s=3]  p=10%: 0.9811±0.0042[n=30|s=3]  p=20%: 0.9826±0.0048[n=30|s=3]
+  no-PI   : p=0%: 0.9848±0.0032[n=30|s=3]  p=5%: 0.9832±0.0036[n=30|s=3]  p=10%: 0.9847±0.0044[n=30|s=3]  p=20%: 0.9835±0.0038[n=30|s=3]
+  GDC-PI  : p=0%: 0.9822±0.0023[n=30|s=3]  p=5%: 0.9819±0.0027[n=30|s=3]  p=10%: 0.9804±0.0025[n=30|s=3]  p=20%: 0.9810±0.0046[n=30|s=3]
+
+Cornell:
+  PI      : p=0%: 0.5998±0.0735[n=30|s=3]  p=5%: 0.5982±0.0666[n=30|s=3]  p=10%: 0.6116±0.0654[n=30|s=3]  p=20%: 0.6082±0.0600[n=30|s=3]
+  no-PI   : p=0%: 0.6076±0.0686[n=30|s=3]  p=5%: 0.6123±0.0619[n=30|s=3]  p=10%: 0.6141±0.0635[n=30|s=3]  p=20%: 0.6070±0.0662[n=30|s=3]
+  GDC-PI  : p=0%: 0.6893±0.0570[n=30|s=3]  p=5%: 0.6678±0.0679[n=30|s=3]  p=10%: 0.7237±0.0725[n=30|s=3]  p=20%: 0.7084±0.0549[n=30|s=3]
+
+Texas:
+  PI      : p=0%: 0.5897±0.0636[n=30|s=3]  p=5%: 0.5655±0.0594[n=30|s=3]  p=10%: 0.5702±0.0588[n=30|s=3]  p=20%: 0.5877±0.0748[n=30|s=3]
+  no-PI   : p=0%: 0.5910±0.0587[n=30|s=3]  p=5%: 0.5746±0.0637[n=30|s=3]  p=10%: 0.5613±0.0713[n=30|s=3]  p=20%: 0.5876±0.0762[n=30|s=3]
+  GDC-PI  : p=0%: 0.6315±0.0625[n=30|s=3]  p=5%: 0.6237±0.0665[n=30|s=3]  p=10%: 0.6065±0.0736[n=30|s=3]  p=20%: 0.6821±0.0757[n=30|s=3]
+
+Degradation slope (Δ AUC per +10% noise; slope_std = std across perturbation seeds):
+----------------------------------------------------------------------
+
+Chameleon:
+  PI      : slope=+0.00510 (±0.00051 across seeds, R²=0.737)
+  no-PI   : slope=-0.00040 (±0.00043 across seeds, R²=0.178)
+  GDC-PI  : slope=-0.00068 (±0.00061 across seeds, R²=0.492)
+  -> PI vs no-PI: ROBUST (Δslope=+0.00551, combined_std=0.00067, |Δ|>1σ)
+  -> GDC-PI vs no-PI: NULL (Δslope=-0.00028, combined_std=0.00075, |Δ|<1σ)
+
+Cornell:
+  PI      : slope=+0.00529 (±0.01560 across seeds, R²=0.483)
+  no-PI   : slope=-0.00076 (±0.01291 across seeds, R²=0.034)
+  GDC-PI  : slope=+0.01545 (±0.00473 across seeds, R²=0.298)
+  -> PI vs no-PI: POSITIVE (Δslope=+0.00605, combined_std=0.02025, |Δ|<1σ)
+  -> GDC-PI vs no-PI: ROBUST (Δslope=+0.01620, combined_std=0.01375, |Δ|>1σ)
+
+Texas:
+  PI      : slope=+0.00198 (±0.00805 across seeds, R²=0.019)
+  no-PI   : slope=-0.00064 (±0.01766 across seeds, R²=0.002)
+  GDC-PI  : slope=+0.02597 (±0.01690 across seeds, R²=0.465)
+  -> PI vs no-PI: POSITIVE (Δslope=+0.00263, combined_std=0.01941, |Δ|<1σ)
+  -> GDC-PI vs no-PI: ROBUST (Δslope=+0.02661, combined_std=0.02445, |Δ|>1σ)
+
+Chameleon crossover (PI AUC > no-PI AUC):
+  p=0%: PI=0.9712 ≤ no-PI=0.9848 (no crossover)
+  p=5%: PI=0.9790 ≤ no-PI=0.9832 (no crossover)
+  p=10%: PI=0.9811 ≤ no-PI=0.9847 (no crossover)
+  p=20%: PI=0.9826 ≤ no-PI=0.9835 (no crossover)
+  No crossover detected at any p level.
+
+OVERALL VERDICT:
+  MIXED: Topology is more robust in some pairs but not all. N1 partially solidified.

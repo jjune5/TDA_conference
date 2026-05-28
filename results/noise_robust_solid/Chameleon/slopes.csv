@@ -1,0 +1,4 @@
+dataset,variant,slope_per_10pct,auc_at_0,auc_at_max_p,total_drop,r2
+Chameleon,PI,0.00510,0.9712,0.9826,-0.0114,0.737
+Chameleon,no-PI,-0.00040,0.9848,0.9835,0.0013,0.178
+Chameleon,GDC-PI,-0.00068,0.9822,0.9810,0.0012,0.492

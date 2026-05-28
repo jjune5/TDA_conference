@@ -1,0 +1,13 @@
+dataset,variant,p,auc_mean,auc_std,n
+Chameleon,PI,0.0,0.9712,0.0044,30
+Chameleon,PI,5.0,0.9790,0.0041,30
+Chameleon,PI,10.0,0.9811,0.0042,30
+Chameleon,PI,20.0,0.9826,0.0048,30
+Chameleon,no-PI,0.0,0.9848,0.0032,30
+Chameleon,no-PI,5.0,0.9832,0.0036,30
+Chameleon,no-PI,10.0,0.9847,0.0044,30
+Chameleon,no-PI,20.0,0.9835,0.0038,30
+Chameleon,GDC-PI,0.0,0.9822,0.0023,30
+Chameleon,GDC-PI,5.0,0.9819,0.0027,30
+Chameleon,GDC-PI,10.0,0.9804,0.0025,30
+Chameleon,GDC-PI,20.0,0.9810,0.0046,30

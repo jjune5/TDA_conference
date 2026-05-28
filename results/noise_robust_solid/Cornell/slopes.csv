@@ -1,0 +1,4 @@
+dataset,variant,slope_per_10pct,auc_at_0,auc_at_max_p,total_drop,r2
+Cornell,PI,0.00529,0.5998,0.6082,-0.0084,0.483
+Cornell,no-PI,-0.00076,0.6076,0.6070,0.0006,0.034
+Cornell,GDC-PI,0.01545,0.6893,0.7084,-0.0190,0.298

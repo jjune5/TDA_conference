@@ -1,0 +1,15 @@
+Experiment N1 — Topology robustness to graph structural noise
+================================================================
+datasets=['Chameleon'] ps=[0.0, 5.0, 10.0, 20.0] variants=['PI', 'no-PI', 'GDC-PI']
+graph_seeds=3 init_per_graph=10 => 30 trials per (dataset,p,variant)
+
+Degradation slope (Delta AUC per +10% noise; less negative = more robust):
+
+  Chameleon:
+    PI      : +0.00510 per 10%
+    no-PI   : -0.00040 per 10%
+    GDC-PI  : -0.00068 per 10%
+    -> PI vs no-PI: MORE robust (flatter) (slope diff +0.00551/10%)
+    -> GDC-PI vs no-PI: NOT more robust (slope diff -0.00028/10%)
+
+VERDICT: MIXED — topology is more robust in some (dataset, variant) pairs but not all. See per-dataset breakdown.

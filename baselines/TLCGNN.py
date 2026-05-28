@@ -52,7 +52,7 @@ class Net(torch.nn.Module):
         #pair wise PI (ablation: zero out when use_pi=False)
         if self.use_pi:
             new_x = torch.Tensor(
-                PI.reshape((len(total_edges), -1))).cuda()
+                PI.reshape((len(total_edges), -1))).to(emb.device)
         else:
             # same shape but zeros — keeps architecture identical, isolates PI contribution
             new_x = torch.zeros(len(total_edges), self.linear.in_features, device=emb.device)

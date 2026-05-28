@@ -1,0 +1,4 @@
+dataset,variant,slope_per_10pct,auc_at_0,auc_at_max_p,total_drop,r2
+Texas,PI,0.00198,0.5897,0.5877,0.0021,0.019
+Texas,no-PI,-0.00064,0.5910,0.5876,0.0034,0.002
+Texas,GDC-PI,0.02597,0.6315,0.6821,-0.0507,0.465
