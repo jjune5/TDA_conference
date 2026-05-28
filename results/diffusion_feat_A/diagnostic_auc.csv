@@ -1,0 +1,5 @@
+dataset,feature,train_auc,train_auc_std,test_auc,test_auc_std
+Cora,A_nodeHKS,0.697426,0.001965,0.557857,0.003551
+Cora,exact_PI,0.720384,0.003662,0.500000,0.000000
+Chameleon,A_nodeHKS,0.842394,0.000543,0.840393,0.000426
+Chameleon,exact_PI,0.973001,0.000199,0.490884,0.004972

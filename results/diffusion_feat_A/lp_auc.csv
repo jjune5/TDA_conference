@@ -1,0 +1,7 @@
+dataset,variant,mean_auc,std_auc,median_auc,n_trials
+Cora,no-PI,0.921337,0.005315,0.922169,50
+Cora,exact-PI,0.920706,0.004868,0.920860,50
+Cora,A_nodeHKS,0.909960,0.012647,0.912845,50
+Chameleon,no-PI,0.969102,0.005867,0.967344,50
+Chameleon,exact-PI,0.944143,0.006416,0.945539,50
+Chameleon,A_nodeHKS,0.986971,0.001502,0.986940,50

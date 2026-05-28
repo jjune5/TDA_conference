@@ -1,0 +1,125 @@
+Device: cuda  |  datasets=['Cora', 'Chameleon']  trials=50  K=5
+
+================================================================
+Cora
+================================================================
+/mnt/data/users/junyoungpark/code/TLC-GNN/diffusion_features.py:106: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+  segments: train_pos=4488, train_neg=22440, val_pos=263, val_neg=263, test_pos=527, test_neg=527  total=28508
+  exact PI cache: (28508, 25)
+  computing multi-scale HKS (GPU eigendecomp)...
+    eigh: n=2708 done in 0.30s  lambda range [0.0000, 2.0000]
+    K=5 diffusion times t = 0.5, 2.5, 12.5, 62.8, 315
+    node-HKS edge feature dim = 15 (3*K)
+  §14 diagnostic: feature-only CV-AUC (test_pos vs test_neg)...
+    A_nodeHKS    train-AUC=0.6974±0.0020  TEST-AUC=0.5579±0.0036
+    exact_PI     train-AUC=0.7204±0.0037  TEST-AUC=0.5000±0.0000
+  LP [no-PI] (feat_dim=25) x 50 trials...
+    trial 10/50: mean=0.9185 [32s]
+    trial 20/50: mean=0.9198 [57s]
+    trial 30/50: mean=0.9205 [80s]
+    trial 40/50: mean=0.9212 [104s]
+    trial 50/50: mean=0.9213 [131s]
+    --> no-PI: mean=0.9213 std=0.0053 median=0.9222
+  LP [exact-PI] (feat_dim=25) x 50 trials...
+    trial 10/50: mean=0.9197 [108s]
+    trial 20/50: mean=0.9196 [165s]
+    trial 30/50: mean=0.9202 [215s]
+    trial 40/50: mean=0.9203 [266s]
+    trial 50/50: mean=0.9207 [321s]
+    --> exact-PI: mean=0.9207 std=0.0049 median=0.9209
+  LP [A(node-HKS)] (feat_dim=15) x 50 trials...
+    trial 10/50: mean=0.9066 [88s]
+    trial 20/50: mean=0.9092 [172s]
+    trial 30/50: mean=0.9112 [235s]
+    trial 40/50: mean=0.9088 [285s]
+    trial 50/50: mean=0.9100 [352s]
+    --> A(node-HKS): mean=0.9100 std=0.0126 median=0.9128
+
+================================================================
+Chameleon
+================================================================
+/mnt/data/users/junyoungpark/code/TLC-GNN/diffusion_features.py:106: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+  segments: train_pos=26708, train_neg=133540, val_pos=1571, val_neg=1571, test_pos=3142, test_neg=3142  total=169674
+  exact PI cache: (169674, 25)
+  computing multi-scale HKS (GPU eigendecomp)...
+    eigh: n=2277 done in 0.10s  lambda range [0.0000, 2.0000]
+    K=5 diffusion times t = 0.5, 2.11, 8.91, 37.6, 159
+    node-HKS edge feature dim = 15 (3*K)
+  §14 diagnostic: feature-only CV-AUC (test_pos vs test_neg)...
+    A_nodeHKS    train-AUC=0.8424±0.0005  TEST-AUC=0.8404±0.0004
+    exact_PI     train-AUC=0.9730±0.0002  TEST-AUC=0.4909±0.0050
+  LP [no-PI] (feat_dim=25) x 50 trials...
+    trial 10/50: mean=0.9670 [136s]
+    trial 20/50: mean=0.9685 [446s]
+    trial 30/50: mean=0.9689 [754s]
+    trial 40/50: mean=0.9689 [955s]
+    trial 50/50: mean=0.9691 [1155s]
+    --> no-PI: mean=0.9691 std=0.0059 median=0.9673
+  LP [exact-PI] (feat_dim=25) x 50 trials...
+    trial 10/50: mean=0.9443 [184s]
+    trial 20/50: mean=0.9444 [500s]
+    trial 30/50: mean=0.9449 [643s]
+    trial 40/50: mean=0.9443 [755s]
+    trial 50/50: mean=0.9441 [849s]
+    --> exact-PI: mean=0.9441 std=0.0064 median=0.9455
+  LP [A(node-HKS)] (feat_dim=15) x 50 trials...
+    trial 10/50: mean=0.9869 [254s]
+    trial 20/50: mean=0.9868 [568s]
+    trial 30/50: mean=0.9872 [924s]
+    trial 40/50: mean=0.9870 [1353s]
+    trial 50/50: mean=0.9870 [1735s]
+    --> A(node-HKS): mean=0.9870 std=0.0015 median=0.9869
+========================================================================
+Diffusion Features — Variant A (node-level multi-scale HKS)
+Spec: docs/superpowers/specs/2026-05-28-diffusion-features-lp-design.md
+Config: trials=50, K=5, datasets=['Cora', 'Chameleon']
+========================================================================
+
+Feature: per candidate edge (u,v): concat[HKS(u), HKS(v), |HKS(u)-HKS(v)|]
+  = 3K-dim, from normalized-Laplacian heat kernel on the leakage-free
+  training graph (val/test pos removed). HKS_t(i)=sum_k exp(-t*lam_k)phi_k(i)^2.
+
+------------------------------------------------------------------------
+MEASUREMENT 1 — §14 DIAGNOSTIC
+Feature-only logistic-regression stratified-CV AUC.
+TEST-AUC = can the feature ALONE discriminate test_pos from test_neg?
+(train-AUC shown as within-graph control.)
+------------------------------------------------------------------------
+dataset    feature             train-AUC         TEST-AUC
+Cora       A_nodeHKS    0.6974±0.0020  0.5579±0.0036
+Cora       exact_PI     0.7204±0.0037  0.5000±0.0000
+Chameleon  A_nodeHKS    0.8424±0.0005  0.8404±0.0004
+Chameleon  exact_PI     0.9730±0.0002  0.4909±0.0050
+
+Interpretation: exact-PI is expected to collapse to TEST-AUC ~ 0.5
+(membership artifact: PI=0 at test for both classes). Variant A is a
+node-level global feature; if TEST-AUC > 0.5 it supplies genuine test signal.
+
+------------------------------------------------------------------------
+MEASUREMENT 2 — END-TO-END LP AUC (mean ± std over trials)
+------------------------------------------------------------------------
+dataset               no-PI         exact-PI      A(node-HKS)
+Cora          0.9213±0.0053    0.9207±0.0049    0.9100±0.0126
+Chameleon     0.9691±0.0059    0.9441±0.0064    0.9870±0.0015
+
+Gaps vs baselines:
+  Cora: A-vs-noPI = -0.0114   A-vs-exactPI = -0.0107   (exactPI-vs-noPI = -0.0006)
+  Chameleon: A-vs-noPI = +0.0179   A-vs-exactPI = +0.0428   (exactPI-vs-noPI = -0.0250)
+
+========================================================================
+VERDICT
+========================================================================
+[Cora]
+  §14: node-HKS TEST-AUC = 0.5579  vs  exact-PI TEST-AUC = 0.5000
+       node-HKS gives genuine test signal? YES (>0.55 threshold; exact-PI collapses ~0.5)
+  LP:  A HURTS vs no-PI (-0.0114); A below exact-PI (-0.0107)
+
+[Chameleon]
+  §14: node-HKS TEST-AUC = 0.8404  vs  exact-PI TEST-AUC = 0.4909
+       node-HKS gives genuine test signal? YES (>0.55 threshold; exact-PI collapses ~0.5)
+  LP:  A HELPS vs no-PI (+0.0179); A beats exact-PI (+0.0428)
+
+
+Outputs written to results/diffusion_feat_A/
