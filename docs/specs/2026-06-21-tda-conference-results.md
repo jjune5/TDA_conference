@@ -402,4 +402,4 @@ PDGNN inference도 동일하게 val/test_pos를 제거(`pdgnn_inference.py` L60-
 
 ### caveat / 미해결
 - Chameleon에선 PDGNN test_pos(0.16) < test_neg(0.31) — hetero에선 PDGNN 신호도 약하거나 오방향. genuine test 판별이 강한 건 homo(Photo). hetero에서 PDGNN이 no-PI를 넘긴 이유(§1)는 별도 요인(학습 정제 등).
-- 미해결: PDGNN이 학습한 ground-truth PD가 edge-present인지 edge-removed인지(`prepare_data_LP_modern.py`) — "무엇을 예측하도록 배웠나"의 해석에 영향. 향후 확인.
+- **해소됨**: PDGNN은 **edge-present vicinity→PD로 학습** (`prepare_data_LP_modern._edge_vicinity`가 (u,v) 엣지를 포함한 subgraph로 ground-truth PD 생성). → 추론 때 edge-removed vicinity에서도 **"엣지가 있었다면의 PD"를 surrounding 구조로 예측** → 엣지 없이 "진짜 엣지 자리"를 인식하는 genuine 신호. (exact는 edge-removed vicinity의 *실제* PD = trivial을 계산하므로 0.) 이게 exact(membership) vs PDGNN(genuine 복원)의 정확한 기전.
