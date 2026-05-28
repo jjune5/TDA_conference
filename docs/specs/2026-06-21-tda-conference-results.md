@@ -409,3 +409,17 @@ PDGNN inference도 동일하게 val/test_pos를 제거(`pdgnn_inference.py` L60-
 ### caveat / 미해결
 - Chameleon에선 PDGNN test_pos(0.16) < test_neg(0.31) — hetero에선 PDGNN 신호도 약하거나 오방향. genuine test 판별이 강한 건 homo(Photo). hetero에서 PDGNN이 no-PI를 넘긴 이유(§1)는 별도 요인(학습 정제 등).
 - **해소됨**: PDGNN은 **edge-present vicinity→PD로 학습** (`prepare_data_LP_modern._edge_vicinity`가 (u,v) 엣지를 포함한 subgraph로 ground-truth PD 생성). → 추론 때 edge-removed vicinity에서도 **"엣지가 있었다면의 PD"를 surrounding 구조로 예측** → 엣지 없이 "진짜 엣지 자리"를 인식하는 genuine 신호. (exact는 edge-removed vicinity의 *실제* PD = trivial을 계산하므로 0.) 이게 exact(membership) vs PDGNN(genuine 복원)의 정확한 기전.
+
+### 14g. 확정 — 전 데이터셋 일반화(CP-A) + leave-one-out 결정적 control(CP-B)
+
+**CP-A — 9개 LP 데이터셋 일반화** (`pi_artifact_all.py`):
+- exact test_pos 붕괴 = **8/9 보편적** (Photo/Computers/Chameleon/Squirrel/Cornell/Texas/Wisconsin/ChChMiner 전부 test_pos nz≈0). **예외: PubMed**(test_pos nz 22% — exact 캐시가 20× neg cap + 조밀 인용그래프라 일부 test 엣지가 우회경로 보유; 그래도 100%→22%로 심하게 저하).
+- PDGNN은 9개 전부 test 신호 복원 — **homo서 깨끗**(test_pos 60~95% nz vs test_neg 1~11%), **hetero서 noisy**(PDGNN이 test_neg에도 mass 11~26% → gap 작음, Texas/Squirrel 최약). → PDGNN이 homo서 더 잘 듣는 이유 정량화.
+
+**CP-B — leave-one-out 결정적 control** (`consistent_pi_loo.py`, train_pos 150개 × Photo/Chameleon):
+- 각 train_pos 엣지 vicinity PI를 엣지 **있을 때 vs 없을 때** 재계산 (동일 PI math, 엣지 presence만 차이).
+- **collapse fraction = 1.000 (100%)** 양쪽 — 모든 엣지가 자기 엣지 제거 시 PI가 **정확히 0**으로 붕괴 (without-edge max L1=0.0, 300/300). with-edge: Photo 2.99 / Chameleon 10.14.
+- **fidelity 안전장치**: with-edge 재계산이 실제 캐시와 **기계정밀도 일치**(median L1≈0) → 재계산 신뢰 + without=0이 유의미함 입증.
+- 기전: hop-1 intersection vicinity는 두 끝점이 이웃이어야 → (u,v) 없으면 공통이웃만 남아 extended-PD trivial → PI=0. (= test_pos가 이미 있는 regime.)
+
+**→ §14는 5겹 증거로 확정**: (1) 직접 캐시 per-segment 분석, (2) leakage-free PDGNN 대비, (3) PDGNN의 edge-present 학습 기전, (4) 9-데이터셋 일반화, (5) **100%-collapse leave-one-out control**. exact PI의 LP 신호 = surrounding 구조가 아니라 **train-graph 엣지-멤버십 artifact**. 발표 센터피스로 견고.

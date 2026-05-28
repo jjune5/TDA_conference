@@ -1,0 +1,33 @@
+Leave-one-out PI control (results doc S14 centerpiece)
+======================================================================
+Claim: exact-PI train_pos signal is a train-graph-membership
+artifact. For each sampled train_pos edge (u,v) we compute its
+vicinity PI WITH the (u,v) edge in the graph (train/cache
+condition) vs WITHOUT it (held-out / test-like condition).
+Identical PI math (sg2dgm hop=1 intersection, descriptor=sum,
+resolution=5, weighted+normed); exact per-vicinity Ollivier-
+Ricci curvature both conditions. Only the edge presence differs.
+
+[Photo]  (n=150, seed=1234)
+  mean PI L1  WITH-edge    : 2.9890
+  mean PI L1  WITHOUT-edge : 0.0000
+  median PI L1 with / without: 1.9571 / 0.0000
+  mean L1(with - without)  : 2.9890
+  collapse frac (>=95% drop, of edges w/ signal): 1.000
+  collapse frac (without-edge L1 < 1e-3)        : 1.000
+  frac with-edge already ~0                     : 0.013
+  recompute-vs-cache mean/median L1 (sanity)    : 0.4154 / 0.0000
+  VERDICT: MEMBERSHIP ARTIFACT CONFIRMED -- removing the edge collapses train_pos PI
+
+[Chameleon]  (n=150, seed=1234)
+  mean PI L1  WITH-edge    : 10.1409
+  mean PI L1  WITHOUT-edge : 0.0000
+  median PI L1 with / without: 3.4388 / 0.0000
+  mean L1(with - without)  : 10.1409
+  collapse frac (>=95% drop, of edges w/ signal): 1.000
+  collapse frac (without-edge L1 < 1e-3)        : 1.000
+  frac with-edge already ~0                     : 0.040
+  recompute-vs-cache mean/median L1 (sanity)    : 0.0000 / 0.0000
+  VERDICT: MEMBERSHIP ARTIFACT CONFIRMED -- removing the edge collapses train_pos PI
+
+Cross-check: cached test_pos PI is ~0 for these datasets (see pi_artifact_analysis.py): exactly the without-edge regime.
