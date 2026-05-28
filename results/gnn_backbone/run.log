@@ -1,0 +1,4 @@
+/mnt/data/users/junyoungpark/code/TLC-GNN/gnn_backbone_exp.py:79: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+/mnt/data/users/junyoungpark/code/TLC-GNN/gnn_backbone_exp.py:79: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
