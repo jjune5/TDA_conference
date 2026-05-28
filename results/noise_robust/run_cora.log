@@ -1,0 +1,884 @@
+
+======================================================================
+DATASET: Cora
+======================================================================
+/mnt/data/users/junyoungpark/code/TLC-GNN/.claude/worktrees/agent-a69c4cf3bdf0179a4/loaddatas.py:89: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+[task] nodes=2708 clean_mp_edges(dir)=8976 train_pos=4488 val_pos=263 test_pos=527 total_pi_edges=28508
+
+[Cora p=0.0% gseed=0] undirected=4488 removed=0 added=0 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=900.9 edges/s eta=0.5 min
+[parallel_pi] 1140/28508 (4.0%) rate=1785.1 edges/s eta=0.3 min
+[parallel_pi] 1710/28508 (6.0%) rate=2644.1 edges/s eta=0.2 min
+[parallel_pi] 2280/28508 (8.0%) rate=3482.4 edges/s eta=0.1 min
+[parallel_pi] 2850/28508 (10.0%) rate=4294.1 edges/s eta=0.1 min
+[parallel_pi] 3420/28508 (12.0%) rate=5103.8 edges/s eta=0.1 min
+[parallel_pi] 3990/28508 (14.0%) rate=5815.5 edges/s eta=0.1 min
+[parallel_pi] 4560/28508 (16.0%) rate=6573.7 edges/s eta=0.1 min
+[parallel_pi] 5130/28508 (18.0%) rate=7388.7 edges/s eta=0.1 min
+[parallel_pi] 5700/28508 (20.0%) rate=8203.7 edges/s eta=0.0 min
+[parallel_pi] 6270/28508 (22.0%) rate=8805.8 edges/s eta=0.0 min
+[parallel_pi] 6840/28508 (24.0%) rate=9502.0 edges/s eta=0.0 min
+[parallel_pi] 7410/28508 (26.0%) rate=10173.1 edges/s eta=0.0 min
+[parallel_pi] 7980/28508 (28.0%) rate=10853.7 edges/s eta=0.0 min
+[parallel_pi] 8550/28508 (30.0%) rate=11518.6 edges/s eta=0.0 min
+[parallel_pi] 9120/28508 (32.0%) rate=11987.1 edges/s eta=0.0 min
+[parallel_pi] 9690/28508 (34.0%) rate=12635.9 edges/s eta=0.0 min
+[parallel_pi] 10260/28508 (36.0%) rate=13185.8 edges/s eta=0.0 min
+[parallel_pi] 10830/28508 (38.0%) rate=13803.4 edges/s eta=0.0 min
+[parallel_pi] 11400/28508 (40.0%) rate=14365.7 edges/s eta=0.0 min
+[parallel_pi] 11970/28508 (42.0%) rate=14834.4 edges/s eta=0.0 min
+[parallel_pi] 12540/28508 (44.0%) rate=15309.4 edges/s eta=0.0 min
+[parallel_pi] 13110/28508 (46.0%) rate=15756.9 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=16137.2 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=16421.8 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=16543.6 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=17074.0 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=17693.1 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=18311.5 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=18926.5 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=19540.0 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=20155.2 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=20771.6 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=21387.4 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=22002.2 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=22614.6 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=23226.4 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=23838.0 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=24450.6 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=25060.7 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=25669.9 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=26278.5 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=26885.6 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=27490.3 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=28096.7 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=28702.8 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=29308.7 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=29911.0 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=30513.3 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=31115.1 edges/s eta=0.0 min
+[parallel_pi] done in 0.0 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p0_s0_TLCGNN (10s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 54898 edges (avg deg 20.3)
+27449
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=746.7 edges/s eta=0.6 min
+[parallel_pi] 1140/28508 (4.0%) rate=1167.0 edges/s eta=0.4 min
+[parallel_pi] 1710/28508 (6.0%) rate=1426.8 edges/s eta=0.3 min
+[parallel_pi] 2280/28508 (8.0%) rate=1633.2 edges/s eta=0.3 min
+[parallel_pi] 2850/28508 (10.0%) rate=1795.7 edges/s eta=0.2 min
+[parallel_pi] 3420/28508 (12.0%) rate=1946.8 edges/s eta=0.2 min
+[parallel_pi] 3990/28508 (14.0%) rate=2157.8 edges/s eta=0.2 min
+[parallel_pi] 4560/28508 (16.0%) rate=2442.3 edges/s eta=0.2 min
+[parallel_pi] 5130/28508 (18.0%) rate=2734.0 edges/s eta=0.1 min
+[parallel_pi] 5700/28508 (20.0%) rate=3030.0 edges/s eta=0.1 min
+[parallel_pi] 6270/28508 (22.0%) rate=3319.9 edges/s eta=0.1 min
+[parallel_pi] 6840/28508 (24.0%) rate=3614.6 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=3897.3 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=4169.7 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=4447.7 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=4642.0 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=4882.0 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=5117.6 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=5399.6 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=5626.0 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=5903.6 edges/s eta=0.0 min
+[parallel_pi] 12540/28508 (44.0%) rate=6182.1 edges/s eta=0.0 min
+[parallel_pi] 13110/28508 (46.0%) rate=6460.7 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=6739.1 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=7000.6 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=7278.2 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=7555.6 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=7833.0 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=8110.4 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=8381.8 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=8642.7 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=8862.0 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=9075.9 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=9303.5 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=9534.5 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=9800.8 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=10070.6 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=10337.3 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=10606.8 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=10876.2 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=11145.5 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=11413.0 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=11681.5 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=11946.8 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=12214.0 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=12480.9 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=12747.8 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=12778.8 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=12585.4 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=7183.1 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p0_s0_TLCGNN (16s)
+  [PI] p=0.0% gseed=0 AUC=0.9208+-0.0060 (n=10)
+  [no-PI] p=0.0% gseed=0 AUC=0.9206+-0.0051 (n=10)
+  [GDC-PI] p=0.0% gseed=0 AUC=0.9193+-0.0060 (n=10)
+
+[Cora p=0.0% gseed=1] undirected=4488 removed=0 added=0 -> perturbed_mp_edges(dir)=8976
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p0_s0_TLCGNN (0s)
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p0_s0_TLCGNN (0s)
+  [PI] p=0.0% gseed=1 AUC=0.9206+-0.0046 (n=10)
+  [no-PI] p=0.0% gseed=1 AUC=0.9210+-0.0048 (n=10)
+  [GDC-PI] p=0.0% gseed=1 AUC=0.9202+-0.0056 (n=10)
+
+[Cora p=5.0% gseed=0] undirected=4488 removed=224 added=224 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=364.0 edges/s eta=1.3 min
+[parallel_pi] 1140/28508 (4.0%) rate=717.9 edges/s eta=0.6 min
+[parallel_pi] 1710/28508 (6.0%) rate=1076.0 edges/s eta=0.4 min
+[parallel_pi] 2280/28508 (8.0%) rate=1363.1 edges/s eta=0.3 min
+[parallel_pi] 2850/28508 (10.0%) rate=1655.4 edges/s eta=0.3 min
+[parallel_pi] 3420/28508 (12.0%) rate=1963.4 edges/s eta=0.2 min
+[parallel_pi] 3990/28508 (14.0%) rate=2290.0 edges/s eta=0.2 min
+[parallel_pi] 4560/28508 (16.0%) rate=2606.1 edges/s eta=0.2 min
+[parallel_pi] 5130/28508 (18.0%) rate=2918.7 edges/s eta=0.1 min
+[parallel_pi] 5700/28508 (20.0%) rate=3235.9 edges/s eta=0.1 min
+[parallel_pi] 6270/28508 (22.0%) rate=3543.6 edges/s eta=0.1 min
+[parallel_pi] 6840/28508 (24.0%) rate=3826.9 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=4144.3 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=4363.0 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=4574.9 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=4810.7 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=5104.5 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=5375.9 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=5660.8 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=5946.8 edges/s eta=0.0 min
+[parallel_pi] 11970/28508 (42.0%) rate=6185.9 edges/s eta=0.0 min
+[parallel_pi] 12540/28508 (44.0%) rate=6472.1 edges/s eta=0.0 min
+[parallel_pi] 13110/28508 (46.0%) rate=6747.3 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=6996.1 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=7263.2 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=7527.3 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=7782.7 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=8045.5 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=8330.3 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=8615.5 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=8900.7 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=9185.7 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=9413.4 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=9602.6 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=9881.2 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=10128.9 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=10320.9 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=10514.5 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=10718.1 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=10961.8 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=11226.7 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=11444.1 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=11701.4 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=11909.9 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=12151.0 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=12418.0 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=12602.3 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=12826.2 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=13075.1 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=13336.9 edges/s eta=0.0 min
+[parallel_pi] done in 0.0 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p5_s0_TLCGNN (10s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 54040 edges (avg deg 20.0)
+27020
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=310.9 edges/s eta=1.5 min
+[parallel_pi] 1140/28508 (4.0%) rate=554.4 edges/s eta=0.8 min
+[parallel_pi] 1710/28508 (6.0%) rate=771.4 edges/s eta=0.6 min
+[parallel_pi] 2280/28508 (8.0%) rate=932.9 edges/s eta=0.5 min
+[parallel_pi] 2850/28508 (10.0%) rate=1071.4 edges/s eta=0.4 min
+[parallel_pi] 3420/28508 (12.0%) rate=1211.2 edges/s eta=0.3 min
+[parallel_pi] 3990/28508 (14.0%) rate=1366.1 edges/s eta=0.3 min
+[parallel_pi] 4560/28508 (16.0%) rate=1549.0 edges/s eta=0.3 min
+[parallel_pi] 5130/28508 (18.0%) rate=1723.7 edges/s eta=0.2 min
+[parallel_pi] 5700/28508 (20.0%) rate=1913.6 edges/s eta=0.2 min
+[parallel_pi] 6270/28508 (22.0%) rate=2104.6 edges/s eta=0.2 min
+[parallel_pi] 6840/28508 (24.0%) rate=2289.8 edges/s eta=0.2 min
+[parallel_pi] 7410/28508 (26.0%) rate=2469.6 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=2648.7 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=2835.5 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=3018.1 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=3199.3 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=3385.8 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=3565.9 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=3740.6 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=3912.4 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=4089.9 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=4267.6 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=4442.7 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=4614.5 edges/s eta=0.1 min
+[parallel_pi] 14820/28508 (52.0%) rate=4792.3 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=4942.3 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=5091.5 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=5250.6 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=5427.6 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=5605.5 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=5781.5 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=5947.6 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=6078.0 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=6231.2 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=6399.2 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=6573.5 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=6744.5 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=6908.3 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=7069.6 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=7238.1 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=7409.3 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=7582.5 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=7753.5 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=7923.1 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=8093.2 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=8219.8 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=8318.7 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=8275.6 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=5989.2 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p5_s0_TLCGNN (21s)
+  [PI] p=5.0% gseed=0 AUC=0.9167+-0.0056 (n=10)
+  [no-PI] p=5.0% gseed=0 AUC=0.9171+-0.0044 (n=10)
+  [GDC-PI] p=5.0% gseed=0 AUC=0.9165+-0.0064 (n=10)
+
+[Cora p=5.0% gseed=1] undirected=4488 removed=224 added=224 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=509.7 edges/s eta=0.9 min
+[parallel_pi] 1140/28508 (4.0%) rate=1013.1 edges/s eta=0.5 min
+[parallel_pi] 1710/28508 (6.0%) rate=1510.1 edges/s eta=0.3 min
+[parallel_pi] 2280/28508 (8.0%) rate=1991.9 edges/s eta=0.2 min
+[parallel_pi] 2850/28508 (10.0%) rate=2369.7 edges/s eta=0.2 min
+[parallel_pi] 3420/28508 (12.0%) rate=2825.9 edges/s eta=0.1 min
+[parallel_pi] 3990/28508 (14.0%) rate=3223.6 edges/s eta=0.1 min
+[parallel_pi] 4560/28508 (16.0%) rate=3672.8 edges/s eta=0.1 min
+[parallel_pi] 5130/28508 (18.0%) rate=4049.9 edges/s eta=0.1 min
+[parallel_pi] 5700/28508 (20.0%) rate=4490.9 edges/s eta=0.1 min
+[parallel_pi] 6270/28508 (22.0%) rate=4928.0 edges/s eta=0.1 min
+[parallel_pi] 6840/28508 (24.0%) rate=5349.4 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=5773.8 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=6207.2 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=6621.6 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=7004.3 edges/s eta=0.0 min
+[parallel_pi] 9690/28508 (34.0%) rate=7311.4 edges/s eta=0.0 min
+[parallel_pi] 10260/28508 (36.0%) rate=7485.2 edges/s eta=0.0 min
+[parallel_pi] 10830/28508 (38.0%) rate=7897.9 edges/s eta=0.0 min
+[parallel_pi] 11400/28508 (40.0%) rate=8291.5 edges/s eta=0.0 min
+[parallel_pi] 11970/28508 (42.0%) rate=8702.7 edges/s eta=0.0 min
+[parallel_pi] 12540/28508 (44.0%) rate=9106.0 edges/s eta=0.0 min
+[parallel_pi] 13110/28508 (46.0%) rate=9441.7 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=9782.4 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=10139.1 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=10452.6 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=10838.4 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=11176.0 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=11427.4 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=11675.8 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=12058.6 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=12441.9 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=12774.1 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=13014.8 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=13177.5 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=13548.2 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=13920.2 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=14054.0 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=14339.0 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=14675.1 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=15036.7 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=15383.6 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=15744.0 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=16103.1 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=16462.0 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=16751.9 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=17107.0 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=17461.8 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=17818.6 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=18176.1 edges/s eta=0.0 min
+[parallel_pi] done in 0.0 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p5_s1_TLCGNN (8s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 54024 edges (avg deg 19.9)
+27012
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=426.5 edges/s eta=1.1 min
+[parallel_pi] 1140/28508 (4.0%) rate=733.4 edges/s eta=0.6 min
+[parallel_pi] 1710/28508 (6.0%) rate=1018.1 edges/s eta=0.4 min
+[parallel_pi] 2280/28508 (8.0%) rate=1208.1 edges/s eta=0.4 min
+[parallel_pi] 2850/28508 (10.0%) rate=1413.6 edges/s eta=0.3 min
+[parallel_pi] 3420/28508 (12.0%) rate=1558.8 edges/s eta=0.3 min
+[parallel_pi] 3990/28508 (14.0%) rate=1759.5 edges/s eta=0.2 min
+[parallel_pi] 4560/28508 (16.0%) rate=1987.1 edges/s eta=0.2 min
+[parallel_pi] 5130/28508 (18.0%) rate=2228.8 edges/s eta=0.2 min
+[parallel_pi] 5700/28508 (20.0%) rate=2465.5 edges/s eta=0.2 min
+[parallel_pi] 6270/28508 (22.0%) rate=2703.7 edges/s eta=0.1 min
+[parallel_pi] 6840/28508 (24.0%) rate=2939.0 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=3152.5 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=3377.5 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=3612.1 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=3830.7 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=4056.8 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=4294.6 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=4503.3 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=4715.8 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=4937.8 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=5162.2 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=5382.4 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=5596.8 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=5803.7 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=6032.8 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=6260.1 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=6477.3 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=6697.1 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=6926.5 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=7138.8 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=7338.8 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=7496.3 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=7674.2 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=7894.1 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=8116.9 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=8341.0 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=8563.9 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=8787.9 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=9011.1 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=9231.4 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=9450.6 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=9673.5 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=9894.1 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=10116.8 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=10338.6 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=10559.9 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=10732.4 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=10655.1 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=8415.8 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p5_s1_TLCGNN (16s)
+  [PI] p=5.0% gseed=1 AUC=0.9176+-0.0035 (n=10)
+  [no-PI] p=5.0% gseed=1 AUC=0.9185+-0.0045 (n=10)
+  [GDC-PI] p=5.0% gseed=1 AUC=0.9199+-0.0046 (n=10)
+
+[Cora p=10.0% gseed=0] undirected=4488 removed=449 added=449 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=452.8 edges/s eta=1.0 min
+[parallel_pi] 1140/28508 (4.0%) rate=898.5 edges/s eta=0.5 min
+[parallel_pi] 1710/28508 (6.0%) rate=1325.5 edges/s eta=0.3 min
+[parallel_pi] 2280/28508 (8.0%) rate=1766.1 edges/s eta=0.2 min
+[parallel_pi] 2850/28508 (10.0%) rate=2202.5 edges/s eta=0.2 min
+[parallel_pi] 3420/28508 (12.0%) rate=2619.1 edges/s eta=0.2 min
+[parallel_pi] 3990/28508 (14.0%) rate=3034.4 edges/s eta=0.1 min
+[parallel_pi] 4560/28508 (16.0%) rate=3446.8 edges/s eta=0.1 min
+[parallel_pi] 5130/28508 (18.0%) rate=3870.5 edges/s eta=0.1 min
+[parallel_pi] 5700/28508 (20.0%) rate=4289.4 edges/s eta=0.1 min
+[parallel_pi] 6270/28508 (22.0%) rate=4698.4 edges/s eta=0.1 min
+[parallel_pi] 6840/28508 (24.0%) rate=5065.8 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=5443.6 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=5821.9 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=6229.2 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=6593.4 edges/s eta=0.0 min
+[parallel_pi] 9690/28508 (34.0%) rate=6898.5 edges/s eta=0.0 min
+[parallel_pi] 10260/28508 (36.0%) rate=7180.2 edges/s eta=0.0 min
+[parallel_pi] 10830/28508 (38.0%) rate=7545.5 edges/s eta=0.0 min
+[parallel_pi] 11400/28508 (40.0%) rate=7884.4 edges/s eta=0.0 min
+[parallel_pi] 11970/28508 (42.0%) rate=8233.0 edges/s eta=0.0 min
+[parallel_pi] 12540/28508 (44.0%) rate=8621.9 edges/s eta=0.0 min
+[parallel_pi] 13110/28508 (46.0%) rate=9009.4 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=9398.4 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=9777.8 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=10117.1 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=10485.7 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=10791.3 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=11157.7 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=11509.4 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=11799.2 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=12141.7 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=12442.7 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=12712.5 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=13022.1 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=13388.3 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=13736.3 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=13960.5 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=14160.7 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=14517.7 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=14876.1 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=15135.6 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=15355.6 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=15648.2 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=15988.4 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=16312.4 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=16639.7 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=16976.8 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=17261.5 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=17454.2 edges/s eta=0.0 min
+[parallel_pi] done in 0.0 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p10_s0_TLCGNN (9s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 53574 edges (avg deg 19.8)
+26787
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=326.9 edges/s eta=1.4 min
+[parallel_pi] 1140/28508 (4.0%) rate=569.9 edges/s eta=0.8 min
+[parallel_pi] 1710/28508 (6.0%) rate=789.4 edges/s eta=0.6 min
+[parallel_pi] 2280/28508 (8.0%) rate=951.2 edges/s eta=0.5 min
+[parallel_pi] 2850/28508 (10.0%) rate=1088.6 edges/s eta=0.4 min
+[parallel_pi] 3420/28508 (12.0%) rate=1208.6 edges/s eta=0.3 min
+[parallel_pi] 3990/28508 (14.0%) rate=1369.3 edges/s eta=0.3 min
+[parallel_pi] 4560/28508 (16.0%) rate=1559.2 edges/s eta=0.3 min
+[parallel_pi] 5130/28508 (18.0%) rate=1748.0 edges/s eta=0.2 min
+[parallel_pi] 5700/28508 (20.0%) rate=1927.6 edges/s eta=0.2 min
+[parallel_pi] 6270/28508 (22.0%) rate=2105.6 edges/s eta=0.2 min
+[parallel_pi] 6840/28508 (24.0%) rate=2291.9 edges/s eta=0.2 min
+[parallel_pi] 7410/28508 (26.0%) rate=2462.6 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=2648.4 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=2830.9 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=3008.8 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=3178.5 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=3355.6 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=3536.5 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=3704.0 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=3885.6 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=4066.5 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=4230.9 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=4398.4 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=4571.9 edges/s eta=0.1 min
+[parallel_pi] 14820/28508 (52.0%) rate=4725.4 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=4898.1 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=5074.6 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=5243.2 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=5420.0 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=5581.7 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=5745.0 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=5906.2 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=6054.3 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=6141.1 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=6287.2 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=6431.2 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=6591.9 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=6725.1 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=6883.9 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=7044.5 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=7145.9 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=7301.4 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=7447.3 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=7605.7 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=7769.1 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=7902.7 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=8030.5 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=8023.9 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=7841.5 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p10_s0_TLCGNN (23s)
+  [PI] p=10.0% gseed=0 AUC=0.9160+-0.0053 (n=10)
+  [no-PI] p=10.0% gseed=0 AUC=0.9147+-0.0055 (n=10)
+  [GDC-PI] p=10.0% gseed=0 AUC=0.9132+-0.0062 (n=10)
+
+[Cora p=10.0% gseed=1] undirected=4488 removed=449 added=449 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=286.3 edges/s eta=1.6 min
+[parallel_pi] 1140/28508 (4.0%) rate=545.6 edges/s eta=0.8 min
+[parallel_pi] 1710/28508 (6.0%) rate=799.5 edges/s eta=0.6 min
+[parallel_pi] 2280/28508 (8.0%) rate=1058.5 edges/s eta=0.4 min
+[parallel_pi] 2850/28508 (10.0%) rate=1309.7 edges/s eta=0.3 min
+[parallel_pi] 3420/28508 (12.0%) rate=1545.5 edges/s eta=0.3 min
+[parallel_pi] 3990/28508 (14.0%) rate=1799.6 edges/s eta=0.2 min
+[parallel_pi] 4560/28508 (16.0%) rate=2036.0 edges/s eta=0.2 min
+[parallel_pi] 5130/28508 (18.0%) rate=2285.8 edges/s eta=0.2 min
+[parallel_pi] 5700/28508 (20.0%) rate=2537.0 edges/s eta=0.1 min
+[parallel_pi] 6270/28508 (22.0%) rate=2750.6 edges/s eta=0.1 min
+[parallel_pi] 6840/28508 (24.0%) rate=2999.9 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=3243.0 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=3484.6 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=3729.0 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=3972.9 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=4201.3 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=4434.9 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=4659.9 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=4897.2 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=5121.0 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=5359.6 edges/s eta=0.0 min
+[parallel_pi] 13110/28508 (46.0%) rate=5541.6 edges/s eta=0.0 min
+[parallel_pi] 13680/28508 (48.0%) rate=5725.3 edges/s eta=0.0 min
+[parallel_pi] 14250/28508 (50.0%) rate=5931.9 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=6154.2 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=6389.2 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=6595.7 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=6797.6 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=7006.7 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=7212.4 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=7424.2 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=7644.4 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=7857.6 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=8070.2 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=8275.8 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=8491.6 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=8708.9 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=8892.7 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=9108.9 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=9327.4 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=9545.8 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=9764.6 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=9902.6 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=10120.5 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=10333.9 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=10551.0 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=10726.0 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=10912.9 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=11099.1 edges/s eta=0.0 min
+[parallel_pi] done in 0.0 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p10_s1_TLCGNN (23s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 53562 edges (avg deg 19.8)
+26781
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=127.5 edges/s eta=3.7 min
+[parallel_pi] 1140/28508 (4.0%) rate=231.2 edges/s eta=2.0 min
+[parallel_pi] 1710/28508 (6.0%) rate=326.2 edges/s eta=1.4 min
+[parallel_pi] 2280/28508 (8.0%) rate=399.5 edges/s eta=1.1 min
+[parallel_pi] 2850/28508 (10.0%) rate=468.1 edges/s eta=0.9 min
+[parallel_pi] 3420/28508 (12.0%) rate=524.7 edges/s eta=0.8 min
+[parallel_pi] 3990/28508 (14.0%) rate=604.0 edges/s eta=0.7 min
+[parallel_pi] 4560/28508 (16.0%) rate=686.1 edges/s eta=0.6 min
+[parallel_pi] 5130/28508 (18.0%) rate=769.5 edges/s eta=0.5 min
+[parallel_pi] 5700/28508 (20.0%) rate=851.4 edges/s eta=0.4 min
+[parallel_pi] 6270/28508 (22.0%) rate=934.2 edges/s eta=0.4 min
+[parallel_pi] 6840/28508 (24.0%) rate=1014.4 edges/s eta=0.4 min
+[parallel_pi] 7410/28508 (26.0%) rate=1095.0 edges/s eta=0.3 min
+[parallel_pi] 7980/28508 (28.0%) rate=1173.9 edges/s eta=0.3 min
+[parallel_pi] 8550/28508 (30.0%) rate=1256.8 edges/s eta=0.3 min
+[parallel_pi] 9120/28508 (32.0%) rate=1338.3 edges/s eta=0.2 min
+[parallel_pi] 9690/28508 (34.0%) rate=1420.3 edges/s eta=0.2 min
+[parallel_pi] 10260/28508 (36.0%) rate=1501.3 edges/s eta=0.2 min
+[parallel_pi] 10830/28508 (38.0%) rate=1577.4 edges/s eta=0.2 min
+[parallel_pi] 11400/28508 (40.0%) rate=1657.8 edges/s eta=0.2 min
+[parallel_pi] 11970/28508 (42.0%) rate=1737.8 edges/s eta=0.2 min
+[parallel_pi] 12540/28508 (44.0%) rate=1818.4 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=1895.3 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=1970.7 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=2050.4 edges/s eta=0.1 min
+[parallel_pi] 14820/28508 (52.0%) rate=2125.0 edges/s eta=0.1 min
+[parallel_pi] 15390/28508 (54.0%) rate=2205.0 edges/s eta=0.1 min
+[parallel_pi] 15960/28508 (56.0%) rate=2277.9 edges/s eta=0.1 min
+[parallel_pi] 16530/28508 (58.0%) rate=2347.9 edges/s eta=0.1 min
+[parallel_pi] 17100/28508 (60.0%) rate=2424.9 edges/s eta=0.1 min
+[parallel_pi] 17670/28508 (62.0%) rate=2499.5 edges/s eta=0.1 min
+[parallel_pi] 18240/28508 (64.0%) rate=2575.2 edges/s eta=0.1 min
+[parallel_pi] 18810/28508 (66.0%) rate=2651.3 edges/s eta=0.1 min
+[parallel_pi] 19380/28508 (68.0%) rate=2711.1 edges/s eta=0.1 min
+[parallel_pi] 19950/28508 (70.0%) rate=2789.5 edges/s eta=0.1 min
+[parallel_pi] 20520/28508 (72.0%) rate=2855.4 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=2934.5 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=3011.8 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=3060.0 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=3128.0 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=3194.6 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=3268.7 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=3324.5 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=3399.8 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=3469.0 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=3535.0 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=3577.0 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=3646.8 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=3600.7 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=3569.7 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p10_s1_TLCGNN (32s)
+  [PI] p=10.0% gseed=1 AUC=0.9099+-0.0053 (n=10)
+  [no-PI] p=10.0% gseed=1 AUC=0.9105+-0.0045 (n=10)
+  [GDC-PI] p=10.0% gseed=1 AUC=0.9175+-0.0055 (n=10)
+
+[Cora p=20.0% gseed=0] undirected=4488 removed=898 added=898 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=234.1 edges/s eta=2.0 min
+[parallel_pi] 1140/28508 (4.0%) rate=458.6 edges/s eta=1.0 min
+[parallel_pi] 1710/28508 (6.0%) rate=687.2 edges/s eta=0.6 min
+[parallel_pi] 2280/28508 (8.0%) rate=905.3 edges/s eta=0.5 min
+[parallel_pi] 2850/28508 (10.0%) rate=1124.7 edges/s eta=0.4 min
+[parallel_pi] 3420/28508 (12.0%) rate=1333.1 edges/s eta=0.3 min
+[parallel_pi] 3990/28508 (14.0%) rate=1542.8 edges/s eta=0.3 min
+[parallel_pi] 4560/28508 (16.0%) rate=1762.7 edges/s eta=0.2 min
+[parallel_pi] 5130/28508 (18.0%) rate=1974.1 edges/s eta=0.2 min
+[parallel_pi] 5700/28508 (20.0%) rate=2189.9 edges/s eta=0.2 min
+[parallel_pi] 6270/28508 (22.0%) rate=2401.8 edges/s eta=0.2 min
+[parallel_pi] 6840/28508 (24.0%) rate=2611.6 edges/s eta=0.1 min
+[parallel_pi] 7410/28508 (26.0%) rate=2827.1 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=3018.8 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=3224.2 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=3426.6 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=3632.4 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=3807.6 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=3951.4 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=4143.3 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=4338.2 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=4523.3 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=4687.9 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=4864.0 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=5062.2 edges/s eta=0.0 min
+[parallel_pi] 14820/28508 (52.0%) rate=5262.0 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=5460.5 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=5642.2 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=5822.9 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=5962.2 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=6127.0 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=6282.5 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=6451.1 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=6629.7 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=6789.5 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=6965.5 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=7150.9 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=7317.0 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=7501.2 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=7644.4 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=7833.2 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=8002.9 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=8166.2 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=8351.2 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=8526.9 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=8699.2 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=8795.3 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=8980.9 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=9166.1 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=9348.8 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p20_s0_TLCGNN (13s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 52706 edges (avg deg 19.5)
+26353
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=204.9 edges/s eta=2.3 min
+[parallel_pi] 1140/28508 (4.0%) rate=378.3 edges/s eta=1.2 min
+[parallel_pi] 1710/28508 (6.0%) rate=523.1 edges/s eta=0.9 min
+[parallel_pi] 2280/28508 (8.0%) rate=645.1 edges/s eta=0.7 min
+[parallel_pi] 2850/28508 (10.0%) rate=741.3 edges/s eta=0.6 min
+[parallel_pi] 3420/28508 (12.0%) rate=843.6 edges/s eta=0.5 min
+[parallel_pi] 3990/28508 (14.0%) rate=941.1 edges/s eta=0.4 min
+[parallel_pi] 4560/28508 (16.0%) rate=1073.5 edges/s eta=0.4 min
+[parallel_pi] 5130/28508 (18.0%) rate=1198.9 edges/s eta=0.3 min
+[parallel_pi] 5700/28508 (20.0%) rate=1327.3 edges/s eta=0.3 min
+[parallel_pi] 6270/28508 (22.0%) rate=1447.7 edges/s eta=0.3 min
+[parallel_pi] 6840/28508 (24.0%) rate=1572.8 edges/s eta=0.2 min
+[parallel_pi] 7410/28508 (26.0%) rate=1702.2 edges/s eta=0.2 min
+[parallel_pi] 7980/28508 (28.0%) rate=1812.8 edges/s eta=0.2 min
+[parallel_pi] 8550/28508 (30.0%) rate=1931.0 edges/s eta=0.2 min
+[parallel_pi] 9120/28508 (32.0%) rate=2048.6 edges/s eta=0.2 min
+[parallel_pi] 9690/28508 (34.0%) rate=2169.9 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=2294.7 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=2403.1 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=2523.0 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=2646.6 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=2752.7 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=2875.9 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=2978.6 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=3097.7 edges/s eta=0.1 min
+[parallel_pi] 14820/28508 (52.0%) rate=3208.4 edges/s eta=0.1 min
+[parallel_pi] 15390/28508 (54.0%) rate=3313.2 edges/s eta=0.1 min
+[parallel_pi] 15960/28508 (56.0%) rate=3434.3 edges/s eta=0.1 min
+[parallel_pi] 16530/28508 (58.0%) rate=3553.8 edges/s eta=0.1 min
+[parallel_pi] 17100/28508 (60.0%) rate=3650.0 edges/s eta=0.1 min
+[parallel_pi] 17670/28508 (62.0%) rate=3769.3 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=3878.0 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=3972.6 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=4077.1 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=4188.6 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=4297.1 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=4407.7 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=4524.2 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=4619.6 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=4728.3 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=4825.1 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=4910.5 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=5014.2 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=5112.1 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=5219.1 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=5330.3 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=5403.5 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=5481.7 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=5528.9 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=5420.6 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p20_s0_TLCGNN (31s)
+  [PI] p=20.0% gseed=0 AUC=0.9049+-0.0065 (n=10)
+  [no-PI] p=20.0% gseed=0 AUC=0.9026+-0.0058 (n=10)
+  [GDC-PI] p=20.0% gseed=0 AUC=0.9084+-0.0080 (n=10)
+
+[Cora p=20.0% gseed=1] undirected=4488 removed=898 added=898 -> perturbed_mp_edges(dir)=8976
+4488
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=208.7 edges/s eta=2.2 min
+[parallel_pi] 1140/28508 (4.0%) rate=417.0 edges/s eta=1.1 min
+[parallel_pi] 1710/28508 (6.0%) rate=614.7 edges/s eta=0.7 min
+[parallel_pi] 2280/28508 (8.0%) rate=811.8 edges/s eta=0.5 min
+[parallel_pi] 2850/28508 (10.0%) rate=1004.5 edges/s eta=0.4 min
+[parallel_pi] 3420/28508 (12.0%) rate=1195.0 edges/s eta=0.3 min
+[parallel_pi] 3990/28508 (14.0%) rate=1384.8 edges/s eta=0.3 min
+[parallel_pi] 4560/28508 (16.0%) rate=1581.1 edges/s eta=0.3 min
+[parallel_pi] 5130/28508 (18.0%) rate=1775.3 edges/s eta=0.2 min
+[parallel_pi] 5700/28508 (20.0%) rate=1970.3 edges/s eta=0.2 min
+[parallel_pi] 6270/28508 (22.0%) rate=2160.6 edges/s eta=0.2 min
+[parallel_pi] 6840/28508 (24.0%) rate=2353.3 edges/s eta=0.2 min
+[parallel_pi] 7410/28508 (26.0%) rate=2547.9 edges/s eta=0.1 min
+[parallel_pi] 7980/28508 (28.0%) rate=2707.9 edges/s eta=0.1 min
+[parallel_pi] 8550/28508 (30.0%) rate=2880.5 edges/s eta=0.1 min
+[parallel_pi] 9120/28508 (32.0%) rate=3063.7 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=3253.2 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=3427.7 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=3572.9 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=3755.7 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=3915.8 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=4090.0 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=4255.3 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=4433.7 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=4610.4 edges/s eta=0.1 min
+[parallel_pi] 14820/28508 (52.0%) rate=4788.1 edges/s eta=0.0 min
+[parallel_pi] 15390/28508 (54.0%) rate=4957.5 edges/s eta=0.0 min
+[parallel_pi] 15960/28508 (56.0%) rate=5136.6 edges/s eta=0.0 min
+[parallel_pi] 16530/28508 (58.0%) rate=5222.1 edges/s eta=0.0 min
+[parallel_pi] 17100/28508 (60.0%) rate=5393.9 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=5568.5 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=5734.4 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=5897.3 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=6069.1 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=6229.5 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=6406.5 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=6555.5 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=6721.3 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=6878.6 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=7032.9 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=7189.5 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=7334.8 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=7491.0 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=7663.7 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=7825.7 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=7986.7 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=8126.5 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=8286.5 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=8457.9 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=8629.3 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI PI] shape=(28508, 25) dir=data/noise_PI_p20_s1_TLCGNN (14s)
+[GDC hook] diffusing graph before PI computation
+[GDC] heat kernel t=5.0, topk k=16, n_nodes=2708, n_edges_orig=8976
+[GDC] diffused edge_index: 52514 edges (avg deg 19.4)
+26257
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 28508 edges with 32 workers, hop=1
+[parallel_pi] 570/28508 (2.0%) rate=217.2 edges/s eta=2.1 min
+[parallel_pi] 1140/28508 (4.0%) rate=395.6 edges/s eta=1.2 min
+[parallel_pi] 1710/28508 (6.0%) rate=539.6 edges/s eta=0.8 min
+[parallel_pi] 2280/28508 (8.0%) rate=663.9 edges/s eta=0.7 min
+[parallel_pi] 2850/28508 (10.0%) rate=765.8 edges/s eta=0.6 min
+[parallel_pi] 3420/28508 (12.0%) rate=873.1 edges/s eta=0.5 min
+[parallel_pi] 3990/28508 (14.0%) rate=996.2 edges/s eta=0.4 min
+[parallel_pi] 4560/28508 (16.0%) rate=1131.3 edges/s eta=0.4 min
+[parallel_pi] 5130/28508 (18.0%) rate=1265.7 edges/s eta=0.3 min
+[parallel_pi] 5700/28508 (20.0%) rate=1400.8 edges/s eta=0.3 min
+[parallel_pi] 6270/28508 (22.0%) rate=1532.4 edges/s eta=0.2 min
+[parallel_pi] 6840/28508 (24.0%) rate=1657.0 edges/s eta=0.2 min
+[parallel_pi] 7410/28508 (26.0%) rate=1790.8 edges/s eta=0.2 min
+[parallel_pi] 7980/28508 (28.0%) rate=1914.7 edges/s eta=0.2 min
+[parallel_pi] 8550/28508 (30.0%) rate=2025.2 edges/s eta=0.2 min
+[parallel_pi] 9120/28508 (32.0%) rate=2159.7 edges/s eta=0.1 min
+[parallel_pi] 9690/28508 (34.0%) rate=2285.4 edges/s eta=0.1 min
+[parallel_pi] 10260/28508 (36.0%) rate=2410.8 edges/s eta=0.1 min
+[parallel_pi] 10830/28508 (38.0%) rate=2536.2 edges/s eta=0.1 min
+[parallel_pi] 11400/28508 (40.0%) rate=2648.8 edges/s eta=0.1 min
+[parallel_pi] 11970/28508 (42.0%) rate=2769.9 edges/s eta=0.1 min
+[parallel_pi] 12540/28508 (44.0%) rate=2885.6 edges/s eta=0.1 min
+[parallel_pi] 13110/28508 (46.0%) rate=3004.6 edges/s eta=0.1 min
+[parallel_pi] 13680/28508 (48.0%) rate=3133.0 edges/s eta=0.1 min
+[parallel_pi] 14250/28508 (50.0%) rate=3256.4 edges/s eta=0.1 min
+[parallel_pi] 14820/28508 (52.0%) rate=3365.0 edges/s eta=0.1 min
+[parallel_pi] 15390/28508 (54.0%) rate=3491.6 edges/s eta=0.1 min
+[parallel_pi] 15960/28508 (56.0%) rate=3614.0 edges/s eta=0.1 min
+[parallel_pi] 16530/28508 (58.0%) rate=3728.8 edges/s eta=0.1 min
+[parallel_pi] 17100/28508 (60.0%) rate=3836.6 edges/s eta=0.0 min
+[parallel_pi] 17670/28508 (62.0%) rate=3953.7 edges/s eta=0.0 min
+[parallel_pi] 18240/28508 (64.0%) rate=4057.3 edges/s eta=0.0 min
+[parallel_pi] 18810/28508 (66.0%) rate=4182.8 edges/s eta=0.0 min
+[parallel_pi] 19380/28508 (68.0%) rate=4306.3 edges/s eta=0.0 min
+[parallel_pi] 19950/28508 (70.0%) rate=4428.7 edges/s eta=0.0 min
+[parallel_pi] 20520/28508 (72.0%) rate=4549.1 edges/s eta=0.0 min
+[parallel_pi] 21090/28508 (74.0%) rate=4667.8 edges/s eta=0.0 min
+[parallel_pi] 21660/28508 (76.0%) rate=4789.7 edges/s eta=0.0 min
+[parallel_pi] 22230/28508 (78.0%) rate=4903.1 edges/s eta=0.0 min
+[parallel_pi] 22800/28508 (80.0%) rate=5018.5 edges/s eta=0.0 min
+[parallel_pi] 23370/28508 (82.0%) rate=5136.2 edges/s eta=0.0 min
+[parallel_pi] 23940/28508 (84.0%) rate=5232.4 edges/s eta=0.0 min
+[parallel_pi] 24510/28508 (86.0%) rate=5343.7 edges/s eta=0.0 min
+[parallel_pi] 25080/28508 (88.0%) rate=5452.6 edges/s eta=0.0 min
+[parallel_pi] 25650/28508 (90.0%) rate=5555.9 edges/s eta=0.0 min
+[parallel_pi] 26220/28508 (92.0%) rate=5643.2 edges/s eta=0.0 min
+[parallel_pi] 26790/28508 (94.0%) rate=5742.7 edges/s eta=0.0 min
+[parallel_pi] 27360/28508 (96.0%) rate=5792.7 edges/s eta=0.0 min
+[parallel_pi] 27930/28508 (98.0%) rate=5891.1 edges/s eta=0.0 min
+[parallel_pi] 28500/28508 (100.0%) rate=5749.2 edges/s eta=0.0 min
+[parallel_pi] done in 0.1 min
+  [PI GDC-PI] shape=(28508, 25) dir=data/noise_GDC_p20_s1_TLCGNN (33s)
+  [PI] p=20.0% gseed=1 AUC=0.9092+-0.0035 (n=10)
+  [no-PI] p=20.0% gseed=1 AUC=0.9088+-0.0060 (n=10)
+  [GDC-PI] p=20.0% gseed=1 AUC=0.9076+-0.0036 (n=10)
+
+======================================================================
+DATASET: Chameleon
+======================================================================
+/mnt/data/users/junyoungpark/code/TLC-GNN/.claude/worktrees/agent-a69c4cf3bdf0179a4/loaddatas.py:89: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+[task] nodes=2277 clean_mp_edges(dir)=30628 train_pos=26708 val_pos=1571 test_pos=3142 total_pi_edges=169674
+
+[Chameleon p=0.0% gseed=0] undirected=26666 removed=0 added=0 -> perturbed_mp_edges(dir)=53332
+26666
+start writing ricci curvature
+adding edges finished
+computing ricci curvature finished
+[parallel_pi] computing PI for 169674 edges with 32 workers, hop=1
+[parallel_pi] 3393/169674 (2.0%) rate=105.7 edges/s eta=26.2 min
+[parallel_pi] 6786/169674 (4.0%) rate=113.2 edges/s eta=24.0 min

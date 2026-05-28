@@ -1,0 +1,22 @@
+Experiment N1 — Topology robustness to graph structural noise
+================================================================
+datasets=['Cora', 'Chameleon'] ps=[0.0, 5.0, 10.0, 20.0] variants=['PI', 'no-PI', 'GDC-PI']
+graph_seeds=(Cora=2,Chameleon=1) init_per_graph=(Cora=10,Chameleon=10) (see per-cell n in auc_vs_p.csv)
+
+Degradation slope (Delta AUC per +10% noise; less negative = more robust):
+
+  Cora:
+    PI      : -0.00686 per 10%
+    no-PI   : -0.00771 per 10%
+    GDC-PI  : -0.00601 per 10%
+    -> PI vs no-PI: MORE robust (flatter) (slope diff +0.00085/10%)
+    -> GDC-PI vs no-PI: MORE robust (flatter) (slope diff +0.00171/10%)
+
+  Chameleon:
+    PI      : +0.00508 per 10%
+    no-PI   : -0.00108 per 10%
+    GDC-PI  : -0.00061 per 10%
+    -> PI vs no-PI: MORE robust (flatter) (slope diff +0.00615/10%)
+    -> GDC-PI vs no-PI: MORE robust (flatter) (slope diff +0.00046/10%)
+
+VERDICT: PRO-TOPOLOGY — PI/GDC-PI degrade SLOWER than no-PI on all tested (dataset, variant) pairs. First pro-topology LP robustness result.

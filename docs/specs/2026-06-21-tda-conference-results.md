@@ -271,3 +271,66 @@ DiffAb/FlowDesign/IgGM이 생성한 항체 CDR-H3 loop의 persistent homology가
 - **Physical diffusion (A,B)**: topology의 렌즈(HKS 대등)·denoiser(GDC가 hetero PI를 무해화)로 **작동**. **B가 가장 강한 새 결과** + shuffle 메커니즘과 일관.
 - **Generative diffusion (C)**: 항체 **binding 품질**엔 PH(loop·interface 둘 다)가 신호 없음 — **두 게이트 모두 NO-GO**. 단 interface-PH는 **구조 RMSD를 약하게 추적**(loop의 ~4×). 정직한 null + Simpson's paradox 교훈.
 - **큰 그림**: "topology가 언제 유용한가"의 답에 diffusion 축 추가 — diffusion은 topology를 **정제**하는 덴 좋지만(B), 항체 loop의 **binding 품질**을 잡기엔 PH가 부족(C; 구조 RMSD엔 약한 신호만).
+
+---
+
+## 12. Experiment Batch 2 — Mechanism + Robustness
+
+Spec: `docs/superpowers/specs/2026-05-28-experiment-batch2-design.md`. 5개 병렬 worktree 에이전트. 헤드라인 두 미스터리(PDGNN>exact, GDC 구원) 기전 해명 + TDA robustness 주장 첫 검증.
+
+### 12a. P1 — PDGNN은 spectral smoothing이 아니다
+exact PI를 Gaussian blur(σ) 후 50-trial LP (Chameleon):
+
+| | AUC |
+|---|---|
+| exact PI | 0.9432 |
+| blur σ=1 / 2 / 3 | 0.9450 / 0.9494 / 0.9500(포화) |
+| **PDGNN** | **0.9757** |
+| no-PI | 0.9686 |
+
+**Finding**: blur은 σ↑에 단조 개선하나 ~0.950에서 포화 — PDGNN(0.9757)·no-PI(0.9686) 둘 다 못 넘음. **PDGNN 우위는 저주파 평활이 아니라 학습된 neural PD 표현.** (Photo/Computers는 클러스터 load로 미완; Chameleon이 최대 gap 케이스라 충분.)
+
+### 12b. B1+B2 — GDC 구원의 강도·일반화·경계
+**B1 강도 (Chameleon):** t∈{1,3,5,10}@k16 = 0.9717/0.9703/0.9697/0.9702 (**평평, t=1 즉시 포화**); k∈{8,16,32}@t5 = 0.9679/0.9697/0.9707 (약한 단조). → **하이퍼파라미터 robust, t 즉시 포화, 전부 no-PI 패리티 근처.**
+**B2 일반화:** ChChMiner GDC-PI 0.957 (plain 0.903 → no-PI 0.965의 99% 구원 ✓); **Wisconsin GDC-PI 0.822 < plain 0.864 (구원 실패, 역효과)** — 251노드 거의 완전그래프, over-smoothing. → **GDC 구원은 bounded: 적정 크기/밀도에서만; tiny-dense엔 유해.**
+
+### 12c. M2 — 분자 PI 신호는 H1(고리)
+PD를 homology dim별 마스킹 후 GIN 10-fold + **SVM(PI-only) 교차검증**:
+
+| variant | MUTAG GIN | MUTAG SVM(PI-only) |
+|---|---|---|
+| H0-only | 78.2 | 66.0 |
+| H1-only | 77.1 | **82.0** |
+| both | 77.7 | 74.5 |
+| no-PI | 75.1 | — |
+
+**Finding**: SVM이 결정적 — H1-only PI alone 82% ≫ H0-only 66%, 전체 withPI GIN과 동등. **분자 PI 이득은 H1(고리/loop).** raw GIN은 H0처럼 보이나(gap이 노이즈 내 + GIN이 이미 ring을 message-passing으로 학습 → H1 PI가 GIN엔 redundant). PROTEINS는 PI 신호 미미. NCI1 생략(load).
+
+### 12d. A2 — HKS(diffusion) filtration을 LP에 (diffusion을 어디에 넣나)
+
+| | Cora | Chameleon |
+|---|---|---|
+| no-PI | 0.9200 | 0.9686 |
+| Ricci-PI (기본) | 0.9191 | 0.9432 (hurt) |
+| HKS-PI | 0.9186 | 0.9489 |
+| GDC-PI (참고) | 0.9215 | 0.9697 |
+
+**Finding**: HKS filtration(`|HKS_u−HKS_v|`를 vicinity Dijkstra filter로, env `TLCGNN_LP_FILTER=hks`)이 hetero-hurt를 **부분 완화**(0.9432→0.9489, 손해의 ~22%)하나 제거 못 함. → **그래프 denoise(GDC=완전구원) > filtration 교체(HKS=부분).** 손해는 filtration 선택보다 **그래프 구조**에 있음.
+
+### 12e. N1 — topology가 그래프 노이즈에 robust ★첫 pro-topology
+엣지 p% 교란(제거+무작위 추가, label 누수 없음) 후 PI/no-PI/GDC-PI 열화 기울기 (ΔAUC/+10%):
+
+| | PI | no-PI | GDC-PI |
+|---|---|---|---|
+| Cora | −0.0069 | **−0.0077(최악)** | −0.0060 |
+| Chameleon | **+0.0051** | −0.0011 | −0.0006 |
+
+**Finding**: 4/4 케이스에서 PI·GDC-PI가 no-PI보다 천천히 열화. **Chameleon: PI 기울기 양수 → 깨끗할 땐 no-PI 아래(hetero-hurt)지만 20% 노이즈에서 no-PI 역전(0.9827 vs 0.9817).** **그래프가 망가질수록 topology가 더 가치.** 프로젝트 **첫 pro-topology LP 결과.** (caveat: Chameleon n=10·단일 seed·load로 축소 — seed 추가 권장.)
+
+### 12f. 배치 2 종합
+1. **두 헤드라인 미스터리 해명**: PDGNN>exact는 **smoothing 아님**(P1 — 학습된 표현); GDC 구원은 **강도-즉시포화 + bounded**(B1/B2 — tiny-dense엔 역효과).
+2. **Mechanism**: 분자 PI 이득 = **H1(고리)**(M2, SVM 확증); hetero 손해는 **그래프 구조 > filtration**(A2).
+3. **새 pro-topology 축**: topology는 **노이즈에 robust**(N1) — TDA 셀링포인트의 첫 LP 증거.
+4. **메타 통찰**: 평활(graph든 PI든)은 **no-PI 패리티가 한계**; no-PI를 *넘는* 건 학습(PDGNN)에서만. **topology의 진짜 강점은 정확도가 아니라 robustness일 수 있다** — 깨끗한 벤치마크 AUC는 topology를 과소평가하고, 노이즈/불완전 그래프에서 진가가 드러남.
+
+**Batch-2 스크립트**: `pi_blur_exp.py`, `gdc_pi.py`(+env `TLCGNN_GDC_T/K`), `Knowledge_Distillation/mol_dim_ablation.py`, `loaddatas.py`(env `TLCGNN_LP_FILTER=hks`), `noise_robust_exp.py` (+ `results/noise_robust/`).

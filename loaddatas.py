@@ -132,6 +132,18 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     pi_source = os.environ.get('TLCGNN_PI_SOURCE', 'dionysus')
     # TLCGNN_PI_DIR overrides the cache directory (e.g. shuffled-PI control exp).
     _pi_dir = os.environ.get('TLCGNN_PI_DIR', '')
+    # ── HKS filtration hook (Experiment A2) ───────────────────────────────────
+    # TLCGNN_LP_FILTER selects the filtration that drives the vicinity extended
+    # persistence images.  '' or 'ricci' (default) = original Ollivier-Ricci
+    # curvature filtration, UNCHANGED.  'hks' = heat-kernel-signature diffusion
+    # filtration: per-node HKS values (from the graph Laplacian heat kernel) are
+    # mapped to per-edge filter values |HKS_u - HKS_v| and fed to graph2pi in
+    # place of the Ricci-derived edge curvature.  The extended-persistence + PI
+    # vectorization machinery (build_fv geodesic distances, perturb_filter,
+    # Union_find, Accelerate_PD, PersistenceImager) is identical — only the
+    # edge filter values change (geometric Ricci -> diffusion HKS).
+    _lp_filter = os.environ.get('TLCGNN_LP_FILTER', '').strip().lower()
+    _use_hks = _lp_filter == 'hks'
     # ── GDC hook ─────────────────────────────────────────────────────────────
     # TLCGNN_GDC=1 activates GDC pre-diffusion before PI computation.
     # When set, PI is computed on the GDC-diffused graph (heat kernel t=5,
@@ -141,8 +153,11 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     # Default (TLCGNN_GDC unset): exactly original behavior, no change.
     _use_gdc = os.environ.get('TLCGNN_GDC', '').strip() not in ('', '0')
     # GDC cache goes to data/GDC_TLCGNN/ to avoid overwriting vanilla PI cache.
+    # HKS cache goes to data/HKS_TLCGNN/ for the same reason.
     if _pi_dir:
         filename = _pi_dir.rstrip('/') + '/' + data_name + '.npy'
+    elif _use_hks:
+        filename = './data/HKS_TLCGNN/' + data_name + '.npy'
     elif _use_gdc:
         filename = './data/GDC_TLCGNN/' + data_name + '.npy'
     elif pi_source == 'pdgnn':
@@ -220,9 +235,17 @@ def compute_persistence_image(data, train_edges, train_edges_false, val_edges, v
     g.add_edges_from(ricci_edge_index)
     print(len(g.edges()))
 
-    # For Ricci curvature, use a temporary data-like object with the pi_edge_index
-    # when GDC is active, so curvature is computed on the diffused topology.
-    if _use_gdc:
+    # ── Filtration values fed to graph2pi ─────────────────────────────────────
+    # graph2pi consumes a list of [node_i, node_j, value] triples; in build_fv
+    # (weight_graph=True) the per-edge `value` becomes the Dijkstra step cost
+    # (value + 1) used to compute the geodesic-distance node filter function in
+    # the edge vicinity.  Default: value = Ollivier-Ricci curvature (geometric).
+    # HKS hook: value = |HKS_u - HKS_v|, a diffusion dissimilarity derived from
+    # the per-node heat-kernel signature, so the same vicinity-geodesic
+    # filtration is driven by diffusion geometry instead of Ricci geometry.
+    if _use_hks:
+        ricci_cur = compute_hks_filter(g)
+    elif _use_gdc:
         import copy
         _ricci_data = copy.copy(data)
         _ricci_data.edge_index = pi_edge_index
@@ -258,6 +281,50 @@ def compute_ricci_curvature(data):
     ricci_list = sorted(ricci_list)
     print("computing ricci curvature finished")
     return ricci_list
+
+
+def compute_hks_filter(g):
+    """HKS-derived edge filter values (Experiment A2), drop-in for
+    compute_ricci_curvature.
+
+    Returns a sorted list of [n1, n2, value] triples (both directions per edge)
+    in exactly the format graph2pi expects, where `value` plays the role the
+    Ollivier-Ricci curvature plays in the default path: it becomes the
+    per-edge Dijkstra step cost (value + 1) in filtration.build_fv, which is
+    used to compute the geodesic-distance node filter function over each edge
+    vicinity.  Here value = |HKS_u - HKS_v|, the heat-kernel-signature diffusion
+    dissimilarity between the edge endpoints.
+
+    HKS_t(i) = sum_k exp(-t*lambda_k) phi_k(i)^2 is a per-node descriptor of the
+    graph Laplacian heat kernel; t is auto-selected from the spectrum (median of
+    positive eigenvalues).  Nodes within a diffusion-homogeneous region share
+    similar HKS so the edge cost ~ 0 (cheap to cross), while edges spanning a
+    diffusion-scale boundary (bottleneck) have large |dHKS| (expensive).  This
+    drives the vicinity geodesic filtration by diffusion geometry rather than
+    by Ollivier-Ricci geometry.
+
+    Graceful fallback: if the global HKS is degenerate (compute_hks returns all
+    zeros for disconnected/constant spectra) we fall back to a zero edge value
+    for every edge, i.e. value + 1 == 1 == an unweighted (hop-count) geodesic
+    filtration — never a crash.
+    """
+    from Knowledge_Distillation.hks_filtration import compute_hks
+    print("start writing HKS filtration")
+    # compute_hks relabels nodes 0..n-1 in g's iteration order via
+    # nx.convert_node_labels_to_integers; reproduce that mapping so HKS[i]
+    # corresponds to the original node label.
+    nodes = list(g.nodes())
+    relabel = {node: i for i, node in enumerate(nodes)}
+    hks = compute_hks(g)  # (n,) in [0,1], or zeros on degenerate spectra
+    hks_list = []
+    for n1, n2 in g.edges():
+        val = abs(float(hks[relabel[n1]]) - float(hks[relabel[n2]]))
+        hks_list.append([n1, n2, val])
+        hks_list.append([n2, n1, val])
+    hks_list = sorted(hks_list)
+    print("computing HKS filtration finished (edges=%d, hks_range=[%.4f,%.4f])"
+          % (len(g.edges()), float(np.min(hks)), float(np.max(hks))))
+    return hks_list
 
 
 def num(strings):
