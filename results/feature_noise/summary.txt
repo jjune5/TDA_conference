@@ -1,0 +1,27 @@
+Experiment R2 — Feature-noise robustness (deepens N1)
+================================================================
+
+Corruption: x_noisy = x_clean + N(0, (q * sigma_d)^2) per feature dim
+Topology (edge_index) unchanged; PI loaded from exact cache (no recompute)
+
+PI − noPI AUC gap by dataset and noise level:
+
+  Cora:
+       q      PI AUC    noPI AUC       gap
+    0.00      0.9208      0.9203   +0.0005
+    0.25      0.9187      0.9185   +0.0001
+    0.50      0.9143      0.9160   -0.0017
+    1.00      0.9018      0.9019   -0.0001
+
+  Chameleon:
+       q      PI AUC    noPI AUC       gap
+    0.00      0.9436      0.9694   -0.0258
+    0.25      0.9558      0.9778   -0.0220
+    0.50      0.9565      0.9792   -0.0227
+    1.00      0.9573      0.9759   -0.0186
+
+Gap trend analysis (does PI−noPI gap widen with q?):
+  Cora: gap at q=0 -> q=1.0: +0.0005 -> -0.0001  (endpoint_diff=-0.0006, slope=-0.00073/unit-q)  FLAT/REVERSAL
+  Chameleon: gap at q=0 -> q=1.0: -0.0258 -> -0.0186  (endpoint_diff=+0.0072, slope=+0.00648/unit-q)  WIDENS
+
+VERDICT: MIXED — gap widens on some datasets but not all. Partial support for topology as a feature-robustness prior.

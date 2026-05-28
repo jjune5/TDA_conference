@@ -334,3 +334,37 @@ PD를 homology dim별 마스킹 후 GIN 10-fold + **SVM(PI-only) 교차검증**:
 4. **메타 통찰**: 평활(graph든 PI든)은 **no-PI 패리티가 한계**; no-PI를 *넘는* 건 학습(PDGNN)에서만. **topology의 진짜 강점은 정확도가 아니라 robustness일 수 있다** — 깨끗한 벤치마크 AUC는 topology를 과소평가하고, 노이즈/불완전 그래프에서 진가가 드러남.
 
 **Batch-2 스크립트**: `pi_blur_exp.py`, `gdc_pi.py`(+env `TLCGNN_GDC_T/K`), `Knowledge_Distillation/mol_dim_ablation.py`, `loaddatas.py`(env `TLCGNN_LP_FILTER=hks`), `noise_robust_exp.py` (+ `results/noise_robust/`).
+
+---
+
+## 13. Experiment Batch 3 — Deepen mechanism + robustness (load-aware)
+
+Spec: `docs/superpowers/specs/2026-05-28-experiment-batch3-design.md`. 2개 CPU-light 실험(기존 PI 캐시 재사용 → 배치2의 CPU thrash 회피). 배치2의 두 핵심 thread(P1 mechanism, N1 robustness) 심화.
+
+### 13a. D1 — PDGNN이 학습하는 것 (P1 기전 규명, CPU 분석)
+PDGNN-PI vs exact-PI 캐시 per-edge 비교 (Photo/Computers/Chameleon, 모두 정렬됨):
+
+| Dataset | MSE(PDGNN,exact) | MSE(blur σ3,exact) | 비율 |
+|---|---|---|---|
+| Photo | 0.0583 | 0.00009 | **659×** |
+| Computers | 0.0464 | 0.00011 | **429×** |
+| Chameleon | 0.4732 | 0.00019 | **2493×** |
+
+**Finding**: MSE(PDGNN,exact) ≈ MSE(PDGNN, blur σ3) (비율 1.000) → PDGNN은 exact에서 **σ3 blur보다 429~2493× 더 벗어남 = smoothing 아님(확정).** 변환은 전 셀 양수(중앙 mid-birth/death 집중 1.3~2.7×)지만 **scalar 증폭은 MSE의 1~19%만 설명, 81~99%가 edge별 구조적 잔차**(spatial SNR 0.015~0.028). edge-type 무관(homophily 상관 ~0.005, n.s.). → **PDGNN = edge별 학습된 topology-conditioned persistence-mass 재조정.** P1과 합쳐 2겹 증거.
+
+### 13b. R2 — feature-noise robustness (N1 보완, NULL)
+노드 feature 손상(`+N(0,(q·σ_d)²)`) 후 LP, **PI 캐시 재사용**(위상 불변, n=20):
+
+| q | Cora gap (PI−noPI) | Chameleon gap |
+|---|---|---|
+| 0 | +0.0005 | −0.0258 |
+| 0.5 | −0.0017 | −0.0227 |
+| 1.0 | −0.0001 | −0.0186 |
+
+**Finding (NULL)**: PI−noPI gap이 어느 데이터셋도 양수로 안 바뀜. Cora flat(~0), Chameleon 음수 유지(좁아지나 역전 못 함). feature 노이즈는 PI/no-PI를 동일 타격(둘 다 GCN encoder가 feature 사용) → topology가 feature-robustness prior로 안 떠오름.
+
+### 13c. 종합 — robustness 주장 정밀화
+- **D1**: PDGNN의 no-PI 초과 = **edge별 학습 표현**(평활 아님). P1 확정.
+- **N1(edge noise) vs R2(feature noise) 대조 ★**: topology의 robustness 이점은 **구조(edge) 노이즈에 특이적**(N1: Chameleon 노이즈서 no-PI 역전) — **feature 노이즈엔 없음**(R2 null). 직관: PI는 그래프 *구조*에서 나오므로 구조 perturbation엔 강하나, feature 노이즈는 GCN encoder만(PI/no-PI 공통) 타격 → 차등 이점 없음. → **TDA robustness 강점은 "데이터 노이즈 일반"이 아니라 위상을 정의하는 *구조 자체*의 노이즈에 특이적.**
+
+**Batch-3 스크립트**: `analyze_pdgnn.py`, `feature_noise_exp.py` (+ `results/{pdgnn_analysis,feature_noise}/`). 둘 다 PI 캐시 재사용(CPU-light).
