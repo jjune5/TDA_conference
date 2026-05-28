@@ -1,0 +1,830 @@
+[
+  {
+    "name": "Photo",
+    "N": 7650,
+    "m_pos": 119081,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/Photo.npy",
+        "rows": 643038,
+        "n_train": 101219,
+        "n_val": 5954,
+        "n_test": 11908,
+        "train_neg": 506095,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 3.201393,
+            "nonzero": 0.9277,
+            "n": 101219
+          },
+          "train_neg": {
+            "mean_L1": 0.006481,
+            "nonzero": 0.0048,
+            "n": 506095
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 5954
+          },
+          "val_neg": {
+            "mean_L1": 0.000523,
+            "nonzero": 0.0002,
+            "n": 5954
+          },
+          "test_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 11908
+          },
+          "test_neg": {
+            "mean_L1": 0.001387,
+            "nonzero": 0.0003,
+            "n": 11908
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/Photo.npy",
+        "rows": 643038,
+        "n_train": 101219,
+        "n_val": 5954,
+        "n_test": 11908,
+        "train_neg": 506095,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 6.550634,
+            "nonzero": 0.9593,
+            "n": 101219
+          },
+          "train_neg": {
+            "mean_L1": 0.055243,
+            "nonzero": 0.0864,
+            "n": 506095
+          },
+          "val_pos": {
+            "mean_L1": 6.834308,
+            "nonzero": 0.9525,
+            "n": 5954
+          },
+          "val_neg": {
+            "mean_L1": 0.076459,
+            "nonzero": 0.09,
+            "n": 5954
+          },
+          "test_pos": {
+            "mean_L1": 6.904444,
+            "nonzero": 0.9527,
+            "n": 11908
+          },
+          "test_neg": {
+            "mean_L1": 0.050006,
+            "nonzero": 0.0863,
+            "n": 11908
+          }
+        }
+      }
+    },
+    "homophilic": true
+  },
+  {
+    "name": "PubMed",
+    "N": 19717,
+    "m_pos": 44324,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/PubMed.npy",
+        "rows": 804492,
+        "n_train": 37676,
+        "n_val": 2216,
+        "n_test": 4432,
+        "train_neg": 753520,
+        "neg_cap_ratio": 20.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 2.723828,
+            "nonzero": 0.9996,
+            "n": 37676
+          },
+          "train_neg": {
+            "mean_L1": 0.002406,
+            "nonzero": 0.0015,
+            "n": 753520
+          },
+          "val_pos": {
+            "mean_L1": 1.093849,
+            "nonzero": 0.2207,
+            "n": 2216
+          },
+          "val_neg": {
+            "mean_L1": 0.000439,
+            "nonzero": 0.0005,
+            "n": 2216
+          },
+          "test_pos": {
+            "mean_L1": 1.051231,
+            "nonzero": 0.2155,
+            "n": 4432
+          },
+          "test_neg": {
+            "mean_L1": 0.001627,
+            "nonzero": 0.0025,
+            "n": 4432
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/PubMed.npy",
+        "rows": 239352,
+        "n_train": 37676,
+        "n_val": 2216,
+        "n_test": 4432,
+        "train_neg": 188380,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 3.477333,
+            "nonzero": 0.9996,
+            "n": 37676
+          },
+          "train_neg": {
+            "mean_L1": 0.015435,
+            "nonzero": 0.0154,
+            "n": 188380
+          },
+          "val_pos": {
+            "mean_L1": 2.827205,
+            "nonzero": 0.6182,
+            "n": 2216
+          },
+          "val_neg": {
+            "mean_L1": 0.010547,
+            "nonzero": 0.0122,
+            "n": 2216
+          },
+          "test_pos": {
+            "mean_L1": 3.0501,
+            "nonzero": 0.6013,
+            "n": 4432
+          },
+          "test_neg": {
+            "mean_L1": 0.009133,
+            "nonzero": 0.0144,
+            "n": 4432
+          }
+        }
+      }
+    },
+    "homophilic": true
+  },
+  {
+    "name": "Computers",
+    "N": 13752,
+    "m_pos": 245861,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/Computers.npy",
+        "rows": 1327650,
+        "n_train": 208982,
+        "n_val": 12293,
+        "n_test": 24586,
+        "train_neg": 1044910,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 3.523535,
+            "nonzero": 0.9584,
+            "n": 208982
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1044910
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 12293
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 12293
+          },
+          "test_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 24586
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 24586
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/Computers.npy",
+        "rows": 1327650,
+        "n_train": 208982,
+        "n_val": 12293,
+        "n_test": 24586,
+        "train_neg": 1044910,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 6.242303,
+            "nonzero": 0.9581,
+            "n": 208982
+          },
+          "train_neg": {
+            "mean_L1": 0.062145,
+            "nonzero": 0.1117,
+            "n": 1044910
+          },
+          "val_pos": {
+            "mean_L1": 6.359978,
+            "nonzero": 0.9514,
+            "n": 12293
+          },
+          "val_neg": {
+            "mean_L1": 0.060131,
+            "nonzero": 0.1106,
+            "n": 12293
+          },
+          "test_pos": {
+            "mean_L1": 6.119587,
+            "nonzero": 0.9471,
+            "n": 24586
+          },
+          "test_neg": {
+            "mean_L1": 0.064857,
+            "nonzero": 0.1129,
+            "n": 24586
+          }
+        }
+      }
+    },
+    "homophilic": true
+  },
+  {
+    "name": "Chameleon",
+    "N": 2277,
+    "m_pos": 31421,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/chameleon.npy",
+        "rows": 169674,
+        "n_train": 26708,
+        "n_val": 1571,
+        "n_test": 3142,
+        "train_neg": 133540,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 8.036844,
+            "nonzero": 0.9475,
+            "n": 26708
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 133540
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1571
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1571
+          },
+          "test_pos": {
+            "mean_L1": 0.050673,
+            "nonzero": 0.0025,
+            "n": 3142
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 3142
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/chameleon.npy",
+        "rows": 169674,
+        "n_train": 26708,
+        "n_val": 1571,
+        "n_test": 3142,
+        "train_neg": 133540,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 20.768409,
+            "nonzero": 0.8925,
+            "n": 26708
+          },
+          "train_neg": {
+            "mean_L1": 0.265472,
+            "nonzero": 0.2026,
+            "n": 133540
+          },
+          "val_pos": {
+            "mean_L1": 22.488217,
+            "nonzero": 0.881,
+            "n": 1571
+          },
+          "val_neg": {
+            "mean_L1": 0.217238,
+            "nonzero": 0.1973,
+            "n": 1571
+          },
+          "test_pos": {
+            "mean_L1": 20.997602,
+            "nonzero": 0.8842,
+            "n": 3142
+          },
+          "test_neg": {
+            "mean_L1": 0.298778,
+            "nonzero": 0.1922,
+            "n": 3142
+          }
+        }
+      }
+    },
+    "homophilic": false
+  },
+  {
+    "name": "Squirrel",
+    "N": 5201,
+    "m_pos": 198493,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/squirrel.npy",
+        "rows": 1071866,
+        "n_train": 168720,
+        "n_val": 9924,
+        "n_test": 19849,
+        "train_neg": 843600,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 87.341841,
+            "nonzero": 0.9776,
+            "n": 168720
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 843600
+          },
+          "val_pos": {
+            "mean_L1": 0.012558,
+            "nonzero": 0.0004,
+            "n": 9924
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 9924
+          },
+          "test_pos": {
+            "mean_L1": 0.072869,
+            "nonzero": 0.0008,
+            "n": 19849
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 19849
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/squirrel.npy",
+        "rows": 1071866,
+        "n_train": 168720,
+        "n_val": 9924,
+        "n_test": 19849,
+        "train_neg": 843600,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 3.602587,
+            "nonzero": 0.3367,
+            "n": 168720
+          },
+          "train_neg": {
+            "mean_L1": 0.435262,
+            "nonzero": 0.2627,
+            "n": 843600
+          },
+          "val_pos": {
+            "mean_L1": 3.605654,
+            "nonzero": 0.3206,
+            "n": 9924
+          },
+          "val_neg": {
+            "mean_L1": 0.43996,
+            "nonzero": 0.2603,
+            "n": 9924
+          },
+          "test_pos": {
+            "mean_L1": 3.730255,
+            "nonzero": 0.3388,
+            "n": 19849
+          },
+          "test_neg": {
+            "mean_L1": 0.39486,
+            "nonzero": 0.2592,
+            "n": 19849
+          }
+        }
+      }
+    },
+    "homophilic": false
+  },
+  {
+    "name": "Cornell",
+    "N": 183,
+    "m_pos": 280,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/cornell.npy",
+        "rows": 1512,
+        "n_train": 238,
+        "n_val": 14,
+        "n_test": 28,
+        "train_neg": 1190,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 0.067848,
+            "nonzero": 0.2731,
+            "n": 238
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1190
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 14
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 14
+          },
+          "test_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 28
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 28
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/cornell.npy",
+        "rows": 1512,
+        "n_train": 238,
+        "n_val": 14,
+        "n_test": 28,
+        "train_neg": 1190,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 0.028621,
+            "nonzero": 0.2773,
+            "n": 238
+          },
+          "train_neg": {
+            "mean_L1": 0.022972,
+            "nonzero": 0.2134,
+            "n": 1190
+          },
+          "val_pos": {
+            "mean_L1": 0.071339,
+            "nonzero": 0.5,
+            "n": 14
+          },
+          "val_neg": {
+            "mean_L1": 0.022494,
+            "nonzero": 0.2143,
+            "n": 14
+          },
+          "test_pos": {
+            "mean_L1": 0.043155,
+            "nonzero": 0.3214,
+            "n": 28
+          },
+          "test_neg": {
+            "mean_L1": 0.011247,
+            "nonzero": 0.1071,
+            "n": 28
+          }
+        }
+      }
+    },
+    "homophilic": false
+  },
+  {
+    "name": "Texas",
+    "N": 183,
+    "m_pos": 295,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/texas.npy",
+        "rows": 1598,
+        "n_train": 252,
+        "n_val": 14,
+        "n_test": 29,
+        "train_neg": 1260,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 0.114717,
+            "nonzero": 0.4286,
+            "n": 252
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1260
+          },
+          "val_pos": {
+            "mean_L1": 0.008323,
+            "nonzero": 0.0714,
+            "n": 14
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 14
+          },
+          "test_pos": {
+            "mean_L1": 0.004018,
+            "nonzero": 0.0345,
+            "n": 29
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 29
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/texas.npy",
+        "rows": 1598,
+        "n_train": 252,
+        "n_val": 14,
+        "n_test": 29,
+        "train_neg": 1260,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 0.058034,
+            "nonzero": 0.4802,
+            "n": 252
+          },
+          "train_neg": {
+            "mean_L1": 0.030774,
+            "nonzero": 0.2683,
+            "n": 1260
+          },
+          "val_pos": {
+            "mean_L1": 0.054224,
+            "nonzero": 0.2857,
+            "n": 14
+          },
+          "val_neg": {
+            "mean_L1": 0.030804,
+            "nonzero": 0.2857,
+            "n": 14
+          },
+          "test_pos": {
+            "mean_L1": 0.08005,
+            "nonzero": 0.3448,
+            "n": 29
+          },
+          "test_neg": {
+            "mean_L1": 0.044408,
+            "nonzero": 0.3103,
+            "n": 29
+          }
+        }
+      }
+    },
+    "homophilic": false
+  },
+  {
+    "name": "Wisconsin",
+    "N": 251,
+    "m_pos": 466,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/wisconsin.npy",
+        "rows": 2520,
+        "n_train": 397,
+        "n_val": 23,
+        "n_test": 46,
+        "train_neg": 1985,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 0.103197,
+            "nonzero": 0.3526,
+            "n": 397
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1985
+          },
+          "val_pos": {
+            "mean_L1": 0.021476,
+            "nonzero": 0.0435,
+            "n": 23
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 23
+          },
+          "test_pos": {
+            "mean_L1": 0.007599,
+            "nonzero": 0.0652,
+            "n": 46
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 46
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/wisconsin.npy",
+        "rows": 2520,
+        "n_train": 397,
+        "n_val": 23,
+        "n_test": 46,
+        "train_neg": 1985,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 0.064728,
+            "nonzero": 0.3904,
+            "n": 397
+          },
+          "train_neg": {
+            "mean_L1": 0.021718,
+            "nonzero": 0.197,
+            "n": 1985
+          },
+          "val_pos": {
+            "mean_L1": 0.113899,
+            "nonzero": 0.3913,
+            "n": 23
+          },
+          "val_neg": {
+            "mean_L1": 0.047592,
+            "nonzero": 0.3043,
+            "n": 23
+          },
+          "test_pos": {
+            "mean_L1": 0.077039,
+            "nonzero": 0.5,
+            "n": 46
+          },
+          "test_neg": {
+            "mean_L1": 0.013816,
+            "nonzero": 0.1304,
+            "n": 46
+          }
+        }
+      }
+    },
+    "homophilic": false
+  },
+  {
+    "name": "ChChMiner",
+    "N": 1514,
+    "m_pos": 48514,
+    "sources": {
+      "exact": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/TLCGNN/ChChMiner.npy",
+        "rows": 261980,
+        "n_train": 41238,
+        "n_val": 2425,
+        "n_test": 4851,
+        "train_neg": 206190,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 7.411601,
+            "nonzero": 0.9659,
+            "n": 41238
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 206190
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 2425
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 2425
+          },
+          "test_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 4851
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 4851
+          }
+        }
+      },
+      "PDGNN": {
+        "status": "ok",
+        "path": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/ChChMiner.npy",
+        "rows": 261980,
+        "n_train": 41238,
+        "n_val": 2425,
+        "n_test": 4851,
+        "train_neg": 206190,
+        "neg_cap_ratio": 5.0,
+        "segs": {
+          "train_pos": {
+            "mean_L1": 18.717221,
+            "nonzero": 0.9586,
+            "n": 41238
+          },
+          "train_neg": {
+            "mean_L1": 1.170064,
+            "nonzero": 0.4378,
+            "n": 206190
+          },
+          "val_pos": {
+            "mean_L1": 18.454329,
+            "nonzero": 0.9427,
+            "n": 2425
+          },
+          "val_neg": {
+            "mean_L1": 1.171563,
+            "nonzero": 0.4458,
+            "n": 2425
+          },
+          "test_pos": {
+            "mean_L1": 18.092181,
+            "nonzero": 0.9468,
+            "n": 4851
+          },
+          "test_neg": {
+            "mean_L1": 1.352301,
+            "nonzero": 0.4416,
+            "n": 4851
+          }
+        }
+      }
+    },
+    "homophilic": true
+  }
+]

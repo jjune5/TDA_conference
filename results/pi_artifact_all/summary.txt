@@ -1,0 +1,275 @@
+==============================================================================================================
+PI ARTIFACT ANALYSIS — CROSS-DATASET SUMMARY
+Exact (TLCGNN/dionysus) vs PDGNN (neural) PI caches.
+==============================================================================================================
+
+DATASETS ANALYZED:
+  Photo        (homo)
+  PubMed       (homo)
+  Computers    (homo)
+  Chameleon    (hetero)
+  Squirrel     (hetero)
+  Cornell      (hetero)
+  Texas        (hetero)
+  Wisconsin    (hetero)
+  ChChMiner    (homo)
+
+DATASETS SKIPPED (PDGNN cache missing): Cora, Citeseer
+NOTE: Exact and PDGNN caches may use different neg caps (see neg_cap_ratio).
+      Segment bounds are always recovered from the actual cache size.
+
+------------------------------------------------------------------------------------------------------------------------
+Dataset       Homo |   ex_trpos L1/nz |    ex_tpos L1/nz    ex_tneg L1/nz |    pd_tpos L1/nz    pd_tneg L1/nz | artifact PDrestore
+------------------------------------------------------------------------------------------------------------------------
+Photo            Y |       3.2014/93% |        0.0000/0%        0.0014/0% |       6.9044/95%        0.0500/9% |        Y         Y
+PubMed           Y |      2.7238/100% |       1.0512/22%        0.0016/0% |       3.0501/60%        0.0091/1% |        N         Y
+Computers        Y |       3.5235/96% |        0.0000/0%        0.0000/0% |       6.1196/95%       0.0649/11% |        Y         Y
+Chameleon        N |       8.0368/95% |        0.0507/0%        0.0000/0% |      20.9976/88%       0.2988/19% |        Y         Y
+Squirrel         N |      87.3418/98% |        0.0729/0%        0.0000/0% |       3.7303/34%       0.3949/26% |        Y         Y
+Cornell          N |       0.0678/27% |        0.0000/0%        0.0000/0% |       0.0432/32%       0.0112/11% |        Y         Y
+Texas            N |       0.1147/43% |        0.0040/3%        0.0000/0% |       0.0800/34%       0.0444/31% |        Y         Y
+Wisconsin        N |       0.1032/35% |        0.0076/7%        0.0000/0% |       0.0770/50%       0.0138/13% |        Y         Y
+ChChMiner        Y |       7.4116/97% |        0.0000/0%        0.0000/0% |      18.0922/95%       1.3523/44% |        Y         Y
+------------------------------------------------------------------------------------------------------------------------
+
+LEGEND: L1 = mean per-edge PI L1-mass | nz = % edges with nonzero PI
+  ex_trpos = exact train_pos (should be large: train edges IN graph)
+  ex_tpos/ex_tneg = exact test_pos/test_neg (artifact: both near 0)
+  pd_tpos/pd_tneg = PDGNN neural test_pos/test_neg
+  artifact = exact test_pos collapsed vs train_pos (nz<5% OR L1<0.1% OR ratio<20%)
+  PDrestore = PDGNN test_pos/test_neg ratio > 1.5x (nz or L1)
+
+==============================================================================================================
+FINDING 1: Is the exact-PI test_pos collapse (train-graph-membership artifact) UNIVERSAL?
+==============================================================================================================
+
+ANSWER: MOSTLY — artifact on 8 of 9 datasets.
+  Exceptions (test_pos NOT fully collapsed): PubMed
+
+
+  Artifact confirmed (8 datasets):
+    Photo        (homo): train_pos L1=3.2014/93%nz  test_pos L1=0.0000/0%nz  test_neg L1=0.0014/0%nz  ratio=0.000
+    Computers    (homo): train_pos L1=3.5235/96%nz  test_pos L1=0.0000/0%nz  test_neg L1=0.0000/0%nz  ratio=0.000
+    Chameleon    (hetero): train_pos L1=8.0368/95%nz  test_pos L1=0.0507/0%nz  test_neg L1=0.0000/0%nz  ratio=0.006
+    Squirrel     (hetero): train_pos L1=87.3418/98%nz  test_pos L1=0.0729/0%nz  test_neg L1=0.0000/0%nz  ratio=0.001
+    Cornell      (hetero): train_pos L1=0.0678/27%nz  test_pos L1=0.0000/0%nz  test_neg L1=0.0000/0%nz  ratio=0.000
+    Texas        (hetero): train_pos L1=0.1147/43%nz  test_pos L1=0.0040/3%nz  test_neg L1=0.0000/0%nz  ratio=0.035
+    Wisconsin    (hetero): train_pos L1=0.1032/35%nz  test_pos L1=0.0076/7%nz  test_neg L1=0.0000/0%nz  ratio=0.074
+    ChChMiner    (homo): train_pos L1=7.4116/97%nz  test_pos L1=0.0000/0%nz  test_neg L1=0.0000/0%nz  ratio=0.000
+
+  EXCEPTIONS — test_pos NOT fully collapsed (1 datasets):
+    PubMed       (homo): train_pos L1=2.7238/100%nz  test_pos L1=1.0512/22%nz  ratio=0.386  neg_cap=20.0x
+
+  NOTE: Exceptions may still show train>>test, just not fully collapsed.
+  A test_pos nz of 20% vs train_pos nz of ~100% is still a severe artifact;
+  the exact PI signal is strongly degraded at test time even if not fully zero.
+
+MECHANISM: val_pos and test_pos edges are removed from the graph before PH.
+The vicinity subgraph for those edges loses its direct connection → zero PH mass.
+Exact PI is a TRAIN-GRAPH-MEMBERSHIP indicator: PI>>0 iff edge is in training graph.
+At test time both classes have PI≈0 → no genuine discriminative structural signal.
+
+==============================================================================================================
+FINDING 2: Where does PDGNN restore genuine discriminative test signal?
+==============================================================================================================
+
+PDGNN test_pos >> test_neg (signal restored, ratio>1.5x nz or L1):
+  HOMOPHILIC:   ['Photo', 'PubMed', 'Computers', 'ChChMiner']
+  HETEROPHILIC: ['Chameleon', 'Squirrel', 'Cornell', 'Texas', 'Wisconsin']
+
+PDGNN test_pos ≈ test_neg (no/weak restoration):
+  HOMOPHILIC:   none
+  HETEROPHILIC: none
+
+  PDGNN signal ratios (test_pos/test_neg):
+    Photo        (homo): test_pos L1=6.9044/95%nz  test_neg L1=0.0500/9%nz  ratio_nz=11.04x  ratio_L1=138.07x
+    PubMed       (homo): test_pos L1=3.0501/60%nz  test_neg L1=0.0091/1%nz  ratio_nz=41.76x  ratio_L1=333.96x
+    Computers    (homo): test_pos L1=6.1196/95%nz  test_neg L1=0.0649/11%nz  ratio_nz=8.39x  ratio_L1=94.36x
+    Chameleon    (hetero): test_pos L1=20.9976/88%nz  test_neg L1=0.2988/19%nz  ratio_nz=4.60x  ratio_L1=70.28x
+    Squirrel     (hetero): test_pos L1=3.7303/34%nz  test_neg L1=0.3949/26%nz  ratio_nz=1.31x  ratio_L1=9.45x
+    Cornell      (hetero): test_pos L1=0.0432/32%nz  test_neg L1=0.0112/11%nz  ratio_nz=3.00x  ratio_L1=3.84x
+    Texas        (hetero): test_pos L1=0.0800/34%nz  test_neg L1=0.0444/31%nz  ratio_nz=1.11x  ratio_L1=1.80x
+    Wisconsin    (hetero): test_pos L1=0.0770/50%nz  test_neg L1=0.0138/13%nz  ratio_nz=3.83x  ratio_L1=5.58x
+    ChChMiner    (homo): test_pos L1=18.0922/95%nz  test_neg L1=1.3523/44%nz  ratio_nz=2.14x  ratio_L1=13.38x
+
+INTERPRETATION:
+  PDGNN predicts PD from node features on the leakage-free graph (val/test-pos removed).
+  Contrary to the initial hypothesis, PDGNN restores discriminative test signal on ALL
+  9 datasets — both homophilic AND heterophilic.
+
+  HOMOPHILIC datasets (Photo, Computers, PubMed, ChChMiner):
+    Strong signal restoration: test_pos L1 >> test_neg L1 (ratio 13x–334x).
+    PDGNN test_pos closely matches train_pos in both L1 and nonzero fraction,
+    confirming that the neural prediction replicates the structural pattern that
+    exact PI had ONLY on training edges. This explains PDGNN > exact accuracy.
+
+  HETEROPHILIC datasets (Chameleon, Squirrel, Cornell, Texas, Wisconsin):
+    Signal restoration also observed, but with WEAKER or NOISIER separation:
+    - Chameleon: strong (ratio_L1=70x, ratio_nz=4.6x) — PDGNN clearly discriminates
+    - Cornell: moderate (ratio_L1=3.8x, ratio_nz=3.0x)
+    - Wisconsin: moderate (ratio_L1=5.6x, ratio_nz=3.8x)
+    - Texas: WEAK (ratio_L1=1.8x, ratio_nz=1.1x) — marginal, near threshold
+    - Squirrel: L1 ratio=9.4x but nz ratio=1.31x (test_neg has 26% nz vs test_pos 34%)
+      Both test_pos and test_neg have substantial nonzero mass → PDGNN assigns PI mass
+      broadly, not just to true edges. Much noisier than on homophilic graphs.
+
+  The key hetero distinction is the ABSOLUTE GAP between test_pos and test_neg:
+    Homophilic: test_pos nz ≈ 94–95%, test_neg nz ≈ 9–11% → large gap (>80pp)
+    Heterophilic: test_pos nz ≈ 32–88%, test_neg nz ≈ 11–26% → smaller gap (6–69pp)
+  On heterophilic graphs PDGNN assigns elevated PI mass to BOTH test_pos AND test_neg,
+  suggesting the neural model predicts "probable edge" for many non-edges as well.
+  This reduces the precision of the test signal without destroying it entirely.
+
+  REVISED INTERPRETATION OF PAPER RESULTS:
+    P1: PDGNN > exact on homophilic → PDGNN gives clean, high-magnitude test signal
+    D1: exact >= PDGNN on heterophilic → PDGNN noisy signal (high test_neg mass) may
+        hurt more than it helps; exact, despite being near-zero, avoids false positives
+    EXP-1 (shuffle): shuffle collapses train-pos signal → artifact confirmed
+
+==============================================================================================================
+FULL SEGMENT STATISTICS
+==============================================================================================================
+
+Photo (homo) N=7650 m_pos=119081:
+  [exact] Photo.npy rows=643038 n_train=101219 train_neg=506095 (5.0x)
+    train_pos   : mean_L1=3.201393  nz=92.77%  n=101219
+    train_neg   : mean_L1=0.006481  nz=0.48%  n=506095
+    val_pos     : mean_L1=0.000000  nz=0.00%  n=5954
+    val_neg     : mean_L1=0.000523  nz=0.02%  n=5954
+    test_pos    : mean_L1=0.000000  nz=0.00%  n=11908
+    test_neg    : mean_L1=0.001387  nz=0.03%  n=11908
+  [PDGNN] Photo.npy rows=643038 n_train=101219 train_neg=506095 (5.0x)
+    train_pos   : mean_L1=6.550634  nz=95.93%  n=101219
+    train_neg   : mean_L1=0.055243  nz=8.64%  n=506095
+    val_pos     : mean_L1=6.834308  nz=95.25%  n=5954
+    val_neg     : mean_L1=0.076459  nz=9.00%  n=5954
+    test_pos    : mean_L1=6.904444  nz=95.27%  n=11908
+    test_neg    : mean_L1=0.050006  nz=8.63%  n=11908
+
+PubMed (homo) N=19717 m_pos=44324:
+  [exact] PubMed.npy rows=804492 n_train=37676 train_neg=753520 (20.0x)
+    train_pos   : mean_L1=2.723828  nz=99.96%  n=37676
+    train_neg   : mean_L1=0.002406  nz=0.15%  n=753520
+    val_pos     : mean_L1=1.093849  nz=22.07%  n=2216
+    val_neg     : mean_L1=0.000439  nz=0.05%  n=2216
+    test_pos    : mean_L1=1.051231  nz=21.55%  n=4432
+    test_neg    : mean_L1=0.001627  nz=0.25%  n=4432
+  [PDGNN] PubMed.npy rows=239352 n_train=37676 train_neg=188380 (5.0x)
+    train_pos   : mean_L1=3.477333  nz=99.96%  n=37676
+    train_neg   : mean_L1=0.015435  nz=1.54%  n=188380
+    val_pos     : mean_L1=2.827205  nz=61.82%  n=2216
+    val_neg     : mean_L1=0.010547  nz=1.22%  n=2216
+    test_pos    : mean_L1=3.050100  nz=60.13%  n=4432
+    test_neg    : mean_L1=0.009133  nz=1.44%  n=4432
+
+Computers (homo) N=13752 m_pos=245861:
+  [exact] Computers.npy rows=1327650 n_train=208982 train_neg=1044910 (5.0x)
+    train_pos   : mean_L1=3.523535  nz=95.84%  n=208982
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=1044910
+    val_pos     : mean_L1=0.000000  nz=0.00%  n=12293
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=12293
+    test_pos    : mean_L1=0.000000  nz=0.00%  n=24586
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=24586
+  [PDGNN] Computers.npy rows=1327650 n_train=208982 train_neg=1044910 (5.0x)
+    train_pos   : mean_L1=6.242303  nz=95.81%  n=208982
+    train_neg   : mean_L1=0.062145  nz=11.17%  n=1044910
+    val_pos     : mean_L1=6.359978  nz=95.14%  n=12293
+    val_neg     : mean_L1=0.060131  nz=11.06%  n=12293
+    test_pos    : mean_L1=6.119587  nz=94.71%  n=24586
+    test_neg    : mean_L1=0.064857  nz=11.29%  n=24586
+
+Chameleon (hetero) N=2277 m_pos=31421:
+  [exact] chameleon.npy rows=169674 n_train=26708 train_neg=133540 (5.0x)
+    train_pos   : mean_L1=8.036844  nz=94.75%  n=26708
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=133540
+    val_pos     : mean_L1=0.000000  nz=0.00%  n=1571
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=1571
+    test_pos    : mean_L1=0.050673  nz=0.25%  n=3142
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=3142
+  [PDGNN] chameleon.npy rows=169674 n_train=26708 train_neg=133540 (5.0x)
+    train_pos   : mean_L1=20.768409  nz=89.25%  n=26708
+    train_neg   : mean_L1=0.265472  nz=20.26%  n=133540
+    val_pos     : mean_L1=22.488217  nz=88.10%  n=1571
+    val_neg     : mean_L1=0.217238  nz=19.73%  n=1571
+    test_pos    : mean_L1=20.997602  nz=88.42%  n=3142
+    test_neg    : mean_L1=0.298778  nz=19.22%  n=3142
+
+Squirrel (hetero) N=5201 m_pos=198493:
+  [exact] squirrel.npy rows=1071866 n_train=168720 train_neg=843600 (5.0x)
+    train_pos   : mean_L1=87.341841  nz=97.76%  n=168720
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=843600
+    val_pos     : mean_L1=0.012558  nz=0.04%  n=9924
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=9924
+    test_pos    : mean_L1=0.072869  nz=0.08%  n=19849
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=19849
+  [PDGNN] squirrel.npy rows=1071866 n_train=168720 train_neg=843600 (5.0x)
+    train_pos   : mean_L1=3.602587  nz=33.67%  n=168720
+    train_neg   : mean_L1=0.435262  nz=26.27%  n=843600
+    val_pos     : mean_L1=3.605654  nz=32.06%  n=9924
+    val_neg     : mean_L1=0.439960  nz=26.03%  n=9924
+    test_pos    : mean_L1=3.730255  nz=33.88%  n=19849
+    test_neg    : mean_L1=0.394860  nz=25.92%  n=19849
+
+Cornell (hetero) N=183 m_pos=280:
+  [exact] cornell.npy rows=1512 n_train=238 train_neg=1190 (5.0x)
+    train_pos   : mean_L1=0.067848  nz=27.31%  n=238
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=1190
+    val_pos     : mean_L1=0.000000  nz=0.00%  n=14
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=14
+    test_pos    : mean_L1=0.000000  nz=0.00%  n=28
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=28
+  [PDGNN] cornell.npy rows=1512 n_train=238 train_neg=1190 (5.0x)
+    train_pos   : mean_L1=0.028621  nz=27.73%  n=238
+    train_neg   : mean_L1=0.022972  nz=21.34%  n=1190
+    val_pos     : mean_L1=0.071339  nz=50.00%  n=14
+    val_neg     : mean_L1=0.022494  nz=21.43%  n=14
+    test_pos    : mean_L1=0.043155  nz=32.14%  n=28
+    test_neg    : mean_L1=0.011247  nz=10.71%  n=28
+
+Texas (hetero) N=183 m_pos=295:
+  [exact] texas.npy rows=1598 n_train=252 train_neg=1260 (5.0x)
+    train_pos   : mean_L1=0.114717  nz=42.86%  n=252
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=1260
+    val_pos     : mean_L1=0.008323  nz=7.14%  n=14
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=14
+    test_pos    : mean_L1=0.004018  nz=3.45%  n=29
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=29
+  [PDGNN] texas.npy rows=1598 n_train=252 train_neg=1260 (5.0x)
+    train_pos   : mean_L1=0.058034  nz=48.02%  n=252
+    train_neg   : mean_L1=0.030774  nz=26.83%  n=1260
+    val_pos     : mean_L1=0.054224  nz=28.57%  n=14
+    val_neg     : mean_L1=0.030804  nz=28.57%  n=14
+    test_pos    : mean_L1=0.080050  nz=34.48%  n=29
+    test_neg    : mean_L1=0.044408  nz=31.03%  n=29
+
+Wisconsin (hetero) N=251 m_pos=466:
+  [exact] wisconsin.npy rows=2520 n_train=397 train_neg=1985 (5.0x)
+    train_pos   : mean_L1=0.103197  nz=35.26%  n=397
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=1985
+    val_pos     : mean_L1=0.021476  nz=4.35%  n=23
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=23
+    test_pos    : mean_L1=0.007599  nz=6.52%  n=46
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=46
+  [PDGNN] wisconsin.npy rows=2520 n_train=397 train_neg=1985 (5.0x)
+    train_pos   : mean_L1=0.064728  nz=39.04%  n=397
+    train_neg   : mean_L1=0.021718  nz=19.70%  n=1985
+    val_pos     : mean_L1=0.113899  nz=39.13%  n=23
+    val_neg     : mean_L1=0.047592  nz=30.43%  n=23
+    test_pos    : mean_L1=0.077039  nz=50.00%  n=46
+    test_neg    : mean_L1=0.013816  nz=13.04%  n=46
+
+ChChMiner (homo) N=1514 m_pos=48514:
+  [exact] ChChMiner.npy rows=261980 n_train=41238 train_neg=206190 (5.0x)
+    train_pos   : mean_L1=7.411601  nz=96.59%  n=41238
+    train_neg   : mean_L1=0.000000  nz=0.00%  n=206190
+    val_pos     : mean_L1=0.000000  nz=0.00%  n=2425
+    val_neg     : mean_L1=0.000000  nz=0.00%  n=2425
+    test_pos    : mean_L1=0.000000  nz=0.00%  n=4851
+    test_neg    : mean_L1=0.000000  nz=0.00%  n=4851
+  [PDGNN] ChChMiner.npy rows=261980 n_train=41238 train_neg=206190 (5.0x)
+    train_pos   : mean_L1=18.717221  nz=95.86%  n=41238
+    train_neg   : mean_L1=1.170064  nz=43.78%  n=206190
+    val_pos     : mean_L1=18.454329  nz=94.27%  n=2425
+    val_neg     : mean_L1=1.171563  nz=44.58%  n=2425
+    test_pos    : mean_L1=18.092181  nz=94.68%  n=4851
+    test_neg    : mean_L1=1.352301  nz=44.16%  n=4851

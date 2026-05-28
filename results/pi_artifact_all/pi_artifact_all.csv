@@ -1,0 +1,10 @@
+dataset,homophilic,N,m_pos,exact_train_pos_meanL1,exact_train_pos_nz_pct,exact_test_pos_meanL1,exact_test_pos_nz_pct,exact_test_neg_meanL1,exact_test_neg_nz_pct,PDGNN_train_pos_meanL1,PDGNN_train_pos_nz_pct,PDGNN_test_pos_meanL1,PDGNN_test_pos_nz_pct,PDGNN_test_neg_meanL1,PDGNN_test_neg_nz_pct,exact_artifact,PDGNN_restores,note
+Photo,Y,7650,119081,3.201393,92.8%,0.000000,0.0%,0.001387,0.0%,6.550634,95.9%,6.904444,95.3%,0.050006,8.6%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+PubMed,Y,19717,44324,2.723828,100.0%,1.051231,21.6%,0.001627,0.2%,3.477333,100.0%,3.050100,60.1%,0.009133,1.4%,N,Y,exact_neg_cap=20.0x | PDGNN_neg_cap=5.0x
+Computers,Y,13752,245861,3.523535,95.8%,0.000000,0.0%,0.000000,0.0%,6.242303,95.8%,6.119587,94.7%,0.064857,11.3%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+Chameleon,N,2277,31421,8.036844,94.8%,0.050673,0.2%,0.000000,0.0%,20.768409,89.2%,20.997602,88.4%,0.298778,19.2%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+Squirrel,N,5201,198493,87.341841,97.8%,0.072869,0.1%,0.000000,0.0%,3.602587,33.7%,3.730255,33.9%,0.394860,25.9%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+Cornell,N,183,280,0.067848,27.3%,0.000000,0.0%,0.000000,0.0%,0.028621,27.7%,0.043155,32.1%,0.011247,10.7%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+Texas,N,183,295,0.114717,42.9%,0.004018,3.5%,0.000000,0.0%,0.058034,48.0%,0.080050,34.5%,0.044408,31.0%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+Wisconsin,N,251,466,0.103197,35.3%,0.007599,6.5%,0.000000,0.0%,0.064728,39.0%,0.077039,50.0%,0.013816,13.0%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
+ChChMiner,Y,1514,48514,7.411601,96.6%,0.000000,0.0%,0.000000,0.0%,18.717221,95.9%,18.092181,94.7%,1.352301,44.2%,Y,Y,exact_neg_cap=5.0x | PDGNN_neg_cap=5.0x
