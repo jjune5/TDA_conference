@@ -138,3 +138,45 @@ def phi_C(data, hop: int = 2, max_nodes: int = 300, t: float | None = None,
         if verbose and (v + 1) % 500 == 0:
             print(f'    phi_C {v+1}/{n}')
     return out
+
+
+def phi_B(data, K: int = 5, hop: int = 2, max_nodes: int = 300,
+          n_slices: int = 5, verbose: bool = False) -> np.ndarray:
+    """(N, 25*K) bifiltration (HKS-time x Ricci) approximated by linear slicing.
+
+    Combine two filter axes as f_theta(i) = cos(theta)*HKS_k(i) + sin(theta)*ricci_node(i)
+    over n_slices angles theta in [0, pi/2]; sublevel-PI per slice averaged into the
+    k-th block (keeps dim = 25*K). ricci_node = normalized mean incident Ollivier-Ricci
+    curvature (loaddatas.compute_ricci_curvature)."""
+    from diffusion_features import compute_hks_features
+    from sg2dgm import PersistenceImager as pimg_mod
+    import loaddatas as lds
+    import copy
+    imager = pimg_mod.PersistenceImager(resolution=PI_RES)
+    g = _full_graph(data)
+    hks, _ = compute_hks_features(data, K=K, verbose=verbose)        # (N,K)
+    n = int(data.num_nodes)
+    # node-level ricci = normalized mean incident edge curvature
+    d2 = copy.copy(data); d2.edge_index = data.edge_index
+    ricci = lds.compute_ricci_curvature(d2)                          # list of (a,b,c)
+    rnode = np.zeros(n); cnt = np.zeros(n)
+    for a, b, c in ricci:
+        a, b = int(a), int(b)
+        rnode[a] += c; rnode[b] += c; cnt[a] += 1; cnt[b] += 1
+    rnode = np.where(cnt > 0, rnode / np.maximum(cnt, 1), 0.0)
+    rng = rnode.max() - rnode.min()
+    rnode = (rnode - rnode.min()) / (rng + 1e-9)
+    thetas = np.linspace(0, np.pi / 2, n_slices)
+    # precompute one filter dict per (scale k, slice theta) — reused across all nodes
+    filts = [[{nd: float(np.cos(th) * hks[nd, k] + np.sin(th) * rnode[nd])
+               for nd in range(n)} for th in thetas] for k in range(K)]
+    out = np.zeros((n, PI_RES * PI_RES * K), dtype=np.float64)
+    for v in range(n):
+        for k in range(K):
+            acc = np.zeros(PI_RES * PI_RES)
+            for s in range(n_slices):
+                acc += _ego_sublevel_pi(g, v, hop, filts[k][s], imager, max_nodes)
+            out[v, k * 25:(k + 1) * 25] = acc / n_slices
+        if verbose and (v + 1) % 500 == 0:
+            print(f'    phi_B {v+1}/{n}')
+    return out

@@ -49,6 +49,19 @@ def test_phi_C_shape_and_finite_on_synthetic():
     assert np.isfinite(phi).all()
 
 
+def test_phi_B_shape_and_finite_on_synthetic():
+    import torch
+    from types import SimpleNamespace
+    from node_ph_features import phi_B
+    edges = [(0,1),(1,2),(2,0),(2,3),(3,4),(4,2)]
+    ei = torch.tensor([[a for a,b in edges]+[b for a,b in edges],
+                       [b for a,b in edges]+[a for a,b in edges]], dtype=torch.long)
+    data = SimpleNamespace(edge_index=ei, num_nodes=5)
+    phi = phi_B(data, K=3, hop=2, max_nodes=200, n_slices=3)
+    assert phi.shape == (5, 75)                # 25 * K(=3)
+    assert np.isfinite(phi).all()
+
+
 def test_phi_A_does_not_collapse_on_edge_removal():
     """Removing ONE edge incident to a node changes its phi_A only slightly
     (the §14 fix: per-node ego features are robust to single-edge deletion).
