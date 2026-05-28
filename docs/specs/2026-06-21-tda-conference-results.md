@@ -325,7 +325,13 @@ PD를 homology dim별 마스킹 후 GIN 10-fold + **SVM(PI-only) 교차검증**:
 | Cora | −0.0069 | **−0.0077(최악)** | −0.0060 |
 | Chameleon | **+0.0051** | −0.0011 | −0.0006 |
 
-**Finding**: 4/4 케이스에서 PI·GDC-PI가 no-PI보다 천천히 열화. **Chameleon: PI 기울기 양수 → 깨끗할 땐 no-PI 아래(hetero-hurt)지만 20% 노이즈에서 no-PI 역전(0.9827 vs 0.9817).** **그래프가 망가질수록 topology가 더 가치.** 프로젝트 **첫 pro-topology LP 결과.** (caveat: Chameleon n=10·단일 seed·load로 축소 — seed 추가 권장.)
+**Finding (N1 초안 — S1에서 정정됨, 아래)**: 4/4 케이스에서 PI·GDC-PI가 no-PI보다 천천히 열화. 초안(단일 seed)에선 Chameleon PI가 20% 노이즈서 no-PI를 역전(crossover)하는 듯 보였음.
+
+**★ S1 정정 (3 perturbation seeds, n=30/cell — 결정판)**: 충분한 seed로 보강하니 **"crossover"는 single-seed artifact였고 씻겨나감.** 정정된 결론:
+- **살아남음 (robust)**: topology가 no-PI보다 **통계적으로 견고하게 *더 천천히* 열화** — Chameleon PI slope **+0.0051 vs no-PI −0.0004** (Δslope +0.0055 > 1σ). PI가 no-PI 아래 격차를 1.36→0.09%p로 좁히지만 **역전은 안 함.**
+- **GDC-PI가 더 강한 generalizer**: Texas(+0.0266/10%)·Cornell(+0.0162/10%)서 no-PI 대비 robust (>1σ).
+- → **정정된 헤드라인: "topology(특히 GDC-PI)는 구조 노이즈에 robust하게 덜 열화한다 (실재) — 단 hetero에서 no-PI를 *넘진* 못한다."** 원래의 극적 "역전" 주장은 과장이었음. (정직성: 보강 실험이 자기 과장을 잡아낸 사례.)
+- (S1도 버그 수정: `baselines/TLCGNN.py` 하드코딩 `.cuda()`→`.to(device)`.)
 
 ### 12f. 배치 2 종합
 1. **두 헤드라인 미스터리 해명**: PDGNN>exact는 **smoothing 아님**(P1 — 학습된 표현); GDC 구원은 **강도-즉시포화 + bounded**(B1/B2 — tiny-dense엔 역효과).
