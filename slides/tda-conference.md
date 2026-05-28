@@ -279,6 +279,47 @@ Loss에 `λ·mean(gate)`를 더해 gate를 0으로 압박 → **λ=0.5에서 sat
 
 ---
 
+# Diffusion meets Topology
+
+"Diffusion" 두 얼굴 — 둘 다 persistent homology로 묶음:
+
+- **Physical** (heat kernel / GDC): topology를 보는 **렌즈** & **denoiser**
+- **Generative** (DiffAb 등): 생성물을 topology로 **평가**
+
+(병렬 에이전트 3개로 하룻밤에 수행)
+
+---
+
+# 발견 6: Diffusion이 hetero PI를 구원 (GDC)
+
+그래프를 **확산(GDC)으로 매끈하게** 한 뒤 PI 계산:
+
+| AUC | PI | no-PI | **GDC-PI** |
+|---|---|---|---|
+| **Chameleon** (hetero) | 0.943 | 0.969 | **0.970** |
+| Cora (homo) | 0.919 | 0.920 | 0.922 |
+
+**유해하던 hetero PI가 no-PI 수준으로 복구** (+ 분산 절반↓).
+→ shuffle 발견("틀린 방향 신호")과 일관 — diffusion이 평탄화.
+(단 no-PI를 *넘는* 건 여전히 PDGNN뿐 = 중립 복귀 vs 실제 향상)
+
++ HKS(heat-kernel) filtration ≈ 기하 filtration과 대등 (분자 GC).
+
+---
+
+# 발견 7: 항체 생성 평가 — 정직한 NULL
+
+DiffAb/FlowDesign 생성 CDR-H3 loop의 PH ↔ binding(DockQ)?
+
+- pooled 상관 −0.58처럼 보이지만…
+- **per-target ≈ 0** → **Simpson's paradox** (어려운 타깃이 둘 다 나쁨)
+- topology 기반 후보 선택 = **random과 동률**
+
+→ 짧은 loop엔 PH-on-Cα가 **너무 coarse**. 생성 guidance 보류.
+**교훈: 생성모델 평가는 조건부(per-target) 분석 필수.**
+
+---
+
 # 4. 전망
 
 - 🧬 **Drug discovery** — OGBL-DDI, BIOSNAP scale-up (PDGNN 가속 필수)

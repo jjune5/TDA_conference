@@ -197,7 +197,7 @@ cap을 20배 늘려도 +0.3%p → **아님** ✅
 - **Drug discovery**: OGBL-DDI, BIOSNAP scale-up — batched PDGNN inference 필수
 - **Social network**: heterophily 강한 도메인 → adaptive gating 적합
 - **Brain connectivity**: TDA sweet spot, multi-scale topology
-- **Diffusion × TDA** (다음 챕터): heat-kernel diffusion을 filtration으로(렌즈), GDC diffusion으로 heterophilic 신호 denoise(구원) — §6 shuffle finding의 직접 후속
+- **Diffusion × TDA**: §11에서 수행 — HKS 렌즈(A), GDC denoise로 hetero PI 무해화(B), 항체 생성평가 NO-GO(C)
 
 ---
 
@@ -208,4 +208,59 @@ cap을 20배 늘려도 +0.3%p → **아님** ✅
 - SBM caches: `data/TLCGNN/SBM_*.npy`, `data/PDGNN/SBM_*.npy`
 - Splits deterministic, seed=1234 in `loaddatas.get_edges_split`
 - Method-exp scripts: `pi_shuffle_exp.py`, `mol_resolution_sweep.py`, `mol_filter_sweep.py`, `pd_backend_compare.py`, `heterophily_analysis.py`
+- Diffusion-chapter scripts: `Knowledge_Distillation/hks_filtration.py`, `Knowledge_Distillation/mol_filter_sweep_hks.py`, `gdc_pi.py` (+ `TLCGNN_GDC` hook in `loaddatas.py`), `antibody_tda/`
 - GitHub: github.com/jjune5/TDA_conference
+
+---
+
+## 11. Diffusion meets Topology (챕터)
+
+**물리적 확산** vs **생성 확산**, 둘 다 persistent homology로 통합. Spec: `docs/superpowers/specs/2026-05-27-diffusion-tda-chapter-design.md`. 3개 thread를 격리 worktree 에이전트로 병렬 수행.
+
+### 11a. Thread A — diffusion을 filtration 렌즈로 (HKS, physical)
+
+Heat Kernel Signature(graph Laplacian heat kernel, scale `t=1/median(λ⁺)`)를 filtration으로 사용, 분자 GC 10-fold CV.
+
+| Dataset | degree | clustering | closeness | **HKS** |
+|---|---|---|---|---|
+| MUTAG | 0.7667 | 0.7558 | 0.7667 | **0.7670** |
+| PROTEINS | 0.7313 | 0.7296 | 0.7322 | **0.7332** |
+| NCI1 | **0.7696** | 0.7560 | 0.7552 | 0.7637 |
+
+**Finding**: diffusion 렌즈(HKS)는 기하 filtration과 **대등** — MUTAG/PROTEINS 근소 1위, NCI1 2위, **어떤 데이터셋에서도 꼴찌 아님.** 극적 우위는 없으나 "diffusion = 경쟁력 있는 multi-scale 렌즈" 확인.
+
+### 11b. Thread B — diffusion을 denoiser로 (GDC, physical) ★주요 결과
+
+Graph Diffusion Convolution(heat kernel t=5, topk=16)으로 그래프를 diffuse한 뒤 그 위에서 PI 계산. 50 trials.
+
+| Dataset | Domain | PI(exact) | no-PI | **GDC-PI** | GDC−PI | GDC−noPI |
+|---|---|---|---|---|---|---|
+| Cora | homo | 0.9191 | 0.9200 | 0.9215 | +0.002 | +0.002 |
+| Photo | homo | 0.9825 | 0.9839 | 0.9827 | +0.000 | −0.001 |
+| Chameleon | hetero | 0.9432 | 0.9686 | **0.9697** | **+0.027** | **+0.001** |
+| Texas | hetero | 0.5709 | 0.5939 | 0.6157 | +0.045 | +0.022 |
+| Cornell | hetero | 0.5850 | 0.6502 | 0.6184 | +0.033 | −0.032 |
+
+**Finding (정직)**:
+- **Heterophilic에서 GDC가 유해한 exact-PI 신호를 중화 → no-PI 수준으로 복구.** 저분산 대형 그래프 **Chameleon이 깨끗한 증거**: GDC-PI 0.9697 = PI 대비 **+0.027(손해 완전 복구)**, no-PI 대비 **+0.001(동률)**.
+- Texas/Cornell은 작아서(std ±0.08~0.14) 노이즈 큼 — Texas는 no-PI를 약간 넘고(노이즈 안) Cornell은 부분 복구. **큰 그래프가 진실 = "동률 복귀"** (no-PI 초과 아님).
+- **부가 발견**: GDC-PI가 소형 hetero 그래프에서 **분산을 절반으로** 줄임(Texas std 0.079 vs 0.13, Cornell 0.057 vs 0.14) — diffusion이 신호 안정화.
+- Homophilic(Cora/Photo): 셋 다 동률, GDC 효과 미미.
+- **메커니즘 일관성**: §6 shuffle finding(PI 손해 = "틀린 방향" edge-specific 신호)과 부합 — GDC가 그 신호를 평탄화해 무해화. 단 **no-PI를 *넘는* 건 여전히 PDGNN(Chameleon 0.9757)뿐**; GDC=중립 복귀, PDGNN=실제 향상.
+
+### 11c. Thread C — 생성 확산 평가 (항체 CDR-H3, generative) → NO-GO
+
+DiffAb/FlowDesign/IgGM이 생성한 항체 CDR-H3 loop의 persistent homology가 binding quality(DockQ)와 관련되는지 검증. **생성·학습 없이** 기존 출력(FlowDesign 67k PDB) + 사전계산 DockQ 사용. RabD 60 + time_split 60 타깃 × 40 샘플.
+
+**Finding (정교한 NULL)**:
+- corr(topo_dist_to_native, DockQ): pooled −0.58처럼 보이나 **per-target ≈ 0** → **Simpson's paradox**(어려운 타깃이 topo-거리↑+DockQ↓ 동반)의 between-target 인공물. 실제 선택 상황(within-target)엔 신호 없음.
+- topology 기반 후보 선택이 **random과 동률** (native-free max loop-likeness: RabD 0.8901 vs random 0.8923; min topo-dist 0.8897).
+- topo_dist vs RMSD-CDRH3도 within-target ≈ 0 → 상보적 신호 아님.
+- **결론**: single-H3 inpainting에서 **PH-on-Cα는 너무 coarse** (orientation/side-chain 버림) → topology-guided 생성(Rung1 guidance/Rung2 training) **짓지 않음.** 재시도하려면 within-target DockQ 분산이 큰 설정(full-complex/multi-CDR/docking-pose) + Cα보다 풍부한 descriptor 필요.
+- **방법론 교훈**: pooled correlation의 **Simpson's paradox 함정** — 생성모델 평가에서 per-target(조건부) 분석 필수.
+
+### 11d. 챕터 종합
+
+- **Physical diffusion (A,B)**: topology의 렌즈(HKS 대등)·denoiser(GDC가 hetero PI를 무해화)로 **작동**. **B가 가장 강한 새 결과** + shuffle 메커니즘과 일관.
+- **Generative diffusion (C)**: 항체 loop엔 coarse-PH가 부족 — 정직한 null + Simpson's paradox 교훈.
+- **큰 그림**: "topology가 언제 유용한가"의 답에 diffusion 축 추가 — diffusion은 topology를 **정제**하는 덴 좋지만(B), 짧은 3D loop의 **생성 품질**을 잡기엔 coarse(C).
