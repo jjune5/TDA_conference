@@ -85,3 +85,56 @@ def phi_A(data, K: int = 5, hop: int = 2, max_nodes: int = 300,
         if verbose and (v + 1) % 500 == 0:
             print(f'    phi_A {v+1}/{n}')
     return out
+
+
+def _global_laplacian_eig(data, dev=None):
+    """Eigendecomposition of the normalized Laplacian on the (leakage-free) graph.
+    Returns (lams (n,), phis (n,n)) as numpy. Mirrors compute_hks_features' eig block."""
+    import torch
+    dev = dev or ('cuda' if torch.cuda.is_available() else 'cpu')
+    n = int(data.num_nodes)
+    ei = np.asarray(data.edge_index.cpu() if hasattr(data.edge_index, 'cpu')
+                    else data.edge_index)
+    A = torch.zeros((n, n), dtype=torch.float64, device=dev)
+    src = torch.from_numpy(ei[0]).long().to(dev); dst = torch.from_numpy(ei[1]).long().to(dev)
+    A[src, dst] = 1.0; A[dst, src] = 1.0; A.fill_diagonal_(0.0)
+    deg = A.sum(1); dinv = torch.where(deg > 0, deg.pow(-0.5), torch.zeros_like(deg))
+    L = torch.eye(n, dtype=torch.float64, device=dev) - torch.diag(dinv) @ A @ torch.diag(dinv)
+    lams, phis = torch.linalg.eigh(L)
+    lams = torch.clamp(lams, min=0.0)
+    return lams.cpu().numpy(), phis.cpu().numpy()
+
+
+def phi_C(data, hop: int = 2, max_nodes: int = 300, t: float | None = None,
+          verbose: bool = False) -> np.ndarray:
+    """(N, 25) diffusion-distance Vietoris-Rips node-PH.
+
+    Diffusion distance at time t: d_t(i,j)^2 = sum_k exp(-2 t lam_k)(phi_k(i)-phi_k(j))^2.
+    Per node v: Rips persistence of the ego-graph nodes under d_t -> (25,) PI."""
+    from sg2dgm import PersistenceImager as pimg_mod
+    imager = pimg_mod.PersistenceImager(resolution=PI_RES)
+    g = _full_graph(data)
+    lams, phis = _global_laplacian_eig(data)
+    pos = lams[lams > 1e-8]
+    if t is None:
+        t = 1.0 / float(np.median(pos)) if pos.size else 1.0
+    w = np.exp(-2.0 * t * lams)                                  # (n_eig,)
+    n = int(data.num_nodes)
+    out = np.zeros((n, PI_RES * PI_RES), dtype=np.float64)
+    for v in range(n):
+        nodes = list(nx.ego_graph(g, v, radius=hop).nodes())
+        if len(nodes) > max_nodes:
+            nodes = nodes[:max_nodes]
+        if len(nodes) < 2:
+            continue
+        P = phis[nodes, :]                                       # (m, n_eig)
+        diff = P[:, None, :] - P[None, :, :]                     # (m, m, n_eig)
+        D = np.sqrt(np.clip((diff ** 2 * w).sum(-1), 0, None))   # (m, m) diffusion dist
+        rips = gudhi.RipsComplex(distance_matrix=D, max_edge_length=float(D.max()))
+        st = rips.create_simplex_tree(max_dimension=2)
+        pts = _diagram_points(st, float(D.max()))
+        if pts:
+            out[v] = np.asarray(imager.transform(np.array(pts, dtype=np.float64))).reshape(-1)
+        if verbose and (v + 1) % 500 == 0:
+            print(f'    phi_C {v+1}/{n}')
+    return out
