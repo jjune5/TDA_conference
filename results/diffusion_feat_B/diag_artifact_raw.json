@@ -1,0 +1,234 @@
+[
+  {
+    "name": "Cora",
+    "expected_rows": 28508,
+    "segments": {
+      "train_pos": [
+        0,
+        4488
+      ],
+      "train_neg": [
+        4488,
+        26928
+      ],
+      "val_pos": [
+        26928,
+        27191
+      ],
+      "val_neg": [
+        27191,
+        27454
+      ],
+      "test_pos": [
+        27454,
+        27981
+      ],
+      "test_neg": [
+        27981,
+        28508
+      ]
+    },
+    "sources": {
+      "exact": {
+        "cache": "data/TLCGNN/Cora.npy",
+        "rows": 28508,
+        "dim": 25,
+        "per_segment": {
+          "train_pos": {
+            "mean_L1": 0.13858719773841302,
+            "nonzero": 0.45454545454545453,
+            "n": 4488
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 22440
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 263
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 263
+          },
+          "test_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 527
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 527
+          }
+        },
+        "test_collapsed_vs_train": true,
+        "test_feature_cv_auc": 0.5,
+        "test_feature_cv_status": "all-zero",
+        "train_feature_cv_auc": 0.7273801446544159,
+        "train_feature_cv_status": "ok"
+      },
+      "B_hks_multi": {
+        "cache": "data/HKS_MULTI_TLCGNN_0.1x1x10/Cora.npy",
+        "rows": 28508,
+        "dim": 75,
+        "per_segment": {
+          "train_pos": {
+            "mean_L1": 0.42676620794431414,
+            "nonzero": 0.45454545454545453,
+            "n": 4488
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 22440
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 263
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 263
+          },
+          "test_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 527
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 527
+          }
+        },
+        "test_collapsed_vs_train": true,
+        "test_feature_cv_auc": 0.5,
+        "test_feature_cv_status": "all-zero",
+        "train_feature_cv_auc": 0.7270622287108972,
+        "train_feature_cv_status": "ok"
+      }
+    }
+  },
+  {
+    "name": "Chameleon",
+    "expected_rows": 169674,
+    "segments": {
+      "train_pos": [
+        0,
+        26708
+      ],
+      "train_neg": [
+        26708,
+        160248
+      ],
+      "val_pos": [
+        160248,
+        161819
+      ],
+      "val_neg": [
+        161819,
+        163390
+      ],
+      "test_pos": [
+        163390,
+        166532
+      ],
+      "test_neg": [
+        166532,
+        169674
+      ]
+    },
+    "sources": {
+      "exact": {
+        "cache": "data/TLCGNN/Chameleon.npy",
+        "rows": 169674,
+        "dim": 25,
+        "per_segment": {
+          "train_pos": {
+            "mean_L1": 8.036843953275165,
+            "nonzero": 0.9475438070989965,
+            "n": 26708
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 133540
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1571
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1571
+          },
+          "test_pos": {
+            "mean_L1": 0.05067290162010448,
+            "nonzero": 0.002546148949713558,
+            "n": 3142
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 3142
+          }
+        },
+        "test_collapsed_vs_train": true,
+        "test_feature_cv_auc": 0.5006465626360719,
+        "test_feature_cv_status": "ok",
+        "train_feature_cv_auc": 0.9734,
+        "train_feature_cv_status": "ok"
+      },
+      "B_hks_multi": {
+        "cache": "data/HKS_MULTI_TLCGNN_0.1x1x10/Chameleon.npy",
+        "rows": 169674,
+        "dim": 75,
+        "per_segment": {
+          "train_pos": {
+            "mean_L1": 16.53591161800814,
+            "nonzero": 0.9475438070989965,
+            "n": 26708
+          },
+          "train_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 133540
+          },
+          "val_pos": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1571
+          },
+          "val_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 1571
+          },
+          "test_pos": {
+            "mean_L1": 0.06827892083345202,
+            "nonzero": 0.002546148949713558,
+            "n": 3142
+          },
+          "test_neg": {
+            "mean_L1": 0.0,
+            "nonzero": 0.0,
+            "n": 3142
+          }
+        },
+        "test_collapsed_vs_train": true,
+        "test_feature_cv_auc": 0.501115409152127,
+        "test_feature_cv_status": "ok",
+        "train_feature_cv_auc": 0.9734,
+        "train_feature_cv_status": "ok"
+      }
+    }
+  }
+]

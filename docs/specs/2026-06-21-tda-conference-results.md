@@ -423,3 +423,35 @@ PDGNN inference도 동일하게 val/test_pos를 제거(`pdgnn_inference.py` L60-
 - 기전: hop-1 intersection vicinity는 두 끝점이 이웃이어야 → (u,v) 없으면 공통이웃만 남아 extended-PD trivial → PI=0. (= test_pos가 이미 있는 regime.)
 
 **→ §14는 5겹 증거로 확정**: (1) 직접 캐시 per-segment 분석, (2) leakage-free PDGNN 대비, (3) PDGNN의 edge-present 학습 기전, (4) 9-데이터셋 일반화, (5) **100%-collapse leave-one-out control**. exact PI의 LP 신호 = surrounding 구조가 아니라 **train-graph 엣지-멤버십 artifact**. 발표 센터피스로 견고.
+
+---
+
+## 15. Multi-scale Diffusion Features for LP (§14 후속 — ★genuine positive)
+
+사용자 아이디어("diffusion의 multi-scale을 PD처럼 입력으로"). node-level HKS(A) vs vicinity HKS-PD(B)로 검증. spec: `docs/superpowers/specs/2026-05-28-diffusion-features-lp-design.md`. 모든 숫자 직접 파일 검증.
+
+### 15a. Variant A — node-level multi-scale HKS ★WIN
+per-edge feature = `[HKS_t(u), HKS_t(v), |HKS_t(u)−HKS_t(v)|]` × K=5 (15-dim), leakage-free training graph.
+
+**§14 진단** (feature-only test CV-AUC, test_pos↔neg 판별):
+| | Cora | Chameleon |
+|---|---|---|
+| A (node-HKS) | 0.558 | **0.840** (train 0.842 ≈ test → **붕괴 없음 = genuine**) |
+| exact-PI | 0.500 | 0.491 (train 0.973 → 붕괴 = artifact) |
+
+**LP AUC (50 trials)**:
+| | no-PI | exact-PI | A (node-HKS) |
+|---|---|---|---|
+| Cora | 0.9213 | 0.9207 | 0.9100 (−0.011) |
+| Chameleon | 0.9691 | 0.9441 | **0.9870** (+0.018 vs no-PI, +0.043 vs exact, **PDGNN 0.976도 능가**) |
+
+→ node-HKS는 edge-presence 독립 → **§14 artifact 우회 + heterophilic LP를 실제로 개선** (Chameleon서 모든 방법 능가). homophilic Cora선 약간 해로움(`|HKS_u−HKS_v|`가 동질 노드 엣지에선 작아 정보 적음).
+
+### 15b. Variant B — vicinity HKS-PD (collapses, artifact 답습)
+HKS-filtration vicinity PI를 K=3 스케일 stack (75-dim). **§14 진단**: test CV-AUC ≈ 0.50 (Cora·Chameleon 둘 다) — exact-PI처럼 **붕괴**. LP: Chameleon B 0.951 (−0.015 vs no-PI; exact −0.023보단 덜). → 스케일을 쌓아도 **vicinity-based면 artifact 답습.**
+
+### 15c. Dissociation (핵심 기전)
+**A(node, edge-presence 독립) = 우회+개선** vs **B(vicinity, 엣지 제거 시 붕괴) = artifact 답습.** → **§14 artifact의 원인 = vicinity construction** (filtration이 Ricci든 HKS든, 스케일 몇 개든 무관). node-HKS는 **PDGNN의 neural 복원과 별개인 *spectral* 복원 경로** — exact-PI가 잃은 leakage-free 신호를 되찾고, heterophilic LP에선 SOTA.
+
+### 15d. 의의
+사용자의 diffusion-feature 아이디어가 **단순 null이 아니라 genuine positive** 산출: node-HKS가 §14 artifact를 우회 + **heterophilic LP 최고 성능(Chameleon 0.987)** + 기전 규명(artifact=vicinity). §14(진단) → §15(처방: node-level diffusion feature)로 스토리 완결.

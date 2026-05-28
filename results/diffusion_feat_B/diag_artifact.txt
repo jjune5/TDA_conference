@@ -1,0 +1,23 @@
+====================================================================================================
+§14 DIAGNOSTIC — Variant B (multi-scale HKS-filtration vicinity PI)
+Does B collapse at test (inherits membership artifact) like exact vicinity-PI?
+====================================================================================================
+
+dataset    source        dim |        trp L1/nz |        tep L1/nz        ten L1/nz | collapse test_cvAUC train_cvAUC
+---------------------------------------------------------------------------------------------------------------------
+Cora       exact          25 |       0.1386/45% |        0.0000/0%        0.0000/0% |      YES      0.500       0.727
+Cora       B_hks_multi    75 |       0.4268/45% |        0.0000/0%        0.0000/0% |      YES      0.500       0.727
+
+Chameleon  exact          25 |       8.0368/95% |        0.0507/0%        0.0000/0% |      YES      0.501       0.973
+Chameleon  B_hks_multi    75 |      16.5359/95% |        0.0683/0%        0.0000/0% |      YES      0.501       0.973
+
+LEGEND:
+  trp/tep/ten = train_pos / test_pos / test_neg segments
+  L1 = mean per-edge PI L1-mass ; nz = % edges with nonzero PI
+  collapse = test_pos collapsed vs train_pos (nz<5% OR L1<0.1%*trp OR ratio<20%)
+  test_cvAUC  = feature-ONLY 5-fold CV AUC, test_pos vs test_neg (~0.5 = no test signal)
+  train_cvAUC = same on train edges (sanity: vicinity feature DOES separate in-graph edges)
+
+VERDICT (per dataset):
+  Cora: B COLLAPSES at test (inherits §14 membership artifact) | B test_cvAUC=0.500, exact test_cvAUC=0.500, B train_cvAUC=0.727
+  Chameleon: B COLLAPSES at test (inherits §14 membership artifact) | B test_cvAUC=0.501, exact test_cvAUC=0.501, B train_cvAUC=0.973

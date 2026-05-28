@@ -1,0 +1,56 @@
+====================================================================================================
+VARIANT B — Multi-scale HKS-filtration vicinity PD/PI for Link Prediction
+Spec: docs/superpowers/specs/2026-05-28-diffusion-features-lp-design.md
+====================================================================================================
+
+WHAT B IS:
+  The existing TLCGNN_LP_FILTER=hks vicinity-PI (|HKS_u-HKS_v| edge filter, ONE
+  diffusion scale t) EXTENDED to K scales: compute the HKS-filtration extended-
+  persistence image at each t in {0.1, 1.0, 10.0} and STACK (concatenate) the
+  per-scale 25-dim PI vectors -> a 75-dim per-edge feature.  Same vicinity-
+  geodesic + extended-persistence + PI machinery as exact-PI; only the per-edge
+  filter value (Ollivier-Ricci -> multi-scale HKS dissimilarity) changes.
+  Guarded behind TLCGNN_LP_FILTER=hks_multi + TLCGNN_HKS_SCALES; default unchanged.
+  Computed on the leakage-free training graph (val/test pos removed), like the PI.
+
+----------------------------------------------------------------------------------------------------
+MEASUREMENT 1 — §14 diagnostic: does B collapse at test (membership artifact)?
+----------------------------------------------------------------------------------------------------
+dataset    source        dim |  train_pos L1/nz |   test_pos L1/nz   test_neg L1/nz | collapse test_cvAUC train_cvAUC
+---------------------------------------------------------------------------------------------------------------------
+Cora       exact          25 |       0.1386/45% |        0.0000/0%        0.0000/0% |      YES      0.500       0.727
+Cora       B_hks_multi    75 |       0.4268/45% |        0.0000/0%        0.0000/0% |      YES      0.500       0.727
+Chameleon  exact          25 |       8.0368/95% |        0.0507/0%        0.0000/0% |      YES      0.501       0.973
+Chameleon  B_hks_multi    75 |      16.5359/95% |        0.0683/0%        0.0000/0% |      YES      0.501       0.973
+
+  test_cvAUC = feature-ONLY logistic-regression 5-fold CV AUC on TEST edges
+               (test_pos vs test_neg).  ~0.5 == NO genuine test signal (collapse).
+  train_cvAUC = same on TRAIN edges (in-graph) — sanity that the vicinity feature
+               DOES separate edges that are present in the training graph.
+
+----------------------------------------------------------------------------------------------------
+MEASUREMENT 2 — End-to-end LP AUC (GCN, 50 trials, mean ± std)
+----------------------------------------------------------------------------------------------------
+dataset                   no-PI            exact-PI         B-hks-multi     B−noPI    B−exact
+---------------------------------------------------------------------------------------------
+Chameleon         0.9668±0.0053       0.9441±0.0065       0.9513±0.0030    -0.0154    +0.0072
+Cora              0.9179±0.0055       0.9207±0.0048       0.9225±0.0043    +0.0046    +0.0018
+
+====================================================================================================
+VERDICT
+====================================================================================================
+  [Cora] B COLLAPSES at test (inherits §14 membership artifact).
+      B test_cvAUC=0.500 vs exact test_cvAUC=0.500 (both ~0.5 ⇒ no test signal); B train_cvAUC=0.727.
+  [Chameleon] B COLLAPSES at test (inherits §14 membership artifact).
+      B test_cvAUC=0.501 vs exact test_cvAUC=0.501 (both ~0.5 ⇒ no test signal); B train_cvAUC=0.973.
+
+  INTERPRETATION:
+  B is a VICINITY-based feature: for a candidate test edge (u,v) the edge is
+  removed from the training graph at test, so the local vicinity persistence
+  vanishes — at EVERY diffusion scale.  Stacking K scales therefore cannot
+  rescue test signal; B collapses (test_pos ≈ test_neg ≈ 0, cvAUC ≈ 0.5) exactly
+  like the exact Ollivier-Ricci vicinity-PI.  This CONFIRMS the §14 membership
+  artifact is a property of *vicinity construction*, not of the Ricci filtration.
+  (Contrast: Variant A, node-level multi-scale HKS, is edge-presence-independent
+  and is handled by a separate agent — the predicted dissociation between the two.)
+

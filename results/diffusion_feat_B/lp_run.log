@@ -1,0 +1,80 @@
+Device: cuda  trials=50  datasets=['Cora', 'Chameleon']
+B cache dir: data/HKS_MULTI_TLCGNN_0.1x1x10
+
+================================================================
+Loading Cora...
+/mnt/data/users/junyoungpark/code/TLC-GNN/.claude/worktrees/agent-a49389e66318531b9/lp_hks_multi.py:70: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+  split total=28508 (tp=4488,tn=22440,vp=263,vn=263,tep=527,ten=527)
+  exact PI: (28508, 25) (data/TLCGNN/Cora.npy)
+  B  PI   : (28508, 75) (data/HKS_MULTI_TLCGNN_0.1x1x10/Cora.npy)
+
+  [Cora / no-PI]  pi_dim=0
+    trial 10/50: mean AUC=0.9164 [32s]
+    trial 20/50: mean AUC=0.9182 [68s]
+    trial 30/50: mean AUC=0.9178 [102s]
+    trial 40/50: mean AUC=0.9181 [135s]
+    trial 50/50: mean AUC=0.9179 [171s]
+  --> Cora/no-PI: mean=0.9179 std=0.0055
+
+  [Cora / exact-PI]  pi_dim=25
+    trial 10/50: mean AUC=0.9198 [49s]
+    trial 20/50: mean AUC=0.9199 [94s]
+    trial 30/50: mean AUC=0.9204 [138s]
+    trial 40/50: mean AUC=0.9203 [182s]
+    trial 50/50: mean AUC=0.9207 [229s]
+  --> Cora/exact-PI: mean=0.9207 std=0.0048
+
+  [Cora / B-hks-multi]  pi_dim=75
+    trial 10/50: mean AUC=0.9231 [44s]
+    trial 20/50: mean AUC=0.9222 [88s]
+    trial 30/50: mean AUC=0.9228 [127s]
+    trial 40/50: mean AUC=0.9227 [167s]
+    trial 50/50: mean AUC=0.9225 [215s]
+  --> Cora/B-hks-multi: mean=0.9225 std=0.0043
+
+================================================================
+Loading Chameleon...
+/mnt/data/users/junyoungpark/code/TLC-GNN/.claude/worktrees/agent-a49389e66318531b9/lp_hks_multi.py:70: FutureWarning: adjacency_matrix will return a scipy.sparse array instead of a matrix in Networkx 3.0.
+  adj = nx.adjacency_matrix(g)
+  split total=169674 (tp=26708,tn=133540,vp=1571,vn=1571,tep=3142,ten=3142)
+  exact PI: (169674, 25) (data/TLCGNN/Chameleon.npy)
+  B  PI   : (169674, 75) (data/HKS_MULTI_TLCGNN_0.1x1x10/Chameleon.npy)
+
+  [Chameleon / no-PI]  pi_dim=0
+    trial 10/50: mean AUC=0.9646 [108s]
+    trial 20/50: mean AUC=0.9658 [213s]
+    trial 30/50: mean AUC=0.9661 [327s]
+    trial 40/50: mean AUC=0.9668 [493s]
+    trial 50/50: mean AUC=0.9668 [680s]
+  --> Chameleon/no-PI: mean=0.9668 std=0.0053
+
+  [Chameleon / exact-PI]  pi_dim=25
+    trial 10/50: mean AUC=0.9445 [74s]
+    trial 20/50: mean AUC=0.9444 [151s]
+    trial 30/50: mean AUC=0.9449 [222s]
+    trial 40/50: mean AUC=0.9443 [298s]
+    trial 50/50: mean AUC=0.9441 [357s]
+  --> Chameleon/exact-PI: mean=0.9441 std=0.0065
+
+  [Chameleon / B-hks-multi]  pi_dim=75
+    trial 10/50: mean AUC=0.9519 [110s]
+    trial 20/50: mean AUC=0.9518 [213s]
+    trial 30/50: mean AUC=0.9519 [334s]
+    trial 40/50: mean AUC=0.9515 [426s]
+    trial 50/50: mean AUC=0.9513 [548s]
+  --> Chameleon/B-hks-multi: mean=0.9513 std=0.0030
+
+==========================================================================================
+VARIANT B — LP AUC (GCN, 50 trials, mean ± std)
+  no-PI | exact-PI (collapses at test, §14) | B = multi-scale HKS-PD (stacked)
+==========================================================================================
+
+dataset                     no-PI            exact-PI         B-hks-multi      B−noPI     B−exact
+-------------------------------------------------------------------------------------------------
+Cora                0.9179±0.0055       0.9207±0.0048       0.9225±0.0043     +0.0046     +0.0018
+Chameleon           0.9668±0.0053       0.9441±0.0065       0.9513±0.0030     -0.0154     +0.0072
+
+Δ(B−noPI) > 0 ⇒ B helps over GCN-only ; Δ(B−exact) compares B to exact vicinity-PI.
+
+[lp] wrote results/diffusion_feat_B/lp_auc.{txt,csv,json}
