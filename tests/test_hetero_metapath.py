@@ -51,7 +51,13 @@ def test_metapath_pi_shape():
     from hetero.metapath_ph import metapath_node_pi
     d = load_hgb('ACM')
     g, y, masks = build_metapath_graph(d, 'PAP')
-    pi = metapath_node_pi(g, hop=1, max_nodes=200, verbose=False)
-    assert pi.shape == (g.number_of_nodes(), 25)
-    assert np.isfinite(pi).all()
-    assert pi.sum() > 0
+    # degree filter -> (N,25); hks filter -> (N,25*K), much more distinct per node
+    pi_deg = metapath_node_pi(g, filter='degree', hop=1, max_nodes=200)
+    assert pi_deg.shape == (g.number_of_nodes(), 25)
+    pi_hks = metapath_node_pi(g, filter='hks', K=3, hop=1, max_nodes=200)
+    assert pi_hks.shape == (g.number_of_nodes(), 75)
+    assert np.isfinite(pi_hks).all() and pi_hks.sum() > 0
+    # hks must be far more node-distinct than degree (the whole point)
+    d_deg = len(np.unique(np.round(pi_deg, 4), axis=0))
+    d_hks = len(np.unique(np.round(pi_hks, 4), axis=0))
+    assert d_hks > 10 * d_deg
