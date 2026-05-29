@@ -1,0 +1,5 @@
+dataset,variant,mean_acc,std_acc,n
+Freebase,none,0.614199,0.004608,10
+Freebase,ph_pdgnn,0.610345,0.009337,10
+Freebase,shuffled,0.615517,0.009869,10
+Freebase,random,0.614097,0.006190,10
