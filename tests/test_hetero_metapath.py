@@ -61,3 +61,21 @@ def test_metapath_pi_shape():
     d_deg = len(np.unique(np.round(pi_deg, 4), axis=0))
     d_hks = len(np.unique(np.round(pi_hks, 4), axis=0))
     assert d_hks > 10 * d_deg
+
+
+def test_pdgnn_metapath_train_predict_synthetic():
+    """PDGNN retrains on exact EPD labels and predicts per-node PI (no exact at inference)."""
+    import networkx as nx
+    from hetero.pdgnn_metapath import (_graph_hks, gen_training_samples,
+                                        train_pdgnn_metapath, predict_node_pi)
+    g = nx.barabasi_albert_graph(60, 3, seed=1)
+    for u, v in g.edges():
+        g[u][v]['weight'] = 1.0
+    hks = _graph_hks(g, K=2)
+    assert hks.shape == (60, 2)
+    samples = gen_training_samples(g, hks, hop=1, max_nodes=80, n_samples=30, seed=0)
+    assert len(samples) > 0
+    model = train_pdgnn_metapath(samples, epochs=5, verbose=False)
+    pi = predict_node_pi(model, g, hks, hop=1, max_nodes=80)
+    assert pi.shape == (60, 50)          # 25 * K(=2)
+    assert np.isfinite(pi).all() and pi.sum() > 0

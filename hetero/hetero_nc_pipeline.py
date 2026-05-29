@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hetero.metapath_graph import load_hgb, build_metapath_graph, METAPATHS, TARGET
 from hetero.metapath_ph import metapath_node_pi, random_filter_node_pi
 from hetero.leakage_audit import structure_only_label_acc
+from hetero import pdgnn_metapath as PM
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 HIDDEN, DROPOUT, LR, EPOCHS = 64, 0.5, 0.01, 200
@@ -82,6 +83,10 @@ def main():
     ap.add_argument('--hop', type=int, default=1)
     ap.add_argument('--K', type=int, default=3)
     ap.add_argument('--max_nodes', type=int, default=200)
+    ap.add_argument('--feature', choices=['exact', 'pdgnn'], default='pdgnn',
+                    help='pdgnn: retrain PDGNN on exact labels then predict EPD (no exact feature)')
+    ap.add_argument('--pdgnn_samples', type=int, default=200)
+    ap.add_argument('--pdgnn_epochs', type=int, default=25)
     ap.add_argument('--trials', type=int, default=10)
     ap.add_argument('--outdir', default=None)
     args = ap.parse_args()
@@ -107,11 +112,20 @@ def main():
         audit[mp] = structure_only_label_acc(g, y, masks)
         print(f'  leakage audit {mp}: structure-only acc={audit[mp]:.4f}')
         t0 = time.time()
-        pis.append(metapath_node_pi(g, filter='hks', K=args.K, hop=args.hop,
-                                    max_nodes=args.max_nodes))
+        if args.feature == 'pdgnn':
+            # retrain PDGNN on exact EPD labels (one-time), then predict EPD (no exact feature)
+            hks = PM._graph_hks(g, args.K)
+            samples = PM.gen_training_samples(g, hks, hop=args.hop, max_nodes=args.max_nodes,
+                                              n_samples=args.pdgnn_samples, seed=0)
+            print(f'    PDGNN train samples={len(samples)}')
+            model = PM.train_pdgnn_metapath(samples, epochs=args.pdgnn_epochs, verbose=True)
+            pis.append(PM.predict_node_pi(model, g, hks, hop=args.hop, max_nodes=args.max_nodes))
+        else:
+            pis.append(metapath_node_pi(g, filter='hks', K=args.K, hop=args.hop,
+                                        max_nodes=args.max_nodes))
         pis_rand.append(random_filter_node_pi(g, K=args.K, hop=args.hop,
                                               max_nodes=args.max_nodes))
-        print(f'    PI({mp}) computed in {time.time()-t0:.0f}s')
+        print(f'    PI({mp}, {args.feature}) computed in {time.time()-t0:.0f}s')
     PI = _znorm(np.concatenate(pis, axis=1))            # z-norm so PH isn't drowned out
     PI_rand = _znorm(np.concatenate(pis_rand, axis=1))
     rng = np.random.RandomState(0)
@@ -124,7 +138,8 @@ def main():
         return torch.tensor(np.concatenate([x_feat, extra], 1),
                             dtype=torch.float32, device=device)
 
-    variants = {'none': None, 'ph': PI, 'shuffled': PI_shuf, 'random': PI_rand}
+    phname = f'ph_{args.feature}'
+    variants = {'none': None, phname: PI, 'shuffled': PI_shuf, 'random': PI_rand}
     results = {}
     for name, extra in variants.items():
         x = feats(extra)
