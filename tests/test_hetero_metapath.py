@@ -43,3 +43,15 @@ def test_leakage_audit_runs():
     g, y, masks = build_metapath_graph(d, 'PAP')
     acc = structure_only_label_acc(g, y, masks)
     assert 0.0 <= acc <= 1.0
+
+
+def test_metapath_pi_shape():
+    """각 target 노드 -> (25,) PI. 반환 (N,25), 유한, 일부 nonzero."""
+    from hetero.metapath_graph import load_hgb, build_metapath_graph
+    from hetero.metapath_ph import metapath_node_pi
+    d = load_hgb('ACM')
+    g, y, masks = build_metapath_graph(d, 'PAP')
+    pi = metapath_node_pi(g, hop=1, max_nodes=200, verbose=False)
+    assert pi.shape == (g.number_of_nodes(), 25)
+    assert np.isfinite(pi).all()
+    assert pi.sum() > 0
