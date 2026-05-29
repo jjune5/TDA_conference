@@ -21,10 +21,13 @@ METAPATHS = {
         'PSP': [('paper', 'to', 'subject'), ('subject', 'to', 'paper')],  # leak-audit
     },
     'DBLP': {
-        # target = author
-        'APA': [('author', 'to', 'paper'), ('paper', 'to', 'author')],
-        'APCPA': [('author', 'to', 'paper'), ('paper', 'to', 'term'),
-                  ('term', 'to', 'paper'), ('paper', 'to', 'author')],  # leak-audit
+        # target = author. node types: author/paper/term/venue
+        'APA': [('author', 'to', 'paper'), ('paper', 'to', 'author')],   # co-author (sparse, clean)
+        # APVPA(venue, 20 nodes) / APTPA(term) are DENSE -> exact PH OOMs -> Phase 2 (PDGNN)
+        'APTPA': [('author', 'to', 'paper'), ('paper', 'to', 'term'),
+                  ('term', 'to', 'paper'), ('paper', 'to', 'author')],   # dense
+        'APVPA': [('author', 'to', 'paper'), ('paper', 'to', 'venue'),
+                  ('venue', 'to', 'paper'), ('paper', 'to', 'author')],  # dense, leak-audit (venue≈area)
     },
 }
 TARGET = {'ACM': 'paper', 'DBLP': 'author'}

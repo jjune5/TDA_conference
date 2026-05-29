@@ -1,0 +1,5 @@
+dataset,variant,mean_acc,std_acc,n
+ACM,none,0.818791,0.068975,10
+ACM,ph,0.825449,0.033500,10
+ACM,shuffled,0.835033,0.059490,10
+ACM,random,0.848159,0.077662,10
