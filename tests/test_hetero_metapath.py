@@ -33,3 +33,13 @@ def test_build_metapath_graph_acm_pap_smoke():
     assert min(w) >= 1
     assert y.shape[0] == 3025 and int(y.max()) == 2           # 3 classes
     assert masks['train'].sum() > 0 and masks['test'].sum() > 0
+
+
+def test_leakage_audit_runs():
+    """meta-path 그래프 구조만으로 라벨 예측(LP) 정확도를 반환한다."""
+    from hetero.metapath_graph import load_hgb, build_metapath_graph
+    from hetero.leakage_audit import structure_only_label_acc
+    d = load_hgb('ACM')
+    g, y, masks = build_metapath_graph(d, 'PAP')
+    acc = structure_only_label_acc(g, y, masks)
+    assert 0.0 <= acc <= 1.0
