@@ -1,0 +1,5 @@
+dataset,variant,mean_acc,std_acc,n
+IMDB,none,0.467809,0.012335,10
+IMDB,ph_pdgnn,0.450241,0.007463,10
+IMDB,shuffled,0.460298,0.008617,10
+IMDB,random,0.449758,0.009971,10
