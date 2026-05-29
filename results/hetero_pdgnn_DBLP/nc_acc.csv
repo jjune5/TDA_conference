@@ -1,0 +1,5 @@
+dataset,variant,mean_acc,std_acc,n
+DBLP,none,0.808944,0.006194,10
+DBLP,ph_pdgnn,0.801796,0.005020,10
+DBLP,shuffled,0.805035,0.003475,10
+DBLP,random,0.810000,0.011212,10
