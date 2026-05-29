@@ -51,27 +51,40 @@ class GCNNet(torch.nn.Module):
         return self.c2(x, ei)
 
 
-def run_variant(x, ei, y, masks, n_cls, seed):
+def run_variant(x, ei, y, masks, n_cls, seed, multilabel=False):
+    from sklearn.metrics import f1_score
     torch.manual_seed(seed); np.random.seed(seed)
     model = GCNNet(x.size(1), n_cls).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=5e-4)
-    yt = torch.tensor(y, dtype=torch.long, device=device)
     tr = torch.tensor(masks['train'], device=device)
     va = torch.tensor(masks['val'], device=device)
     te = torch.tensor(masks['test'], device=device)
-    best_va, best_te = 0.0, 0.0
+    if multilabel:
+        yt = torch.tensor(y, dtype=torch.float, device=device)
+        lossfn = torch.nn.BCEWithLogitsLoss()
+    else:
+        yt = torch.tensor(y, dtype=torch.long, device=device)
+
+    def score(out, mask):
+        if multilabel:
+            p = (torch.sigmoid(out[mask]) > 0.5).cpu().numpy().astype(int)
+            return float(f1_score(yt[mask].cpu().numpy().astype(int), p,
+                                  average='macro', zero_division=0))
+        return float((out.argmax(1)[mask] == yt[mask]).float().mean())
+
+    best_va, best_te = -1.0, 0.0
     for _ in range(EPOCHS):
         model.train(); opt.zero_grad()
         out = model(x, ei)
-        loss = F.cross_entropy(out[tr], yt[tr])
+        loss = lossfn(out[tr], yt[tr]) if multilabel else F.cross_entropy(out[tr], yt[tr])
         loss.backward(); opt.step()
         model.eval()
         with torch.no_grad():
-            pred = model(x, ei).argmax(1)
-            va_acc = float((pred[va] == yt[va]).float().mean())
-            if va_acc >= best_va:
-                best_va = va_acc
-                best_te = float((pred[te] == yt[te]).float().mean())
+            out = model(x, ei)
+            va_s = score(out, va)
+            if va_s >= best_va:
+                best_va = va_s
+                best_te = score(out, te)
     return best_te
 
 
@@ -102,7 +115,9 @@ def main():
     g0, y, masks = build_metapath_graph(d, mps[0])
     n = g0.number_of_nodes()
     ei = _graph_to_edge_index(g0, n)
-    n_cls = int(y.max()) + 1
+    multilabel = (y.ndim > 1)
+    n_cls = y.shape[1] if multilabel else int(y.max()) + 1
+    print(f'  n_cls={n_cls} multilabel={multilabel} metric={"MacroF1" if multilabel else "acc"}')
 
     # leakage audit per metapath (record, don't silently use leaky ones)
     audit = {}
@@ -143,7 +158,7 @@ def main():
     results = {}
     for name, extra in variants.items():
         x = feats(extra)
-        accs = [run_variant(x, ei, y, masks, n_cls, s) for s in range(args.trials)]
+        accs = [run_variant(x, ei, y, masks, n_cls, s, multilabel) for s in range(args.trials)]
         results[name] = accs
         print(f'  [{name:8}] test acc = {np.mean(accs):.4f} ± {np.std(accs):.4f}')
 

@@ -13,6 +13,8 @@ import numpy as np
 def structure_only_label_acc(g, y, masks, n_iter: int = 10) -> float:
     """Weighted majority-vote label propagation on the meta-path graph using only
     train labels; return TEST accuracy (structure-only, no features)."""
+    if y.ndim > 1:           # multi-label (e.g. IMDB) -> skip structure-only audit
+        return float('nan')
     n = g.number_of_nodes()
     C = int(y.max()) + 1
     train, test = masks['train'], masks['test']

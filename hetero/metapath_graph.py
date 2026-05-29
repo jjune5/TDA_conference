@@ -29,8 +29,13 @@ METAPATHS = {
         'APVPA': [('author', 'to', 'paper'), ('paper', 'to', 'venue'),
                   ('venue', 'to', 'paper'), ('paper', 'to', 'author')],  # dense, leak-audit (venue≈area)
     },
+    'IMDB': {
+        # target = movie (multi-label, 5 genres). node types: movie/director/actor/keyword
+        'MDM': [('movie', 'to', 'director'), ('director', 'to', 'movie')],     # same-director
+        'MAM': [('movie', '>actorh', 'actor'), ('actor', 'to', 'movie')],      # shared-actor
+    },
 }
-TARGET = {'ACM': 'paper', 'DBLP': 'author'}
+TARGET = {'ACM': 'paper', 'DBLP': 'author', 'IMDB': 'movie'}
 
 
 def load_hgb(name: str):
