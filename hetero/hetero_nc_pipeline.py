@@ -100,30 +100,49 @@ def main():
                     help='pdgnn: retrain PDGNN on exact labels then predict EPD (no exact feature)')
     ap.add_argument('--pdgnn_samples', type=int, default=200)
     ap.add_argument('--pdgnn_epochs', type=int, default=25)
+    ap.add_argument('--cap', type=int, default=0,
+                    help='subsample meta-path graph to ~cap nodes (dense-eigh HKS feasibility); single-metapath only')
+    ap.add_argument('--rand_feat_dim', type=int, default=64,
+                    help='random feature dim when target has no node features (e.g. Freebase)')
     ap.add_argument('--trials', type=int, default=10)
     ap.add_argument('--outdir', default=None)
     args = ap.parse_args()
     outdir = args.outdir or f'results/hetero_{args.dataset}'
     os.makedirs(outdir, exist_ok=True)
+    from hetero.metapath_graph import subsample_connected
     d = load_hgb(args.dataset)
     mps = args.metapaths or list(METAPATHS[args.dataset].keys())
     tgt = TARGET[args.dataset]
-    x_feat = d[tgt].x.numpy().astype(np.float64)
-    print(f'{args.dataset} target={tgt} x={x_feat.shape} metapaths={mps}')
 
-    # build the (shared) backbone graph from the FIRST metapath; PH from all metapaths
+    # build the (shared) backbone graph from the FIRST metapath
     g0, y, masks = build_metapath_graph(d, mps[0])
+    kept = np.arange(g0.number_of_nodes())
+    if args.cap and g0.number_of_nodes() > args.cap:
+        assert len(mps) == 1, 'cap supported for single-metapath only'
+        g0, y, masks, kept = subsample_connected(g0, y, masks, args.cap, seed=0)
+        print(f'  subsampled to {g0.number_of_nodes()} nodes (cap={args.cap})')
     n = g0.number_of_nodes()
     ei = _graph_to_edge_index(g0, n)
     multilabel = (y.ndim > 1)
     n_cls = y.shape[1] if multilabel else int(y.max()) + 1
-    print(f'  n_cls={n_cls} multilabel={multilabel} metric={"MacroF1" if multilabel else "acc"}')
 
-    # leakage audit per metapath (record, don't silently use leaky ones)
+    # node features: use target features if present, else random (e.g. Freebase has none)
+    raw_x = getattr(d[tgt], 'x', None)
+    if raw_x is None:
+        rng0 = np.random.RandomState(0)
+        x_feat = rng0.randn(n, args.rand_feat_dim).astype(np.float64)
+        print(f'  no node features -> random {x_feat.shape}')
+    else:
+        x_feat = raw_x.numpy().astype(np.float64)[kept]
+    print(f'{args.dataset} target={tgt} x={x_feat.shape} metapaths={mps} '
+          f'n_cls={n_cls} multilabel={multilabel} metric={"MacroF1" if multilabel else "acc"}')
+
+    # leakage audit + PH features. For single-metapath (incl. capped) reuse g0;
+    # for multi-metapath (uncapped) rebuild each (node indices align since no subsample).
     audit = {}
     pis, pis_rand = [], []
-    for mp in mps:
-        g, _, _ = build_metapath_graph(d, mp)
+    for i, mp in enumerate(mps):
+        g = g0 if (i == 0 or len(mps) == 1) else build_metapath_graph(d, mp)[0]
         audit[mp] = structure_only_label_acc(g, y, masks)
         print(f'  leakage audit {mp}: structure-only acc={audit[mp]:.4f}')
         t0 = time.time()

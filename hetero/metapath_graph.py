@@ -34,8 +34,12 @@ METAPATHS = {
         'MDM': [('movie', 'to', 'director'), ('director', 'to', 'movie')],     # same-director
         'MAM': [('movie', '>actorh', 'actor'), ('actor', 'to', 'movie')],      # shared-actor
     },
+    'Freebase': {
+        # target = book (40402, 7 classes, NO node features). 8 node types, 36 edge types.
+        'BB': [('book', 'and', 'book')],                                       # direct book-book (sparse, avgdeg 6.3)
+    },
 }
-TARGET = {'ACM': 'paper', 'DBLP': 'author', 'IMDB': 'movie'}
+TARGET = {'ACM': 'paper', 'DBLP': 'author', 'IMDB': 'movie', 'Freebase': 'book'}
 
 
 def load_hgb(name: str):
@@ -87,3 +91,33 @@ def build_metapath_graph(d, metapath_name: str):
         masks['val'] = np.zeros_like(tr); masks['val'][cut] = True
         masks['train'][cut] = False
     return g, y, masks
+
+
+def subsample_connected(g, y, masks, cap: int, seed: int = 0):
+    """For graphs too large for dense-eigh HKS: take a connected subgraph of ~cap
+    nodes (BFS from a random train node within the largest component), relabel to
+    0..m-1, and subset y/masks/kept_idx consistently. Returns (g2, y2, masks2, kept_idx).
+    No-op (kept_idx=arange) if g already <= cap."""
+    n = g.number_of_nodes()
+    if n <= cap:
+        return g, y, masks, np.arange(n)
+    rng = np.random.RandomState(seed)
+    comps = sorted(nx.connected_components(g), key=len, reverse=True)
+    big = g.subgraph(comps[0])
+    if big.number_of_nodes() <= cap:
+        keep = list(big.nodes())
+    else:
+        train_in = [int(nd) for nd in big.nodes() if masks['train'][nd]]
+        start = int(rng.choice(train_in)) if train_in else int(rng.choice(list(big.nodes())))
+        keep = []
+        for nd in nx.bfs_tree(big, start):
+            keep.append(int(nd))
+            if len(keep) >= cap:
+                break
+    keep = sorted(keep)
+    remap = {old: i for i, old in enumerate(keep)}
+    g2 = nx.relabel_nodes(g.subgraph(keep).copy(), remap)
+    kept = np.array(keep)
+    y2 = y[kept]
+    masks2 = {k: v[kept] for k, v in masks.items()}
+    return g2, y2, masks2, kept
