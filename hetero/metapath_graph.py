@@ -81,7 +81,10 @@ def build_metapath_graph(d, metapath_name: str):
         if i < j and w > 0:                  # upper triangle, drop diagonal
             g.add_edge(int(i), int(j), weight=float(w))
     y = d[tgt].y.numpy()
-    masks = {k: getattr(d[tgt], f'{k}_mask').numpy()
+    # .numpy() shares memory with the torch tensor; .copy() so the val-synthesis
+    # below does NOT mutate d[tgt].train_mask in place (bug: shrank train set on
+    # repeated calls 907->770->654->... across multi-metapath runs).
+    masks = {k: getattr(d[tgt], f'{k}_mask').numpy().copy()
              for k in ('train', 'val', 'test') if hasattr(d[tgt], f'{k}_mask')}
     # HGB ACM has train/test masks; synthesize val from train tail if absent
     if 'val' not in masks:

@@ -1,0 +1,5 @@
+dataset,model,variant,mean_acc,std_acc,n_trials
+ACM,GCN,pairwise,0.577526,0.117066,10
+ACM,GCN,random-edges,0.343248,0.000000,10
+ACM,HyperConv,higher-order,0.605949,0.087621,10
+ACM,HyperConv,shuffled-he,0.324504,0.009377,10
