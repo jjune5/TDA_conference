@@ -1,0 +1,5 @@
+dataset,variant,mean,std,n
+DBLP,none,0.808944,0.006194,10
+DBLP,ph_unified,0.812218,0.005994,10
+DBLP,shuffled,0.809648,0.006437,10
+DBLP,random,0.806901,0.004575,10
