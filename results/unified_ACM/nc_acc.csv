@@ -1,0 +1,5 @@
+dataset,variant,mean,std,n
+ACM,none,0.818791,0.068975,10
+ACM,ph_unified,0.876157,0.006419,10
+ACM,shuffled,0.800803,0.082203,10
+ACM,random,0.763503,0.091139,10

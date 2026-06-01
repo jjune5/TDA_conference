@@ -1,0 +1,5 @@
+dataset,variant,mean,std,n
+IMDB,none,0.468047,0.012596,10
+IMDB,ph_unified,0.461113,0.007295,10
+IMDB,shuffled,0.460237,0.011212,10
+IMDB,random,0.461156,0.008555,10
