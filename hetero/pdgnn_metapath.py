@@ -122,7 +122,9 @@ def train_pdgnn_metapath(samples, hidden=32, layers=3, epochs=30, lr=1e-3,
             loss = _bipartite_loss(pred, gtt)
             if not torch.isfinite(loss):
                 continue
-            loss.backward(); opt.step()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)  # stabilize (loss-spike guard)
+            opt.step()
             losses.append(loss.item())
         if verbose and (ep % 5 == 0 or ep == 1):
             print(f'    pdgnn ep {ep:3d} loss={np.mean(losses):.4f}')
