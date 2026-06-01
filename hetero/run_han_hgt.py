@@ -19,7 +19,48 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hetero.metapath_graph import load_hgb, build_metapath_graph, METAPATHS, TARGET
 from hetero import pdgnn_metapath as PM
 from hetero.metapath_ph import random_filter_node_pi
+from hetero.unified_filter import build_homo, calibrated_filter
 from hetero.hetero_nc_pipeline import _znorm
+
+
+def compute_epd(d, dataset, source, epd_mp, K, hop, max_nodes, samples_n, epochs, n_tgt, homo_cap=20000):
+    """Return (EPD, EPD_rand) for target nodes. source: 'metapath'(Idea1) or 'unified'(Idea2).
+    Cached to results/epd_cache/ keyed by (dataset, source, mp, K, hop) so GCN/HAN/HGT share it."""
+    ck = f'results/epd_cache/{dataset}_{source}_{epd_mp}_K{K}_h{hop}.npz'
+    if os.path.exists(ck):
+        z = np.load(ck)
+        print(f'  EPD cache hit: {ck}')
+        return z['epd'], z['rnd']
+    if source == 'metapath':
+        g = build_metapath_graph(d, epd_mp)[0]
+        hks = PM._graph_hks(g, K)
+        samples = PM.gen_training_samples(g, hks, hop=hop, max_nodes=max_nodes, n_samples=samples_n, seed=0)
+        print(f'  PDGNN(metapath {epd_mp}) train samples={len(samples)}')
+        m = PM.train_pdgnn_metapath(samples, epochs=epochs, verbose=True)
+        epd = _znorm(PM.predict_node_pi(m, g, hks, hop=hop, max_nodes=max_nodes))
+        rnd = _znorm(random_filter_node_pi(g, K=K, hop=hop, max_nodes=max_nodes))
+        os.makedirs('results/epd_cache', exist_ok=True); np.savez(ck, epd=epd, rnd=rnd)
+        return epd, rnd
+    # unified (Idea 2): whole multi-type graph, type-calibrated filter, target nodes 0..n_tgt-1
+    import networkx as nx
+    g_homo, ntype, n_t, _, _ = build_homo(d, dataset)
+    assert n_t == n_tgt
+    if g_homo.number_of_nodes() > homo_cap:
+        rng = np.random.RandomState(0)
+        others = list(range(n_tgt, g_homo.number_of_nodes()))
+        extra = rng.choice(others, size=max(0, homo_cap - n_tgt), replace=False)
+        keep = sorted(set(range(n_tgt)) | set(extra.tolist()))
+        remap = {o: i for i, o in enumerate(keep)}
+        g_homo = nx.relabel_nodes(g_homo.subgraph(keep).copy(), remap)
+        ntype = ntype[np.array(keep)]
+    calf = calibrated_filter(g_homo, ntype, K=K)
+    samples = PM.gen_training_samples(g_homo, calf, hop=hop, max_nodes=max_nodes, n_samples=samples_n, seed=0)
+    print(f'  PDGNN(unified) train samples={len(samples)}  homo={g_homo.number_of_nodes()}')
+    m = PM.train_pdgnn_metapath(samples, epochs=epochs, verbose=True)
+    epd = _znorm(PM.predict_node_pi(m, g_homo, calf, hop=hop, max_nodes=max_nodes)[:n_tgt])
+    rnd = _znorm(random_filter_node_pi(g_homo, K=K, hop=hop, max_nodes=max_nodes)[:n_tgt])
+    os.makedirs('results/epd_cache', exist_ok=True); np.savez(ck, epd=epd, rnd=rnd)
+    return epd, rnd
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 RAND_DIM, HIDDEN, HEADS, DROPOUT, LR, WD, EPOCHS = 64, 128, 4, 0.5, 0.005, 1e-3, 200
@@ -98,6 +139,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dataset', default='ACM')
     ap.add_argument('--epd_mp', default=None, help='meta-path for the EPD feature (default first)')
+    ap.add_argument('--epd_source', choices=['metapath', 'unified'], default='metapath',
+                    help='metapath=Idea1 (collapse), unified=Idea2 (whole multi-type type-calibrated)')
     ap.add_argument('--K', type=int, default=3)
     ap.add_argument('--hop', type=int, default=1)
     ap.add_argument('--max_nodes', type=int, default=200)
@@ -135,15 +178,10 @@ def main():
         feats[t] = (x.numpy().astype(np.float32) if x is not None
                     else rng0.randn(int(d[t].num_nodes), RAND_DIM).astype(np.float32))
 
-    # --- meta-path PDGNN-EPD on the target type (Idea 1; no exact feature) ---
-    g_epd, _, _ = build_metapath_graph(d, epd_mp)
-    hks = PM._graph_hks(g_epd, args.K)
-    samples = PM.gen_training_samples(g_epd, hks, hop=args.hop, max_nodes=args.max_nodes,
-                                      n_samples=args.pdgnn_samples, seed=0)
-    print(f'  PDGNN train samples={len(samples)}')
-    pmodel = PM.train_pdgnn_metapath(samples, epochs=args.pdgnn_epochs, verbose=True)
-    EPD = _znorm(PM.predict_node_pi(pmodel, g_epd, hks, hop=args.hop, max_nodes=args.max_nodes))
-    EPD_rand = _znorm(random_filter_node_pi(g_epd, K=args.K, hop=args.hop, max_nodes=args.max_nodes))
+    # --- PDGNN-EPD on the target type (no exact feature). source: metapath(Idea1)/unified(Idea2) ---
+    print(f'  EPD source = {args.epd_source}')
+    EPD, EPD_rand = compute_epd(d, args.dataset, args.epd_source, epd_mp, args.K, args.hop,
+                                args.max_nodes, args.pdgnn_samples, args.pdgnn_epochs, n_tgt)
     EPD_shuf = EPD[rng0.permutation(n_tgt)]
     print(f'  EPD {EPD.shape} distinct={len(np.unique(np.round(EPD,4),axis=0))}/{n_tgt}')
 
