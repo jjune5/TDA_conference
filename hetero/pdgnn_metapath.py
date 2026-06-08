@@ -18,7 +18,6 @@ import os, sys, time
 import numpy as np
 import networkx as nx
 import torch
-import gudhi
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from Knowledge_Distillation.pdgnn_modern import PDGNN
 from Knowledge_Distillation.train_pdgnn_lp import _bipartite_loss
@@ -63,6 +62,8 @@ def _ego_filt_edges(g: nx.Graph, center: int, hop: int, node_filt: dict, max_nod
 
 def _exact_epd(filt: np.ndarray, ei: np.ndarray):
     """Lower-star exact EPD (birth,death) points for a small ego (training label)."""
+    import gudhi  # lazy: only this fn needs gudhi, so the chromatic pipeline (which
+    # reuses _ego_filt_edges/_graph_hks but not _exact_epd) stays gudhi-free.
     st = gudhi.SimplexTree()
     for i, f in enumerate(filt):
         st.insert([int(i)], filtration=float(f))
