@@ -97,6 +97,40 @@ Either outcome is publishable: a win = chromatic cracks hetero where plain PH fa
 - **Stage 1:** engine trains stably; kernel-leg fidelity ≥ gate on held-out egos; reproduced on ≥2 datasets.
 - **Stage 2:** synthetic positive-control passes (chromatic > achromatic/none); real-data verdict (win or null) is consistent across GCN/HAN/HGT and reported honestly with the full controls ladder.
 
+## Stage-1 Results (2026-06-08, in progress)
+
+**Labeler (`chromatic_labels.py`) — validated.** Exact 0-dim image/kernel/cokernel via
+paired union-find (Lp = L-edges, KLp = K-connectivity of L-vertices; kernel = relative
+persistence between them). All 4 legs match the homological rank function at every
+inter-event midpoint over 300+ random graphs (0 mismatches); 9 hand-computed cases pass;
+ordinary leg matches gudhi. 11/11 pytest pass.
+
+**Key characterization (learned during Stage-1).** Under a node (lower-star) filtration,
+0-dim chromatic **kernel** persistence does NOT see a cross-type bridge's internal
+structure/length: any path a..b has max-edge ≥ max(f_a,f_b), so a 1-hop vs 2-hop bridge
+gives the same single essential kernel class. What 0-dim kernel DOES encode is (i) the
+**count** of same-type components held together only by cross-type structure
+(= b0(L) − #L-bearing-K-comps) and (ii) the scalar **time** they join. ⇒ a global
+filtration **cap** (graph-wide max per scale) is needed so top-born essential kernels stay
+visible & comparable across egos (per-ego max drops them). This bounds what the idea can
+detect: cross-type *mingling count/timing*, not bridge topology (H1 chromatic would be the
+Stage-3 extension for structural bridges).
+
+**Engine (`chromatic_pdgnn.py`) — built & smoke-validated.** ChromaticPDGNN = PDGNN with
+input [HKS filter ∥ color] and 3 leg-heads; per-leg Hungarian; gudhi-free pipeline
+(achromatic baseline reuses the type-blind unified ordinary EPD). Forward/backward/train/
+predict smoke pass; per-node PI shape (N, 3·25·K).
+
+**Synthetic positive control — PASS (the sensitivity proof).** Task: label = #same-type
+clusters bridged only cross-type (kernel count 1 vs 2); K connected both classes so
+ordinary H0 is blind. n=600, global cap: **kernel AUC 0.731 vs achromatic 0.495 (chance)**
+→ the exact-label + PI pipeline DOES detect chromatic signal when present by construction.
+(kernel < 1.0 because PI smears the count by random birth location — expected.) This lets a
+real-data null be read as a true null rather than a blind pipeline.
+
+**Pending:** real-data fidelity gate (does the NEURAL engine approximate exact kernel,
+kernel cosine ≥ 0.80 on ACM) → then Stage-2 controls grid.
+
 ## 9. Out of scope (YAGNI)
 
 Per-color six-pack concat (Stage-3 richness), H1/higher-dim chromatic, multiparameter (type-as-2nd-axis / Graphcode), learnable filtration (user rejected), Sliced-Wasserstein loss (noted drop-in, not Stage 1).
