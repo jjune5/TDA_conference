@@ -1,0 +1,32 @@
+{
+  "dataset": "toy",
+  "topo_mode": "metapath_topology_concat",
+  "topo_backend": "real_tlc_exact_epd_persistence_image",
+  "topo_backend_requested": "real_tlc",
+  "topo_backend_used": "real_tlc",
+  "feature_kind": "real_tlc_exact_epd_persistence_image",
+  "fallback_triggered": false,
+  "pdgnn_checkpoint": null,
+  "target_rel": [
+    "paper",
+    "cites",
+    "paper"
+  ],
+  "n_metapaths": 2,
+  "topo_dim": 50,
+  "n_train": 156,
+  "n_val": 34,
+  "n_test": 34,
+  "val_auc": 0.7577854671280277,
+  "val_ap": 0.8018410617515477,
+  "test_auc": 0.6816608996539792,
+  "test_ap": 0.7469432265659888,
+  "final_train_loss": 0.6180599927902222,
+  "epochs": 10,
+  "seed": 0,
+  "hidden_dim": 32,
+  "device": "cpu",
+  "planted": false,
+  "phase": 2,
+  "note": "Toy metrics validate pipeline correctness only; no performance claim. feature_kind states provenance (fallback descriptors are NOT PDGNN/EPD)."
+}

@@ -1,0 +1,32 @@
+{
+  "dataset": "toy",
+  "topo_mode": "unified_filter_topology",
+  "topo_backend": "type_aware_filtration",
+  "topo_backend_requested": "n/a",
+  "topo_backend_used": "type_aware_filtration",
+  "feature_kind": "type_aware_filtration",
+  "fallback_triggered": false,
+  "pdgnn_checkpoint": null,
+  "target_rel": [
+    "paper",
+    "cites",
+    "paper"
+  ],
+  "n_metapaths": 0,
+  "topo_dim": 5,
+  "n_train": 156,
+  "n_val": 34,
+  "n_test": 34,
+  "val_auc": 0.5916955017301039,
+  "val_ap": 0.6484755300690154,
+  "test_auc": 0.4498269896193771,
+  "test_ap": 0.49575624710442096,
+  "final_train_loss": 0.6268477439880371,
+  "epochs": 30,
+  "seed": 0,
+  "hidden_dim": 32,
+  "device": "cpu",
+  "planted": false,
+  "phase": 2,
+  "note": "Toy metrics validate pipeline correctness only; no performance claim. feature_kind states provenance (fallback descriptors are NOT PDGNN/EPD)."
+}

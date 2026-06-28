@@ -1,0 +1,32 @@
+{
+  "dataset": "imdb",
+  "topo_mode": "no_topology",
+  "topo_backend": "none",
+  "topo_backend_requested": "n/a",
+  "topo_backend_used": "none",
+  "feature_kind": "none",
+  "fallback_triggered": false,
+  "pdgnn_checkpoint": null,
+  "target_rel": [
+    "movie",
+    "codir",
+    "movie"
+  ],
+  "n_metapaths": 0,
+  "topo_dim": 0,
+  "n_train": 420,
+  "n_val": 90,
+  "n_test": 90,
+  "val_auc": 0.7654320987654321,
+  "val_ap": 0.7811417370014886,
+  "test_auc": 0.7041975308641975,
+  "test_ap": 0.7153318964694231,
+  "final_train_loss": 0.6716120839118958,
+  "epochs": 10,
+  "seed": 0,
+  "hidden_dim": 32,
+  "device": "cpu",
+  "planted": false,
+  "phase": 2,
+  "note": "Toy metrics validate pipeline correctness only; no performance claim. feature_kind states provenance (fallback descriptors are NOT PDGNN/EPD)."
+}

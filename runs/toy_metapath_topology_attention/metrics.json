@@ -1,0 +1,32 @@
+{
+  "dataset": "toy",
+  "topo_mode": "metapath_topology_attention",
+  "topo_backend": "fallback_topology_descriptors",
+  "topo_backend_requested": "fallback",
+  "topo_backend_used": "fallback",
+  "feature_kind": "fallback_topology_descriptors",
+  "fallback_triggered": false,
+  "pdgnn_checkpoint": null,
+  "target_rel": [
+    "paper",
+    "cites",
+    "paper"
+  ],
+  "n_metapaths": 2,
+  "topo_dim": 6,
+  "n_train": 156,
+  "n_val": 34,
+  "n_test": 34,
+  "val_auc": 0.6055363321799309,
+  "val_ap": 0.5914894121641526,
+  "test_auc": 0.6574394463667821,
+  "test_ap": 0.6654373828886668,
+  "final_train_loss": 0.6128677725791931,
+  "epochs": 30,
+  "seed": 0,
+  "hidden_dim": 32,
+  "device": "cpu",
+  "planted": false,
+  "phase": 2,
+  "note": "Toy metrics validate pipeline correctness only; no performance claim. feature_kind states provenance (fallback descriptors are NOT PDGNN/EPD)."
+}

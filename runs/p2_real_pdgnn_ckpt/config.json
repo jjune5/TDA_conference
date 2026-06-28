@@ -1,0 +1,20 @@
+{
+  "topo_mode": "metapath_topology_concat",
+  "target_rel": [
+    "paper",
+    "cites",
+    "paper"
+  ],
+  "dataset": "toy",
+  "epochs": 5,
+  "hidden_dim": 32,
+  "topo_hidden_dim": 32,
+  "lr": 0.001,
+  "neg_ratio": 1.0,
+  "seed": 0,
+  "device": "cpu",
+  "planted": false,
+  "topo_backend": "real_pdgnn",
+  "pdgnn_checkpoint": "/mnt/data/users/junyoungpark/code/TLC-GNN/data/PDGNN/checkpoints/pdgnn_lp.pt",
+  "allow_fallback": false
+}

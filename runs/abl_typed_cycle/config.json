@@ -1,0 +1,24 @@
+{
+  "topo_mode": "typed_cycle_topology",
+  "target_rel": [
+    "paper",
+    "cites",
+    "paper"
+  ],
+  "dataset": "toy",
+  "epochs": 60,
+  "hidden_dim": 32,
+  "topo_hidden_dim": 32,
+  "lr": 0.001,
+  "neg_ratio": 1.0,
+  "seed": 0,
+  "device": "cpu",
+  "planted": true,
+  "topo_backend": "fallback",
+  "pdgnn_checkpoint": null,
+  "allow_fallback": false,
+  "max_target_edges": null,
+  "filtration_mode": "type_aware",
+  "edge_filtration_mode": "max",
+  "num_slices": 3
+}

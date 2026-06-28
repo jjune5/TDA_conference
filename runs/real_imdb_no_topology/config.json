@@ -1,0 +1,21 @@
+{
+  "topo_mode": "no_topology",
+  "target_rel": [
+    "movie",
+    "codir",
+    "movie"
+  ],
+  "dataset": "imdb",
+  "epochs": 10,
+  "hidden_dim": 32,
+  "topo_hidden_dim": 32,
+  "lr": 0.001,
+  "neg_ratio": 1.0,
+  "seed": 0,
+  "device": "cpu",
+  "planted": false,
+  "topo_backend": "fallback",
+  "pdgnn_checkpoint": null,
+  "allow_fallback": false,
+  "max_target_edges": 300
+}

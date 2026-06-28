@@ -1,0 +1,32 @@
+{
+  "dataset": "acm",
+  "topo_mode": "metapath_topology_concat",
+  "topo_backend": "fallback_topology_descriptors",
+  "topo_backend_requested": "fallback",
+  "topo_backend_used": "fallback",
+  "feature_kind": "fallback_topology_descriptors",
+  "fallback_triggered": false,
+  "pdgnn_checkpoint": null,
+  "target_rel": [
+    "paper",
+    "cite",
+    "paper"
+  ],
+  "n_metapaths": 2,
+  "topo_dim": 6,
+  "n_train": 420,
+  "n_val": 90,
+  "n_test": 90,
+  "val_auc": 0.671604938271605,
+  "val_ap": 0.650636063846109,
+  "test_auc": 0.72,
+  "test_ap": 0.6885650615669956,
+  "final_train_loss": 0.6382993459701538,
+  "epochs": 10,
+  "seed": 0,
+  "hidden_dim": 32,
+  "device": "cpu",
+  "planted": false,
+  "phase": 2,
+  "note": "Toy metrics validate pipeline correctness only; no performance claim. feature_kind states provenance (fallback descriptors are NOT PDGNN/EPD)."
+}
