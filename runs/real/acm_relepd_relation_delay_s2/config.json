@@ -1,0 +1,24 @@
+{
+  "topo_mode": "relation_epd_topology",
+  "target_rel": [
+    "paper",
+    "cite",
+    "paper"
+  ],
+  "dataset": "acm",
+  "epochs": 100,
+  "hidden_dim": 32,
+  "topo_hidden_dim": 32,
+  "lr": 0.001,
+  "neg_ratio": 1.0,
+  "seed": 2,
+  "device": "cpu",
+  "planted": false,
+  "topo_backend": "fallback",
+  "pdgnn_checkpoint": null,
+  "allow_fallback": false,
+  "max_target_edges": 1000,
+  "filtration_mode": "type_aware",
+  "edge_filtration_mode": "relation_delay",
+  "num_slices": 3
+}

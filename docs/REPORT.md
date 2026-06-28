@@ -69,6 +69,29 @@ toy에선 효과 없음(≤chance). → 정합성 점검일 뿐, 성능주장 �
   타입에서 실행 실패 — 현재 한계(결과 아님).
 - 즉 claim은 **실데이터로 미입증**. 동기/가설로서는 유효하며, 이 정직한 null이 다음 설계를 가리킨다.
 
+## 추가 실험 (#4): edge type을 EPD 계산에 실제로 넣음
+
+기존 한계 — edge type이 EPD 계산에 안 들어가고 `f(e)=max(f_u,f_v)`만 씀 — 를 해소했다.
+multi-relation 그래프(메타패스별 edge type 태깅)에서 relation별 delay
+`g(i,j,ρ)=max(f_i,f_j)+softplus(δ_ρ)` (항상 `g≥max`)로 edge filtration을 만든 뒤, **explicit
+edge filtration을 소비하는 0-dim union-find** 로 EPD를 계산 → persistence image.
+즉 **edge type이 component merge 시점을 실제로 바꾼다** (typed ≠ untyped, 테스트로 검증).
+
+| dataset | untyped EPD (max) | **typed EPD (relation delay)** | no_topology |
+|---|---|---|---|
+| ACM | 0.691 ± 0.011 | **0.706 ± 0.024** | 0.701 |
+| IMDB | 0.703 ± 0.012 | **0.712 ± 0.019** | 0.722 |
+
+- **typed EPD가 untyped EPD를 두 데이터셋 모두에서 일관되게 상회** (ACM +0.015, IMDB +0.009)
+  → "edge type을 EPD 타이밍에 반영"하는 것이 untyped보다 낫다(작지만 일관).
+- 단 typed도 **no_topology baseline은 못 넘음** (ACM ~동급, IMDB 미달) → 위상이 baseline을 이기진 못함.
+- 참고: 0-dim union-find는 비미분이라 delay는 **고정 하이퍼파라미터**(LP loss로 학습 X).
+  미분가능 EPD가 있어야 delay를 학습 가능 — 다음 과제.
+
+→ **다듬어진 결론:** *단순/untyped EPD로는 hetero semantic topology가 부족하고, edge type을 계산에
+넣으면 (untyped 대비) 일관되게 개선된다. 다만 현재 형태로는 no-topology baseline을 넘지 못한다.*
+원래 claim을 "untyped로는 부족 → typed event modeling 필요"로 강화한다.
+
 ## 한계
 
 - 소형 그래프만. 성능주장 없음. fallback은 PDGNN/EPD가 아님.

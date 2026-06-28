@@ -42,7 +42,7 @@ except Exception:  # pragma: no cover
 UNIFIED_DIM = 5
 # Phase-3 train-level topology modes (the model itself still only sees its 5 base modes;
 # these are mapped onto a base model mode + an advanced topology source).
-ADVANCED_TOPO_MODES = ("typed_cycle_topology", "multi_slice_topology")
+ADVANCED_TOPO_MODES = ("typed_cycle_topology", "multi_slice_topology", "relation_epd_topology")
 ALL_TOPO_MODES = tuple(HeteroTopoLinkPredictor.MODES) + ADVANCED_TOPO_MODES
 FILTRATION_MODES = ("type_aware", "pair_conditioned")
 EDGE_FILTRATION_MODES = ("max", "relation_delay")
@@ -260,6 +260,16 @@ def run_experiment(
         model_mode = "collapsed_topology"; topo_dim = int(msf.fused_dim)
         used_backend, feature_kind = "multi_slice", "sliced_filtration_approximation"
         recompute = lambda nm, b: msf(obs, bundles, b).to(dev)
+
+    elif topo_mode == "relation_epd_topology":            # Phase-4: edge-type-aware 0-dim EPD
+        from hetero_pdg.relation_epd import compute_relation_epd_features, PI_DIM
+        bundles = project_all_metapaths(obs, metaspecs)
+        model_mode = "collapsed_topology"; topo_dim = PI_DIM
+        used_backend = "relation_epd"
+        feature_kind = ("relation_aware_0dim_epd_typed" if edge_filtration_mode == "relation_delay"
+                        else "relation_aware_0dim_epd_untyped")
+        for nm, b in (("train", tr), ("val", va), ("test", te)):
+            topo[nm] = compute_relation_epd_features(bundles, b, mode=edge_filtration_mode).to(dev)
 
     elif filtration_mode == "pair_conditioned":           # Phase-3: pair-conditioned filtration
         from hetero_pdg.pair_filtration import (PairConditionedFiltrationMLP,
