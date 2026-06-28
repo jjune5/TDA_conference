@@ -92,6 +92,22 @@ edge filtration을 소비하는 0-dim union-find** 로 EPD를 계산 → persist
 넣으면 (untyped 대비) 일관되게 개선된다. 다만 현재 형태로는 no-topology baseline을 넘지 못한다.*
 원래 claim을 "untyped로는 부족 → typed event modeling 필요"로 강화한다.
 
+## 진단: 왜 위상이 baseline을 못 이기나 (#1 topology-only, #2 permutation)
+
+- **#2 permutation test**: 학습된 모델에서 test 시 topology feature를 pair 간 셔플 → AUC 변화 Δ로 "모델이 위상을 실제로 쓰는지" 측정.
+- **#1 topology-only**: node feature를 0으로 죽이고 위상만으로 학습 → 위상 단독 신호 측정.
+
+| metapath_attention (fallback) | full | permuted | Δ(사용도) | topology-only | baseline |
+|---|---|---|---|---|---|
+| ACM | 0.723 | 0.712 | 0.012 | **0.737** | 0.701 |
+| IMDB | 0.720 | 0.712 | 0.007 | 0.715 | 0.722 |
+
+- **permutation Δ ≈ 0** (0.007–0.012) → combined 모델이 **위상을 거의 안 쓴다**.
+- 그런데 **topology-only가 baseline급/이상** (ACM 0.737 > baseline 0.701) → **위상 descriptor 자체엔 신호가 있다**.
+- ⇒ **null의 진짜 원인은 "위상에 신호가 없어서"가 아니라 "fusion이 위상을 node feature와 중복으로 보고 거의 안 쓴다"** 쪽에 가깝다.
+- (주의: 단일 관찰 · std/통계검정 없음 → 과장 금지. 다음: std·10 seeds·paired test로 확인.)
+- → 생산적 다음 단계는 "더 많은 위상 변형"이 아니라 **better fusion**(위상이 node 위에 *추가* 정보를 얹도록) 또는 **differentiable EPD로 typed event를 학습**.
+
 ## 한계
 
 - 소형 그래프만. 성능주장 없음. fallback은 PDGNN/EPD가 아님.

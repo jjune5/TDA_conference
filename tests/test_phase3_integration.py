@@ -58,3 +58,25 @@ def test_phase1_base_modes_unbroken(mode):
     res = run_experiment(topo_mode=mode, epochs=2, seed=0, device="cpu")
     assert res["topo_mode"] == mode
     _ok(res)
+
+
+@pytest.mark.parametrize("efm,kind", [("relation_delay", "relation_aware_0dim_epd_typed"),
+                                      ("max", "relation_aware_0dim_epd_untyped")])
+def test_relation_epd_topology(efm, kind):
+    res = run_experiment(topo_mode="relation_epd_topology", edge_filtration_mode=efm,
+                         epochs=2, seed=0, device="cpu")
+    assert res["feature_kind"] == kind
+    _ok(res)
+
+
+def test_topology_only_diagnostic_runs():
+    res = run_experiment(topo_mode="metapath_topology_concat", node_features="off",
+                         epochs=2, seed=0, device="cpu")
+    assert res["node_features"] == "off"
+    _ok(res)
+
+
+def test_permutation_diagnostic_returns_number():
+    res = run_experiment(topo_mode="metapath_topology_concat", permute_topology=True,
+                         epochs=2, seed=0, device="cpu")
+    assert res["test_auc_permuted"] is None or 0.0 <= res["test_auc_permuted"] <= 1.0

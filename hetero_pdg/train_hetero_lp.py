@@ -155,6 +155,8 @@ def run_experiment(
     filtration_mode: str = "type_aware",
     edge_filtration_mode: str = "max",
     num_slices: int = 3,
+    node_features: str = "on",
+    permute_topology: bool = False,
 ) -> Dict:
     """Train + evaluate one topology mode on the toy OR a small real dataset.
 
@@ -209,6 +211,8 @@ def run_experiment(
     node_in_dims = {nt: int(data[nt].x.size(1)) for nt in data.node_types
                     if getattr(data[nt], "x", None) is not None}
     node_feats = {nt: data[nt].x.to(dev) for nt in node_in_dims}
+    if node_features == "off":              # #1 topology-only diagnostic (kill node info)
+        node_feats = {nt: torch.zeros_like(x) for nt, x in node_feats.items()}
 
     _needs_metapaths = (topo_mode.startswith(("metapath", "collapsed"))
                         or topo_mode in ADVANCED_TOPO_MODES)
@@ -324,16 +328,24 @@ def run_experiment(
         last_loss = float(loss)
 
     model.eval()
-    out = {}
+    out = {"test_auc_permuted": None}
     with torch.no_grad():
         for nm, b in (("val", va), ("test", te)):
             if recompute is not None:
                 topo[nm] = recompute(nm, b)
-            prob = torch.sigmoid(model(node_feats, b,
-                   topo=None if model_mode == "no_topology" else topo[nm],
-                   topo_mask=mask[nm])).cpu().numpy()
+            tp = None if model_mode == "no_topology" else topo[nm]
+            prob = torch.sigmoid(model(node_feats, b, topo=tp, topo_mask=mask[nm])).cpu().numpy()
             auc, ap = _metrics(b.label.numpy(), prob)
             out[f"{nm}_auc"], out[f"{nm}_ap"] = auc, ap
+        # #2 topology permutation test: shuffle topo rows across test pairs; if test AUC
+        # barely changes, the model is not actually using the topology feature.
+        if permute_topology and model_mode != "no_topology" and topo["test"] is not None:
+            perm = torch.as_tensor(np.random.RandomState(seed + 99).permutation(int(te.label.numel())),
+                                   device=dev, dtype=torch.long)
+            mk = mask["test"][perm] if mask["test"] is not None else None
+            prob_p = torch.sigmoid(model(node_feats, te, topo=topo["test"][perm],
+                                         topo_mask=mk)).cpu().numpy()
+            out["test_auc_permuted"], _ = _metrics(te.label.numpy(), prob_p)
 
     result = {
         "dataset": dataset, "topo_mode": topo_mode,
@@ -351,6 +363,8 @@ def run_experiment(
         "n_train": int(tr.label.numel()), "n_val": int(va.label.numel()), "n_test": int(te.label.numel()),
         "val_auc": out["val_auc"], "val_ap": out["val_ap"],
         "test_auc": out["test_auc"], "test_ap": out["test_ap"],
+        "test_auc_permuted": out["test_auc_permuted"],
+        "node_features": node_features,
         "final_train_loss": last_loss, "epochs": int(epochs), "seed": int(seed),
         "hidden_dim": int(hidden_dim), "device": str(dev), "planted": bool(planted),
         "phase": 2,
@@ -379,6 +393,8 @@ def main():
     ap.add_argument("--filtration-mode", default="type_aware", choices=list(FILTRATION_MODES))
     ap.add_argument("--edge-filtration-mode", default="max", choices=list(EDGE_FILTRATION_MODES))
     ap.add_argument("--num-slices", type=int, default=3)
+    ap.add_argument("--node-features", default="on", choices=["on", "off"])
+    ap.add_argument("--permute-topology", default="false", choices=["true", "false"])
     ap.add_argument("--epochs", type=int, default=2)
     ap.add_argument("--hidden-dim", type=int, default=32)
     ap.add_argument("--topo-hidden-dim", type=int, default=32)
@@ -404,7 +420,8 @@ def main():
         topo_backend=a.topo_backend, pdgnn_checkpoint=a.pdgnn_checkpoint,
         allow_fallback=(a.allow_fallback == "true"), max_target_edges=a.max_target_edges,
         filtration_mode=a.filtration_mode, edge_filtration_mode=a.edge_filtration_mode,
-        num_slices=a.num_slices, output_dir=a.output_dir,
+        num_slices=a.num_slices, node_features=a.node_features,
+        permute_topology=(a.permute_topology == "true"), output_dir=a.output_dir,
     )
     print(json.dumps(res, indent=2))
     print(f"[saved] {a.output_dir}/config.json , {a.output_dir}/metrics.json")
